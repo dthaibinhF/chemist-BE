@@ -1,12 +1,21 @@
 package dthaibinhf.project.chemistbe.mapper;
 
-import dthaibinhf.project.chemistbe.model.Fee;
 import dthaibinhf.project.chemistbe.dto.FeeDTO;
+import dthaibinhf.project.chemistbe.model.Fee;
 import org.mapstruct.*;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING,
+        uses = {PaymentDetailMapper.class})
 public interface FeeMapper {
+    @Mapping(target = "paymentDetails", ignore = true)
+    @Mapping(target = "groups", ignore = true)
     Fee toEntity(FeeDTO feeDTO);
+
+    @AfterMapping
+    default void linkPaymentDetail(@MappingTarget Fee fee) {
+        fee.getPaymentDetails().forEach(paymentDetail -> paymentDetail.setFee(fee));
+    }
+
 
     FeeDTO toDto(Fee fee);
 
