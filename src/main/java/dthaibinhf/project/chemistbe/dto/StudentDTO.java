@@ -15,4 +15,6 @@ public class StudentDTO extends BaseDTO implements Serializable {
     String name;
     String parentPhone;
     Set<ScoreDTO> scores;
+    Set<AttendanceDTO> attendances;
+    Set<PaymentDetailDTO> paymentDetails;
 }

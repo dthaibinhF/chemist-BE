@@ -8,6 +8,11 @@ import org.mapstruct.*;
 public interface TeacherMapper {
     Teacher toEntity(TeacherDTO teacherDTO);
 
+    @AfterMapping
+    default void linkTeacherDetail(@MappingTarget Teacher teacher) {
+        teacher.getTeacherDetails().forEach(teacherDetail -> teacherDetail.setTeacher(teacher));
+    }
+
     TeacherDTO toDto(Teacher teacher);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
