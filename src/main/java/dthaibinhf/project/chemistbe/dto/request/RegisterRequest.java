@@ -1,5 +1,6 @@
 package dthaibinhf.project.chemistbe.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,6 +11,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RegisterRequest {
     String name;
+    String phone;
     String email;
     String password;
+    @JsonProperty("role_name")
+    String roleName;
 }
