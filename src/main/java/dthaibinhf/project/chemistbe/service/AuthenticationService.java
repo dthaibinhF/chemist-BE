@@ -55,7 +55,7 @@ public class AuthenticationService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
-        Account account = accountRepository.findByEmail(request.getEmail())
+        Account account = accountRepository.findActiveByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         String accessToken = jwtService.generateToken(account);
         String refreshToken = jwtService.generateRefreshToken(account);
@@ -88,7 +88,7 @@ public class AuthenticationService {
 
     public AccountDTO getAuthentication() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = accountRepository.findByEmail(username).orElseThrow(
+        Account account = accountRepository.findActiveByEmail(username).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account id not found")
         );
         return accountMapper.toDto(account);
