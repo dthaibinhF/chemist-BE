@@ -56,7 +56,9 @@ public class SecurityConfig {
                                         "/api/v1/account/**",
                                         "/api/v1/role/**",
                                         "/api/v1/school/**",
-                                        "api/v1/fee/**"
+                                        "api/v1/fee/**",
+                                        "/api/v1/academic-year/**",
+                                        "/api/v1/grade/**"
                                 ).authenticated()
                                 .requestMatchers("/api/v1/fee/**").hasAnyRole("ADMIN", "MANAGER", "TEACHER")
                 )
