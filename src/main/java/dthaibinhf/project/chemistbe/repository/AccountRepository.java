@@ -11,8 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
-    @Query("select a from Account a JOIN FETCH a.role WHERE a.email = ?1")
-    Optional<Account> findByEmail(String username);
+    @Query("select a from Account a JOIN FETCH a.role WHERE a.email = ?1 AND (a.endAt IS NULL OR a.endAt > CURRENT_TIMESTAMP) ")
+    Optional<Account> findActiveByEmail(String username);
 
     @Query("SELECT a FROM Account a WHERE a.id = :id AND (a.endAt IS NULL OR a.endAt > CURRENT_TIMESTAMP)")
     Optional<Account> findActiveById(@Param("id") Integer id);

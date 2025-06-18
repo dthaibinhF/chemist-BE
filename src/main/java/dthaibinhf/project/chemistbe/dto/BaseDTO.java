@@ -1,5 +1,6 @@
 package dthaibinhf.project.chemistbe.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -18,11 +19,14 @@ public abstract class BaseDTO {
     Integer id;
 
     @JsonProperty("create_at")
+    @JsonIgnore
     OffsetDateTime createdAt;
 
     @JsonProperty("update_at")
+    @JsonIgnore
     OffsetDateTime updatedAt;
 
     @JsonProperty("end_at")
+    @JsonIgnore
     OffsetDateTime endAt;
 }

@@ -16,7 +16,6 @@ public interface FeeMapper {
         fee.getPaymentDetails().forEach(paymentDetail -> paymentDetail.setFee(fee));
     }
 
-
     FeeDTO toDto(Fee fee);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
