@@ -39,4 +39,9 @@ public abstract class BaseEntity {
     protected void onUpdate() {
         this.updatedAt = OffsetDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
     }
+
+    //call to soft-delete
+    public void softDelete() {
+        this.endAt = OffsetDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+    }
 }

@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Data
 @Builder
@@ -13,11 +12,11 @@ import java.util.Set;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RegisterResponse {
-    Integer accountId;
+    Integer id;
     String email;
-    String fullName;
+    String name;
     String phone;
-    Set<RoleDTO> roles;
+    RoleDTO roles;
     LocalDate createAt;
     LocalDate updateAt;
 }

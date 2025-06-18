@@ -15,9 +15,6 @@ import java.util.Collections;
 @Entity
 @Table(name = "account")
 public class Account extends BaseEntity implements UserDetails {
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
 
     @Column(name = "name", nullable = false, length = 50)
     private String name;
@@ -30,6 +27,10 @@ public class Account extends BaseEntity implements UserDetails {
 
     @Column(name = "password", nullable = false, length = Integer.MAX_VALUE)
     private String password;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
