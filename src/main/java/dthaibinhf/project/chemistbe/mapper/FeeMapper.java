@@ -3,9 +3,11 @@ package dthaibinhf.project.chemistbe.mapper;
 import dthaibinhf.project.chemistbe.dto.FeeDTO;
 import dthaibinhf.project.chemistbe.model.Fee;
 import org.mapstruct.*;
+import org.springframework.context.annotation.Primary;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING,
         uses = {PaymentDetailMapper.class})
+@Primary
 public interface FeeMapper {
     @Mapping(target = "paymentDetails", ignore = true)
     @Mapping(target = "groups", ignore = true)

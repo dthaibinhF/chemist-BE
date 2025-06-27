@@ -27,4 +27,9 @@ public class GroupSchedule extends BaseEntity {
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
+    // Custom setter to convert dayOfWeek to uppercase
+    public void setDayOfWeek(String dayOfWeek) {
+        this.dayOfWeek = dayOfWeek != null ? dayOfWeek.toUpperCase() : null;
+    }
+
 }

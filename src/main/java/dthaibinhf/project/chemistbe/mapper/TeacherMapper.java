@@ -3,8 +3,10 @@ package dthaibinhf.project.chemistbe.mapper;
 import dthaibinhf.project.chemistbe.dto.TeacherDTO;
 import dthaibinhf.project.chemistbe.model.Teacher;
 import org.mapstruct.*;
+import org.springframework.context.annotation.Primary;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {AccountMapper.class})
+@Primary
 public interface TeacherMapper {
     Teacher toEntity(TeacherDTO teacherDTO);
 

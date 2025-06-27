@@ -6,6 +6,8 @@ import lombok.Value;
 import java.io.Serializable;
 import java.util.Set;
 
+import dthaibinhf.project.chemistbe.model.StudentDetailDTO;
+
 /**
  * DTO for {@link dthaibinhf.project.chemistbe.model.Student}
  */
@@ -17,4 +19,5 @@ public class StudentDTO extends BaseDTO implements Serializable {
     Set<ScoreDTO> scores;
     Set<AttendanceDTO> attendances;
     Set<PaymentDetailDTO> paymentDetails;
+    Set<StudentDetailDTO> studentDetails;
 }

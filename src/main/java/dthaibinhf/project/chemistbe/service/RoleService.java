@@ -56,7 +56,7 @@ public class RoleService {
     @Transactional
     @CacheEvict(value = {"roles", "allRoles"}, key = "#id")
     public void deleteRole(Integer id) {
-        Role role = repository.findById(id)
+        Role role = repository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + id));
         role.softDelete();
         repository.save(role);

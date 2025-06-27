@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "group")
+@Table(name = "\"group\"")
 public class Group extends BaseEntity {
     @Column(name = "name", nullable = false, length = Integer.MAX_VALUE)
     private String name;

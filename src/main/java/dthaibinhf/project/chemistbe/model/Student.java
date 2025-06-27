@@ -34,4 +34,8 @@ public class Student extends BaseEntity {
     @JsonManagedReference
     private Set<PaymentDetail> paymentDetails = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "student")
+    @JsonManagedReference
+    private Set<StudentDetail> studentDetails = new LinkedHashSet<>();
+
 }

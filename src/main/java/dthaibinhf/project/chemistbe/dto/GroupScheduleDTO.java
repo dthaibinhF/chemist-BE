@@ -1,6 +1,7 @@
 package dthaibinhf.project.chemistbe.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import dthaibinhf.project.chemistbe.model.GroupSchedule;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -13,6 +14,7 @@ import java.time.LocalTime;
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
+@JsonPropertyOrder({"id", "group_id", "group_name", "day_of_week", "start_time", "end_time"})
 public class GroupScheduleDTO extends BaseDTO implements Serializable {
     @JsonProperty("group_id")
     Integer groupId;

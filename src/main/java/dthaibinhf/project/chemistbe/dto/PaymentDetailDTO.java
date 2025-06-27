@@ -1,6 +1,7 @@
 package dthaibinhf.project.chemistbe.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -16,12 +17,12 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 public class PaymentDetailDTO extends BaseDTO implements Serializable {
     @JsonProperty("fee_id")
-    @NonNull
+    @NotNull
     Integer feeId;
     @JsonProperty("fee_name")
     String feeName;
     @JsonProperty("student_id")
-    @NonNull
+    @NotNull
     Integer studentId;
     @JsonProperty("student_name")
     String studentName;

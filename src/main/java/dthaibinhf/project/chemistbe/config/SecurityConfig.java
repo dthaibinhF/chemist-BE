@@ -58,7 +58,16 @@ public class SecurityConfig {
                                         "/api/v1/school/**",
                                         "api/v1/fee/**",
                                         "/api/v1/academic-year/**",
-                                        "/api/v1/grade/**"
+                                        "/api/v1/grade/**",
+                                        "/api/v1/room/**",
+                                        "/api/v1/school-class/**",
+                                        "/api/v1/group/**",
+                                        "/api/v1/teacher/**",
+                                        "api/v1/group-schedule/**",
+                                        "api/v1/schedule/**",
+                                        "api/v1/attendance/**",
+                                        "/api/v1/student/**",
+                                        "/api/v1/score/**"
                                 ).authenticated()
                                 .requestMatchers("/api/v1/fee/**").hasAnyRole("ADMIN", "MANAGER", "TEACHER")
                 )

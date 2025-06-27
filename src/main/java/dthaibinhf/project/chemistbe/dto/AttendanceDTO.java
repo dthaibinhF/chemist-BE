@@ -1,6 +1,8 @@
 package dthaibinhf.project.chemistbe.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import dthaibinhf.project.chemistbe.model.Attendance;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -12,6 +14,16 @@ import java.io.Serializable;
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
+@JsonPropertyOrder({
+    "id",
+    "schedule_id",
+    "group_id",
+    "group_name",
+    "student_id",
+    "student_name",
+    "status",
+    "description"
+})
 public class AttendanceDTO extends BaseDTO implements Serializable {
     @JsonProperty("schedule_id")
     Integer scheduleId;

@@ -34,6 +34,7 @@ public class StudentDetail extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id", nullable = false)
+    @JsonBackReference
     private Student student;
 
 }

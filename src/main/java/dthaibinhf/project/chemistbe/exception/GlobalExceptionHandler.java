@@ -4,7 +4,9 @@ package dthaibinhf.project.chemistbe.exception;
 
 import dthaibinhf.project.chemistbe.dto.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -30,6 +32,11 @@ public class GlobalExceptionHandler {
                         ex.getReason(),
                         request.getRequestURI()
                 ));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied: " + e.getMessage());
     }
 //
 //    @ExceptionHandler(NotFoundException.class)

@@ -4,11 +4,13 @@ import dthaibinhf.project.chemistbe.dto.GroupSessionDTO;
 import dthaibinhf.project.chemistbe.model.Group;
 import dthaibinhf.project.chemistbe.model.GroupSession;
 import org.mapstruct.*;
+import org.springframework.context.annotation.Primary;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Primary
 public interface GroupSessionMapper {
     @Mapping(target = "groups", ignore = true)
     GroupSession toEntity(GroupSessionDTO groupSessionDTO);

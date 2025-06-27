@@ -24,5 +24,8 @@ public class StudentDetailDTO extends BaseDTO implements Serializable {
     @JsonProperty("academic_year")
     AcademicYearDTO academicYear;
     GradeDTO grade;
-    StudentDTO student;
+    @JsonProperty("student_id")
+    Integer studentId;
+    @JsonProperty("student_name")
+    String studentName;
 }

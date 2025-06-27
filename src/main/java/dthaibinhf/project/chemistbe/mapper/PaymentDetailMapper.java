@@ -8,12 +8,14 @@ import dthaibinhf.project.chemistbe.repository.FeeRepository;
 import dthaibinhf.project.chemistbe.repository.StudentRepository;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING,
         uses = {FeeMapper.class, StudentMapper.class}
 )
+@Primary
 public abstract class PaymentDetailMapper {
     @Autowired
     protected FeeRepository feeRepository;

@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +54,6 @@ public class GradeService {
     }
 
     @Transactional
-    @CacheEvict(value = {"grades", "allGrades"}, key = "#id")
     public void deleteGrade(Integer id) {
         Grade grade = gradeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Grade not found: " + id));

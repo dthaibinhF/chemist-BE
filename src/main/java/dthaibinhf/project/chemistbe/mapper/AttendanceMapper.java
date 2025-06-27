@@ -3,9 +3,11 @@ package dthaibinhf.project.chemistbe.mapper;
 import dthaibinhf.project.chemistbe.model.Attendance;
 import dthaibinhf.project.chemistbe.dto.AttendanceDTO;
 import org.mapstruct.*;
+import org.springframework.context.annotation.Primary;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING,
         uses = {ScheduleMapper.class, StudentMapper.class})
+@Primary
 public interface AttendanceMapper {
     @Mapping(target = "student", ignore = true)
     @Mapping(target = "schedule", ignore = true)
