@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.Value;
 
 import java.io.Serializable;
@@ -28,7 +27,7 @@ public class PaymentDetailDTO extends BaseDTO implements Serializable {
     String studentName;
     @JsonProperty("pay_method")
     String payMethod;
-    @NonNull @Positive
+    @NotNull @Positive
     BigDecimal amount;
     String description;
     @JsonProperty("have_discount")

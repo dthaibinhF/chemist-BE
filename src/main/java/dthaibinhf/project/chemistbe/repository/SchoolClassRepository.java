@@ -16,4 +16,8 @@ public interface SchoolClassRepository extends JpaRepository<SchoolClass, Intege
 
     @Query("SELECT sc FROM SchoolClass sc WHERE sc.endAt IS NULL OR sc.endAt > CURRENT_TIMESTAMP")
     List<SchoolClass> findAllActiveSchoolClasses();
+
+    @Query("SELECT sc FROM SchoolClass sc WHERE (sc.endAt IS NULL OR sc.endAt > CURRENT_TIMESTAMP) AND sc.name LIKE CONCAT(:gradePrefix, '%')")
+    List<SchoolClass> findAllActiveByGrade(@Param("gradePrefix") Integer gradePrefix);
+
 }

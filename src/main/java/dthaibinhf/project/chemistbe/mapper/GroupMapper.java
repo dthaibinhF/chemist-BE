@@ -1,5 +1,16 @@
 package dthaibinhf.project.chemistbe.mapper;
 
+import org.mapstruct.AfterMapping;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.BeforeMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import dthaibinhf.project.chemistbe.dto.GroupDTO;
 import dthaibinhf.project.chemistbe.dto.GroupListDTO;
 import dthaibinhf.project.chemistbe.model.AcademicYear;
@@ -9,8 +20,6 @@ import dthaibinhf.project.chemistbe.model.Group;
 import dthaibinhf.project.chemistbe.repository.AcademicYearRepository;
 import dthaibinhf.project.chemistbe.repository.FeeRepository;
 import dthaibinhf.project.chemistbe.repository.GradeRepository;
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The Mapper have already added all item like {@link Fee} {@link AcademicYear} and {@link Grade} by their ID,
@@ -31,7 +40,6 @@ public abstract class GroupMapper {
     @Autowired
     protected GradeRepository gradeRepository;
 
-    @Mapping(target = "groupSchedules", ignore = true)
     @Mapping(target = "schedules", ignore = true)
     @Mapping(target = "studentDetails", ignore = true)
     @Mapping(target = "groupSessions", ignore = true)
@@ -40,7 +48,7 @@ public abstract class GroupMapper {
     @Mapping(target = "grade", ignore = true)
     abstract public Group toEntity(GroupDTO groupDTO);
 
-    @AfterMapping
+    @BeforeMapping
     protected void linkRelatedEntities(@MappingTarget Group group, GroupDTO groupDTO) {
         if (groupDTO.getFeeId() != null) {
             Fee fee = feeRepository.findById(groupDTO.getFeeId())
@@ -56,6 +64,9 @@ public abstract class GroupMapper {
             Grade grade = gradeRepository.findById(groupDTO.getGradeId())
                     .orElseThrow(() -> new IllegalArgumentException("Grade not found: " + groupDTO.getGradeId()));
             group.setGrade(grade);
+        }
+        if (groupDTO.getStudentDetails() != null) {
+            group.getStudentDetails().forEach(studentDetail -> studentDetail.setGroup(group));
         }
     }
 

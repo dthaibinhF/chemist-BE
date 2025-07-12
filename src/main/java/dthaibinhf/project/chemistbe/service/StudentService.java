@@ -4,6 +4,7 @@ import dthaibinhf.project.chemistbe.dto.StudentDTO;
 import dthaibinhf.project.chemistbe.mapper.StudentMapper;
 import dthaibinhf.project.chemistbe.model.Student;
 import dthaibinhf.project.chemistbe.repository.StudentRepository;
+import dthaibinhf.project.chemistbe.repository.GroupRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class StudentService {
     StudentRepository studentRepository;
     StudentMapper studentMapper;
+    GroupRepository groupRepository;  // Add this field
 
     public List<StudentDTO> getAllStudents() {
         return studentRepository.findAllActive().stream()
@@ -58,4 +60,27 @@ public class StudentService {
         student.softDelete();
         studentRepository.save(student);
     }
-} 
+
+    @Transactional
+    public List<StudentDTO> createMultipleStudent(List<StudentDTO> studentDTOList) {
+        if (studentDTOList != null && !studentDTOList.isEmpty()) {
+            List<Student> students = studentDTOList.stream()
+                    .map(studentMapper::toEntity)
+                    .peek(student -> {
+                        if (student.getStudentDetails() != null) {
+                            student.getStudentDetails().forEach(detail -> {
+                                detail.setStudent(student);
+                                if (detail.getGroup() != null && detail.getGroup().getId() != null) {
+                                    detail.setGroup(groupRepository.getReferenceById(detail.getGroup().getId()));
+                                }
+                            });
+                        }
+                    })
+                    .collect(Collectors.toList());
+            List<Student> savedStudents = studentRepository.saveAll(students);
+            return savedStudents.stream().map(studentMapper::toDto).collect(Collectors.toList());
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student list cannot be null or empty");
+        }
+    }
+}

@@ -34,6 +34,11 @@ public class SchoolClassController {
         return ResponseEntity.ok(schoolClassService.getAllSchoolClasses());
     }
 
+    @GetMapping("/grade/{grade}")
+    public ResponseEntity<List<SchoolClassDTO>> getSchoolClassesByGradeId(@PathVariable Integer grade) {
+        return ResponseEntity.ok(schoolClassService.getSchoolClassesByGrade(grade));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<SchoolClassDTO> updateSchoolClass(@PathVariable Integer id, @Valid @RequestBody SchoolClassDTO schoolClassDTO) {
         return ResponseEntity.ok(schoolClassService.updateSchoolClass(id, schoolClassDTO));

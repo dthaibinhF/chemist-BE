@@ -60,4 +60,9 @@ public class SchoolClassService {
         schoolClass.softDelete();
         schoolClassRepository.save(schoolClass);
     }
+
+    public List<SchoolClassDTO> getSchoolClassesByGrade(Integer gradePrefix) {
+        List<SchoolClass> schoolClasses = schoolClassRepository.findAllActiveByGrade(gradePrefix);
+        return schoolClasses.stream().map(schoolClassMapper::toDto).collect(Collectors.toList());
+    }
 }

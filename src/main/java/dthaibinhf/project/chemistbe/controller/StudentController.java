@@ -32,6 +32,11 @@ public class StudentController {
         return ResponseEntity.ok(studentService.createStudent(studentDTO));
     }
 
+    @PostMapping("/multiple")
+    public ResponseEntity<List<StudentDTO>> createMultipleStudent(@RequestBody List<StudentDTO> studentDTOList) {
+        return ResponseEntity.ok(studentService.createMultipleStudent(studentDTOList));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<StudentDTO> updateStudent(@PathVariable Integer id, @RequestBody StudentDTO studentDTO) {
         return ResponseEntity.ok(studentService.updateStudent(id, studentDTO));

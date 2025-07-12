@@ -1,8 +1,22 @@
 package dthaibinhf.project.chemistbe.service;
 
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
 import dthaibinhf.project.chemistbe.dto.ScheduleDTO;
 import dthaibinhf.project.chemistbe.mapper.ScheduleMapper;
+import dthaibinhf.project.chemistbe.model.Group;
+import dthaibinhf.project.chemistbe.model.Room;
 import dthaibinhf.project.chemistbe.model.Schedule;
+import dthaibinhf.project.chemistbe.model.Teacher;
 import dthaibinhf.project.chemistbe.repository.GroupRepository;
 import dthaibinhf.project.chemistbe.repository.RoomRepository;
 import dthaibinhf.project.chemistbe.repository.ScheduleRepository;
@@ -11,19 +25,6 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Set;
-import dthaibinhf.project.chemistbe.model.Group;
-import dthaibinhf.project.chemistbe.model.Room;
-import dthaibinhf.project.chemistbe.model.Teacher;
-import java.util.stream.Collectors;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor

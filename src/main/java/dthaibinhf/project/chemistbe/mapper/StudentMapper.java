@@ -14,12 +14,16 @@ public interface StudentMapper {
 
     @AfterMapping
     default void linkAttendance(@MappingTarget Student student) {
-        student.getAttendances().forEach(attendance -> attendance.setStudent(student));
+        if (student.getAttendances() != null) {
+            student.getAttendances().forEach(attendance -> attendance.setStudent(student));
+        }
     }
 
     @AfterMapping
     default void linkPaymentDetail(@MappingTarget Student student) {
-        student.getPaymentDetails().forEach(paymentDetail -> paymentDetail.setStudent(student));
+        if (student.getPaymentDetails() != null) {
+            student.getPaymentDetails().forEach(paymentDetail -> paymentDetail.setStudent(student));
+        }
     }
 
     @Mapping(source = "scores", target = "scores")
