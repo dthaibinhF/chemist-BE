@@ -53,8 +53,10 @@ public class StudentService {
 
     @Transactional
     public StudentDTO updateStudent(Integer id, StudentDTO studentDTO) {
+        //find current active student by ID
         Student student = studentRepository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found: " + id));
+        //handle new changes of studentDTO
 
         // Update basic student information
         studentMapper.partialUpdate(studentDTO, student);

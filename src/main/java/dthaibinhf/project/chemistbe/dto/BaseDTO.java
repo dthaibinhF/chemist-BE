@@ -1,15 +1,13 @@
 package dthaibinhf.project.chemistbe.dto;
 
-import java.time.OffsetDateTime;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -23,10 +21,8 @@ public abstract class BaseDTO {
     OffsetDateTime createdAt;
 
     @JsonProperty("update_at")
-    @JsonIgnore
     OffsetDateTime updatedAt;
 
     @JsonProperty("end_at")
-    @JsonIgnore
     OffsetDateTime endAt;
 }
