@@ -1,6 +1,7 @@
 package dthaibinhf.project.chemistbe.controller;
 
 import dthaibinhf.project.chemistbe.dto.StudentDTO;
+import dthaibinhf.project.chemistbe.model.StudentDetailDTO;
 import dthaibinhf.project.chemistbe.service.StudentService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -47,4 +48,27 @@ public class StudentController {
         studentService.deleteStudent(id);
         return ResponseEntity.noContent().build();
     }
-} 
+
+    /**
+     * Get list of students by group ID
+     * Returns only the newest non-deleted student detail for each student in the group
+     *
+     * @param groupId the ID of the group
+     * @return list of students with their newest non-deleted student detail for the specified group
+     */
+    @GetMapping("/by-group/{groupId}")
+    public ResponseEntity<List<StudentDTO>> getStudentsByGroupId(@PathVariable Integer groupId) {
+        return ResponseEntity.ok(studentService.getStudentsByGroupId(groupId));
+    }
+
+    /**
+     * Get history of student details for a specific student
+     *
+     * @param studentId the ID of the student
+     * @return list of all student details for the student, ordered by creation date (newest first)
+     */
+    @GetMapping("/{studentId}/detail-history")
+    public ResponseEntity<List<StudentDetailDTO>> getStudentDetailHistory(@PathVariable Integer studentId) {
+        return ResponseEntity.ok(studentService.getStudentDetailHistory(studentId));
+    }
+}

@@ -33,4 +33,21 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
             "LEFT JOIN FETCH s.studentDetails " +
             "WHERE s.id = :id AND s.endAt IS NULL")
     Optional<Student> findActiveById(@Param("id") Integer id);
+
+    /**
+     * Find students by group ID with their newest non-deleted student details
+     * 
+     * @param groupId the ID of the group
+     * @return list of students with their newest non-deleted student details for the specified group
+     */
+    @Query("SELECT DISTINCT s FROM Student s " +
+           "JOIN FETCH s.studentDetails sd " +
+           "WHERE sd.group.id = :groupId " +
+           "AND sd.endAt IS NULL " +
+           "AND s.endAt IS NULL " +
+           "AND sd.createdAt = (SELECT MAX(sd2.createdAt) FROM StudentDetail sd2 " +
+           "                    WHERE sd2.student.id = s.id " +
+           "                    AND sd2.group.id = :groupId " +
+           "                    AND sd2.endAt IS NULL)")
+    List<Student> findByGroupIdWithNewestActiveDetails(@Param("groupId") Integer groupId);
 }
