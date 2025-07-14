@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalTime;
+import java.time.DayOfWeek;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -22,14 +23,24 @@ public class GroupSchedule extends BaseEntity {
     private String dayOfWeek;
 
     @Column(name = "start_time", nullable = false)
-    private LocalTime startTime;
+    private OffsetDateTime startTime;
 
     @Column(name = "end_time", nullable = false)
-    private LocalTime endTime;
+    private OffsetDateTime endTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     // Custom setter to convert dayOfWeek to uppercase
     public void setDayOfWeek(String dayOfWeek) {
         this.dayOfWeek = dayOfWeek != null ? dayOfWeek.toUpperCase() : null;
     }
+
+    // Custom getter to return dayOfWeek in Day of week enumeration format
+    public DayOfWeek getDayOfWeekEnum() {
+        return dayOfWeek != null ? DayOfWeek.valueOf(dayOfWeek) : null;
+    }
+
 
 }

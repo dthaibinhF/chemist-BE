@@ -140,12 +140,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <!--        &lt;!&ndash; Springdoc OpenAPI for Swagger &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springdoc</groupId>-->
-<!--            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>-->
-<!--            <version>${springdoc.version}</version>-->
-<!--        </dependency>-->
     </dependencies>
 
     <build>

@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.io.Serializable;
-import java.time.LocalTime;
+import java.time.OffsetDateTime;
 
 /**
  * DTO for {@link GroupSchedule}
@@ -23,7 +23,7 @@ public class GroupScheduleDTO extends BaseDTO implements Serializable {
     @JsonProperty("day_of_week")
     String dayOfWeek;
     @JsonProperty("start_time")
-    LocalTime startTime;
+    OffsetDateTime startTime;
     @JsonProperty("end_time")
-    LocalTime endTime;
+    OffsetDateTime endTime;
 }

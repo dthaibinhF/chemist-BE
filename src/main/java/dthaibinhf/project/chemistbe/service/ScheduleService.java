@@ -1,22 +1,8 @@
 package dthaibinhf.project.chemistbe.service;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-
 import dthaibinhf.project.chemistbe.dto.ScheduleDTO;
 import dthaibinhf.project.chemistbe.mapper.ScheduleMapper;
-import dthaibinhf.project.chemistbe.model.Group;
-import dthaibinhf.project.chemistbe.model.Room;
-import dthaibinhf.project.chemistbe.model.Schedule;
-import dthaibinhf.project.chemistbe.model.Teacher;
+import dthaibinhf.project.chemistbe.model.*;
 import dthaibinhf.project.chemistbe.repository.GroupRepository;
 import dthaibinhf.project.chemistbe.repository.RoomRepository;
 import dthaibinhf.project.chemistbe.repository.ScheduleRepository;
@@ -25,6 +11,20 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.OffsetDateTime;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -102,7 +102,7 @@ public class ScheduleService {
         Integer excludeIdParam = excludeId.length > 0 ? excludeId[0] : null;
 
         // Uncomment these lines if existsRoomConflict and existsTeacherConflict are available in repository
-        /*
+
         if (scheduleRepository.existsRoomConflict(
                 scheduleDTO.getRoom().getId(),
                 scheduleDTO.getStartTime(),
@@ -120,7 +120,7 @@ public class ScheduleService {
                 throw new org.springframework.web.server.ResponseStatusException(HttpStatus.CONFLICT, "Teacher is already assigned for the specified time");
             }
         }
-        */
+
     }
 
     private void setRelatedEntities(Schedule schedule, ScheduleDTO scheduleDTO) {
@@ -139,5 +139,69 @@ public class ScheduleService {
         } else {
             schedule.setTeacher(null); // Teacher is optional
         }
+    }
+
+    public Set<Schedule> generateWeeklySchedule(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
+        //validate input parameters
+        Group group = groupRepository.findActiveById(groupId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + groupId)
+        );
+
+        if (startDate.isAfter(endDate)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be before end date");
+        }
+
+        if (startDate.isBefore(OffsetDateTime.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be in the future");
+        }
+
+        // Generate weekly schedule logic
+        // to generate weekly schedule for the group from startDate to endDate
+        // Assuming we want to generate schedules for every week starting from startDate
+        List<GroupSchedule> sortedMainSchedule = group.getGroupSchedules().stream()
+                .sorted(Comparator.comparing(GroupSchedule::getDayOfWeekEnum))
+                .toList();
+        Set<Schedule> schedules = new LinkedHashSet<>();
+        AtomicReference<OffsetDateTime> currentDate = new AtomicReference<>(startDate);
+        sortedMainSchedule.forEach(groupSchedule -> {
+            do {
+                if (currentDate.get().getDayOfWeek().equals(groupSchedule.getDayOfWeekEnum())) {
+                    // Create a new schedule for the group
+                    Schedule schedule = Schedule.builder()
+                            .group(group)
+                            //get the date of the current date and set the start and end time from groupSchedule
+                            .startTime(currentDate.get().withHour(groupSchedule.getStartTime().getHour())
+                                    .withMinute(groupSchedule.getStartTime().getMinute())
+                                    .withSecond(groupSchedule.getStartTime().getSecond()))
+                            .endTime(currentDate.get().withHour(groupSchedule.getEndTime().getHour())
+                                    .withMinute(groupSchedule.getEndTime().getMinute())
+                                    .withSecond(groupSchedule.getEndTime().getSecond()))
+                            .deliveryMode("OFFLINE") // Default delivery mode, can be changed as needed
+                            .attendances(null)
+                            .teacher(null) // Assuming no teacher is assigned, can be set later
+                            .room(groupSchedule.getRoom()) // Assuming room is set in GroupSchedule
+                            .meetingLink(null)
+                            .build();
+                    // Check for conflicts before saving
+                    checkScheduleConflicts(scheduleMapper.toDto(schedule));
+                    schedules.add(schedule);
+                    break; // Exit the loop once a schedule is created for the current date
+                }
+                //move currentDate to next date
+                currentDate.set(currentDate.get().plusDays(1));
+
+            } while (currentDate.get().isBefore(endDate));
+            // Reset currentDate to startDate for the next iteration
+            currentDate.set(startDate);
+        });
+        // Save all schedules in one transaction
+        if (!schedules.isEmpty()) {
+            schedules.forEach(schedule -> {
+                schedule.setId(null); // Ensure new schedules are created
+                setRelatedEntities(schedule, scheduleMapper.toDto(schedule));
+            });
+            scheduleRepository.saveAll(schedules);
+        }
+        return schedules;
     }
 }

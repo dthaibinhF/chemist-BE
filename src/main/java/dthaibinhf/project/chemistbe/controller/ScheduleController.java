@@ -1,16 +1,19 @@
 package dthaibinhf.project.chemistbe.controller;
 
+import dthaibinhf.project.chemistbe.dto.ScheduleDTO;
+import dthaibinhf.project.chemistbe.model.Schedule;
 import dthaibinhf.project.chemistbe.service.ScheduleService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import dthaibinhf.project.chemistbe.dto.ScheduleDTO;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/schedule")
@@ -49,5 +52,16 @@ public class ScheduleController {
     public ResponseEntity<Void> deleteSchedule(@PathVariable Integer id) {
         scheduleService.deleteSchedule(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /* Schedule Generation Feature Implementation*/
+    /*create schedule for one group, From start date to end date */
+    @PostMapping("/weekly")
+    public ResponseEntity<Set<Schedule>> generateWeeklySchedule(
+            @RequestParam Integer groupId,
+            @RequestParam OffsetDateTime startDate,
+            @RequestParam OffsetDateTime endDate
+    ) {
+        return ResponseEntity.ok(scheduleService.generateWeeklySchedule(groupId, startDate, endDate));
     }
 }
