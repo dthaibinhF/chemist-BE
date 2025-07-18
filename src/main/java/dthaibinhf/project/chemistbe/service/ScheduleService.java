@@ -187,10 +187,11 @@ public class ScheduleService {
             existingSchedules.forEach(schedule -> {
                 if (schedule.getEndTime().getDayOfMonth() == endDate.getDayOfMonth() &&
                         schedule.getEndTime().getMonthValue() == endDate.getMonthValue() &&
-                        schedule.getEndTime().getYear() == endDate.getYear()) {
+                        schedule.getEndTime().getYear() == endDate.getYear())
+                {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "Group already has schedules between " + startDate + " and " + endDate);
                 }
-            }
+            };
         }
 
 
