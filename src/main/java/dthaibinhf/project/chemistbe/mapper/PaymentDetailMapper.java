@@ -8,12 +8,14 @@ import dthaibinhf.project.chemistbe.repository.FeeRepository;
 import dthaibinhf.project.chemistbe.repository.StudentRepository;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING,
         uses = {FeeMapper.class, StudentMapper.class}
 )
+@Primary
 public abstract class PaymentDetailMapper {
     @Autowired
     protected FeeRepository feeRepository;
@@ -23,7 +25,7 @@ public abstract class PaymentDetailMapper {
 
     @Mapping(target = "fee", ignore = true)
     @Mapping(target = "student", ignore = true)
-    abstract PaymentDetail toEntity(PaymentDetailDTO paymentDetailDTO);
+    public abstract PaymentDetail toEntity(PaymentDetailDTO paymentDetailDTO);
 
     @AfterMapping
     protected void linkFeeAndStudent(@MappingTarget PaymentDetail paymentDetail, PaymentDetailDTO paymentDetailDTO) {
@@ -39,10 +41,10 @@ public abstract class PaymentDetailMapper {
     @Mapping(source = "fee.name", target = "feeName")
     @Mapping(source = "student.id", target = "studentId")
     @Mapping(source = "student.name", target = "studentName")
-    abstract PaymentDetailDTO toDto(PaymentDetail paymentDetail);
+    public abstract PaymentDetailDTO toDto(PaymentDetail paymentDetail);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "fee", ignore = true)
     @Mapping(target = "student", ignore = true)
-    abstract PaymentDetail partialUpdate(PaymentDetailDTO paymentDetailDTO, @MappingTarget PaymentDetail paymentDetail);
+    public abstract PaymentDetail partialUpdate(PaymentDetailDTO paymentDetailDTO, @MappingTarget PaymentDetail paymentDetail);
 }

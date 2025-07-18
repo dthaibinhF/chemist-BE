@@ -3,8 +3,10 @@ package dthaibinhf.project.chemistbe.mapper;
 import dthaibinhf.project.chemistbe.model.Grade;
 import dthaibinhf.project.chemistbe.dto.GradeDTO;
 import org.mapstruct.*;
+import org.springframework.context.annotation.Primary;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Primary
 public interface GradeMapper {
     Grade toEntity(GradeDTO gradeDTO);
 

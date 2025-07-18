@@ -1,10 +1,7 @@
 package dthaibinhf.project.chemistbe.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,5 +30,9 @@ public class Student extends BaseEntity {
     @OneToMany(mappedBy = "student")
     @JsonManagedReference
     private Set<PaymentDetail> paymentDetails = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<StudentDetail> studentDetails = new LinkedHashSet<>();
 
 }

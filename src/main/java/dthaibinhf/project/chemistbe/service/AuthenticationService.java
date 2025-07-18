@@ -5,9 +5,8 @@ import dthaibinhf.project.chemistbe.dto.AccountDTO;
 import dthaibinhf.project.chemistbe.dto.request.AuthenticationRequest;
 import dthaibinhf.project.chemistbe.dto.request.RegisterRequest;
 import dthaibinhf.project.chemistbe.dto.response.AuthenticationResponse;
-import dthaibinhf.project.chemistbe.dto.response.RegisterResponse;
-import dthaibinhf.project.chemistbe.model.Account;
 import dthaibinhf.project.chemistbe.mapper.AccountMapper;
+import dthaibinhf.project.chemistbe.model.Account;
 import dthaibinhf.project.chemistbe.model.Role;
 import dthaibinhf.project.chemistbe.repository.AccountRepository;
 import dthaibinhf.project.chemistbe.repository.RoleRepository;
@@ -43,20 +42,20 @@ public class AuthenticationService {
     UserDetailsService userDetailsService;
 
     // * this method can cause error because database don't store "USER"
-    public RegisterResponse register(RegisterRequest request) {
-        Role accountRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+    public AccountDTO register(RegisterRequest request) {
+        Role accountRole = roleRepository.findActiveByName(request.getRoleName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Role not found"));
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         Account account = accountMapper.toAccount(request);
         account.setRole(accountRole);
-        return accountMapper.toRegisterResponse(accountRepository.save(account));
+        return accountMapper.toDto(accountRepository.save(account));
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
-        Account account = accountRepository.findByEmail(request.getEmail())
+        Account account = accountRepository.findActiveByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         String accessToken = jwtService.generateToken(account);
         String refreshToken = jwtService.generateRefreshToken(account);
@@ -89,9 +88,9 @@ public class AuthenticationService {
 
     public AccountDTO getAuthentication() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = accountRepository.findByEmail(username).orElseThrow(
+        Account account = accountRepository.findActiveByEmail(username).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account id not found")
         );
-        return accountMapper.toDTO(account);
+        return accountMapper.toDto(account);
     }
 }

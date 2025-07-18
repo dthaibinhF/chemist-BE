@@ -10,7 +10,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,6 +28,8 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     JWTAuthenticationFilter jwtAuthenticationFilter;
@@ -37,7 +41,7 @@ public class SecurityConfig {
                 .cors(corsConfig -> corsConfig.configurationSource(
                         request -> {
                             CorsConfiguration config = new CorsConfiguration();
-                            config.setAllowedOrigins(List.of("http://localhost:5173", "https://chemist-center.netlify.app"));
+                            config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3005", "http://localhost:4000", "https://chemist-center.netlify.app"));
                             config.setAllowedMethods(Collections.singletonList("*"));
                             config.setAllowCredentials(true);
                             config.setAllowedHeaders(Collections.singletonList("*"));
@@ -47,11 +51,31 @@ public class SecurityConfig {
                         }))
                 .authorizeHttpRequests(request ->
                         request
-                                .requestMatchers("/api/v1/auth/**").permitAll()
-                                .requestMatchers("/api/v1/demo",
-                                        "/api/v1/account/**", "/api/v1/center/room/**", "/api/v1/center/group/**", "/api/v1/school/**"
-                                )
-                                .authenticated())
+                                .requestMatchers("/api/v1/auth/**", "/api-docs", "/api-docs.yaml", "/swagger-ui-custom.html", "/swagger-ui/**", "/api-docs/**").permitAll()
+                                .requestMatchers("/api/v1/fee/**").hasAnyRole("ADMIN", "MANAGER", "TEACHER")
+                                .requestMatchers(
+                                        "/api/v1/account/**",
+                                        "/api/v1/role/**",
+                                        "/api/v1/school/**",
+                                        "/api/v1/academic-year/**",
+                                        "/api/v1/grade/**",
+                                        "/api/v1/room/**",
+                                        "/api/v1/school-class/**",
+                                        "/api/v1/group/**",
+                                        "/api/v1/teacher/**",
+                                        "/api/v1/group-schedule/**",
+                                        "/api/v1/schedule/**",
+                                        "/api/v1/attendance/**",
+                                        "/api/v1/student/**",
+                                        "/api/v1/score/**",
+                                        "/api/v1/exam/**",
+                                        "/api/v1/payment-detail/**",
+                                        "/api/v1/group-session/**",
+                                        "/api/v1/student-detail/**",
+                                        "/api/v1/teacher-detail/**"
+                                ).authenticated()
+                )
+
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

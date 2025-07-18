@@ -1,6 +1,18 @@
 package dthaibinhf.project.chemistbe.mapper;
 
+import org.mapstruct.AfterMapping;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.BeforeMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import dthaibinhf.project.chemistbe.dto.GroupDTO;
+import dthaibinhf.project.chemistbe.dto.GroupListDTO;
 import dthaibinhf.project.chemistbe.model.AcademicYear;
 import dthaibinhf.project.chemistbe.model.Fee;
 import dthaibinhf.project.chemistbe.model.Grade;
@@ -8,15 +20,17 @@ import dthaibinhf.project.chemistbe.model.Group;
 import dthaibinhf.project.chemistbe.repository.AcademicYearRepository;
 import dthaibinhf.project.chemistbe.repository.FeeRepository;
 import dthaibinhf.project.chemistbe.repository.GradeRepository;
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * The Mapper have already added all item like {@link Fee} {@link AcademicYear} and {@link Grade} by their ID,
+ * by using @AfterMapping. Which is, when mapping, the mapper will search each item ID, and the Group object will set item
+ *
+ */
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING,
         uses = {FeeMapper.class, AcademicYearMapper.class, GradeMapper.class,
                 GroupScheduleMapper.class, ScheduleMapper.class,
                 StudentDetailMapper.class, GroupSessionMapper.class})
 public abstract class GroupMapper {
-
     @Autowired
     protected AcademicYearRepository academicYearRepository;
 
@@ -26,16 +40,15 @@ public abstract class GroupMapper {
     @Autowired
     protected GradeRepository gradeRepository;
 
-    @Mapping(target = "groupSchedules", ignore = true)
     @Mapping(target = "schedules", ignore = true)
     @Mapping(target = "studentDetails", ignore = true)
     @Mapping(target = "groupSessions", ignore = true)
     @Mapping(target = "fee", ignore = true)
     @Mapping(target = "academicYear", ignore = true)
     @Mapping(target = "grade", ignore = true)
-    abstract Group toEntity(GroupDTO groupDTO);
+    abstract public Group toEntity(GroupDTO groupDTO);
 
-    @AfterMapping
+    @BeforeMapping
     protected void linkRelatedEntities(@MappingTarget Group group, GroupDTO groupDTO) {
         if (groupDTO.getFeeId() != null) {
             Fee fee = feeRepository.findById(groupDTO.getFeeId())
@@ -51,6 +64,9 @@ public abstract class GroupMapper {
             Grade grade = gradeRepository.findById(groupDTO.getGradeId())
                     .orElseThrow(() -> new IllegalArgumentException("Grade not found: " + groupDTO.getGradeId()));
             group.setGrade(grade);
+        }
+        if (groupDTO.getStudentDetails() != null) {
+            group.getStudentDetails().forEach(studentDetail -> studentDetail.setGroup(group));
         }
     }
 
@@ -81,11 +97,19 @@ public abstract class GroupMapper {
     @Mapping(source = "academicYear.year", target = "academicYear")
     @Mapping(source = "grade.id", target = "gradeId")
     @Mapping(source = "grade.name", target = "gradeName")
-    abstract GroupDTO toDto(Group group);
+    abstract public GroupDTO toDto(Group group);
+
+    @Mapping(source = "fee.id", target = "feeId")
+    @Mapping(source = "fee.name", target = "feeName")
+    @Mapping(source = "academicYear.id", target = "academicYearId")
+    @Mapping(source = "academicYear.year", target = "academicYear")
+    @Mapping(source = "grade.id", target = "gradeId")
+    @Mapping(source = "grade.name", target = "gradeName")
+    abstract public GroupListDTO toListDto(Group group);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "fee", ignore = true)
     @Mapping(target = "academicYear", ignore = true)
     @Mapping(target = "grade", ignore = true)
-    abstract Group partialUpdate(GroupDTO groupDTO, @MappingTarget Group group);
+    abstract public Group partialUpdate(GroupDTO groupDTO, @MappingTarget Group group);
 }

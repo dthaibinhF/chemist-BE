@@ -3,13 +3,11 @@ package dthaibinhf.project.chemistbe.mapper;
 import dthaibinhf.project.chemistbe.dto.ScoreDTO;
 import dthaibinhf.project.chemistbe.model.Score;
 import org.mapstruct.*;
+import org.springframework.context.annotation.Primary;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Primary
 public interface ScoreMapper {
-
-    /**
-     * TODO: have to manually add in service
-     */
     @Mapping(target = "exam", ignore = true)
     @Mapping(target = "student", ignore = true)
     Score toEntity(ScoreDTO scoreDTO);

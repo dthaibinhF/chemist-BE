@@ -6,7 +6,6 @@ import dthaibinhf.project.chemistbe.dto.request.AuthenticationRequest;
 import dthaibinhf.project.chemistbe.dto.request.RegisterRequest;
 import dthaibinhf.project.chemistbe.dto.response.ApiResponse;
 import dthaibinhf.project.chemistbe.dto.response.AuthenticationResponse;
-import dthaibinhf.project.chemistbe.dto.response.RegisterResponse;
 import dthaibinhf.project.chemistbe.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,7 +27,7 @@ public class AuthController {
     AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(
+    public ResponseEntity<AccountDTO> register(
             @RequestBody RegisterRequest registerRequest
     ) {
         return ResponseEntity.ok(authenticationService.register(registerRequest));
