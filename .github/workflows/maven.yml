@@ -9,6 +9,11 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read           # Read repository contents
+  pull-requests: write     # Write to pull requests (for dependency updates)
+  security-events: write   # Write security events (for dependency graph)
+
 jobs:
   build:
     runs-on: ubuntu-latest
