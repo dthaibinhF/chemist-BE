@@ -8,10 +8,6 @@ import org.springframework.context.annotation.Primary;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 @Primary
 public interface ScoreMapper {
-
-    /**
-     * TODO: have to manually add in service
-     */
     @Mapping(target = "exam", ignore = true)
     @Mapping(target = "student", ignore = true)
     Score toEntity(ScoreDTO scoreDTO);

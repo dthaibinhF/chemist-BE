@@ -9,10 +9,10 @@ id = '05ac463d-de4f-4ff0-8e8b-b2ea151832b5'
 type = 'JSON'
 raw = '''
 {
-  "name": "Hoang Viet",
-  "email": "hhviet@ctu.edu.vn",
-  "admin-password": "Viet@1234",
-  "role_name": "ROLE_TEACHER",
-  "phone": "+84 937 230 202"
+  "name": "Tester",
+  "email": "test@gamil.com",
+  "password": "Test@1234",
+  "phone": "+84 939 464 077",
+  "role_name": "ROLE_TESTER", //as tester
 }'''
 ```

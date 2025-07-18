@@ -24,13 +24,18 @@ public class ScheduleController {
     ScheduleService scheduleService;
 
     @GetMapping
-    public ResponseEntity<List<ScheduleDTO>> getAllSchedules(
+    public ResponseEntity<List<ScheduleDTO>> getAllSchedules() {
+        return ResponseEntity.ok(scheduleService.getAllSchedules());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ScheduleDTO>> getAllSchedulesPageable(
             @PageableDefault Pageable pageable,
             @RequestParam(value = "groupId", required = false) Integer groupId,
             @RequestParam(value = "startDate", required = false) OffsetDateTime startDate,
             @RequestParam(value = "endDate", required = false) OffsetDateTime endDate
     ) {
-        return ResponseEntity.ok(scheduleService.getAllSchedules(pageable, groupId, startDate, endDate));
+        return ResponseEntity.ok(scheduleService.getAllSchedulesPageable(pageable, groupId, startDate, endDate));
     }
 
     @GetMapping("/{id}")

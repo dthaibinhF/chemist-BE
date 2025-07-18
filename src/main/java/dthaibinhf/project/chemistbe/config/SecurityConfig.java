@@ -51,9 +51,9 @@ public class SecurityConfig {
                         }))
                 .authorizeHttpRequests(request ->
                         request
-                                .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/api/v1/auth/**", "/api-docs", "/api-docs.yaml", "/swagger-ui-custom.html", "/swagger-ui/**", "/api-docs/**").permitAll()
                                 .requestMatchers("/api/v1/fee/**").hasAnyRole("ADMIN", "MANAGER", "TEACHER")
-                                .requestMatchers("/api/v1/demo",
+                                .requestMatchers(
                                         "/api/v1/account/**",
                                         "/api/v1/role/**",
                                         "/api/v1/school/**",

@@ -20,7 +20,7 @@ public class SchoolController {
 
     SchoolService schoolService;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TESTER')")
     @PostMapping
     public ResponseEntity<SchoolDTO> createSchool(@Valid @RequestBody SchoolDTO schoolDTO) {
         return ResponseEntity.ok(schoolService.createSchool(schoolDTO));
@@ -40,7 +40,7 @@ public class SchoolController {
         return ResponseEntity.ok(schoolService.updateSchool(id, schoolDTO));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TESTER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSchool(@PathVariable Integer id) {
         schoolService.deleteSchool(id);

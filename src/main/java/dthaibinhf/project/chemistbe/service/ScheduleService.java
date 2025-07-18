@@ -36,8 +36,33 @@ public class ScheduleService {
     TeacherRepository teacherRepository;
     RoomRepository roomRepository;
 
-    public List<ScheduleDTO> getAllSchedules(Pageable pageable, Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
+
+    private void validateParameters(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
+        if (groupId != null && groupRepository.findActiveById(groupId).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + groupId);
+        }
+        if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date must be before end date");
+        }
+    }
+
+    private boolean matchesFilter(Schedule schedule, Integer groupId,
+                                  OffsetDateTime startDate, OffsetDateTime endDate) {
+        return (groupId == null || schedule.getGroup().getId().equals(groupId)) &&
+                (startDate == null || !schedule.getStartTime().isBefore(startDate)) &&
+                (endDate == null || !schedule.getEndTime().isAfter(endDate));
+    }
+
+    public List<ScheduleDTO> getAllSchedules() {
         List<Schedule> schedules = scheduleRepository.findAllActive();
+        return schedules.stream()
+                .map(scheduleMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ScheduleDTO> getAllSchedulesPageable(Pageable pageable, Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
+        validateParameters(groupId, startDate, endDate);
+        List<Schedule> schedules = scheduleRepository.findAllActivePageable(groupId, startDate, endDate, pageable).getContent();
         return schedules.stream()
                 .map(scheduleMapper::toDto)
                 .collect(Collectors.toList());
@@ -155,13 +180,38 @@ public class ScheduleService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be in the future");
         }
 
+        //check if group has schedules have fully between startDate and endDate skip
+        List<Schedule> existingSchedules = scheduleRepository.findAllActivePageable(
+                groupId, startDate, endDate, Pageable.unpaged()).getContent();
+        if (!existingSchedules.isEmpty()) {
+            existingSchedules.forEach(schedule -> {
+                if (schedule.getEndTime().getDayOfMonth() == endDate.getDayOfMonth() &&
+                        schedule.getEndTime().getMonthValue() == endDate.getMonthValue() &&
+                        schedule.getEndTime().getYear() == endDate.getYear()) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Group already has schedules between " + startDate + " and " + endDate);
+                }
+            }
+        }
+
+
+        Set<Schedule> schedules;
+
+        if (group.getGroupSchedules().isEmpty()) {
+            schedules = new LinkedHashSet<>();
+        } else {
+            schedules = group.getSchedules();
+        }
+
+
+
+        //
+
         // Generate weekly schedule logic
         // to generate weekly schedule for the group from startDate to endDate
         // Assuming we want to generate schedules for every week starting from startDate
         List<GroupSchedule> sortedMainSchedule = group.getGroupSchedules().stream()
                 .sorted(Comparator.comparing(GroupSchedule::getDayOfWeekEnum))
                 .toList();
-        Set<Schedule> schedules = new LinkedHashSet<>();
         AtomicReference<OffsetDateTime> currentDate = new AtomicReference<>(startDate);
         sortedMainSchedule.forEach(groupSchedule -> {
             do {

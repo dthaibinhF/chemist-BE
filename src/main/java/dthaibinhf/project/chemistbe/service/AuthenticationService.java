@@ -43,7 +43,7 @@ public class AuthenticationService {
 
     // * this method can cause error because database don't store "USER"
     public AccountDTO register(RegisterRequest request) {
-        Role accountRole = roleRepository.findActiveByName("ROLE_TEACHER")
+        Role accountRole = roleRepository.findActiveByName(request.getRoleName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Role not found"));
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         Account account = accountMapper.toAccount(request);

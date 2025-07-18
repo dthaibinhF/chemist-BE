@@ -1,6 +1,8 @@
 package dthaibinhf.project.chemistbe.repository;
 
 import dthaibinhf.project.chemistbe.model.Schedule;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,16 +21,20 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query("SELECT s FROM Schedule s WHERE s.endAt IS NULL OR s.endAt > CURRENT_TIMESTAMP")
     List<Schedule> findAllActive();
 
-
+    //
 //    @Query("SELECT s FROM Schedule s WHERE (s.endAt IS NULL OR s.endAt > CURRENT_TIMESTAMP) " +
-//            "AND (:groupId IS NULL OR s.group.id = :groupId) "
+//            "AND (:groupId IS NULL OR s.group.id = :groupId) " +
 //            "AND (:startDate IS NULL OR s.startTime >= :startDate) " +
 //            "AND (:endDate IS NULL OR s.endTime <= :endDate)")
-//    Page<Schedule> findAllActive(@Param("groupId") Integer groupId,
-//                                 @Param("startDate") OffsetDateTime startDate,
-//                                 @Param("endDate") OffsetDateTime endDate,
-//                                 Pageable pageable);
-//
+    @Query(value = "SELECT * FROM Schedule s WHERE (s.end_at IS NULL OR s.end_at > CURRENT_TIMESTAMP) " +
+            "AND (CAST(:groupId AS INTEGER) IS NULL OR s.group_id = :groupId) " +
+            "AND (CAST(:startDate AS timestamptz) IS NULL OR s.start_time >= :startDate) " +
+            "AND (CAST(:endDate AS timestamptz) IS NULL OR s.end_time <= :endDate)", nativeQuery = true)
+    Page<Schedule> findAllActivePageable(@Param("groupId") Integer groupId,
+                                         @Param("startDate") OffsetDateTime startDate,
+                                         @Param("endDate") OffsetDateTime endDate,
+                                         Pageable pageable);
+
     @Query("SELECT COUNT(s) > 0 FROM Schedule s WHERE (s.endAt IS NULL OR s.endAt > CURRENT_TIMESTAMP) " +
             "AND s.room.id = :roomId " +
             "AND ((s.startTime >= :startTime AND s.startTime < :endTime) OR " +
@@ -40,14 +46,14 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
                                @Param("endTime") OffsetDateTime endTime,
                                @Param("excludeId") Integer excludeId);
 
-@Query("SELECT COUNT(s) > 0 FROM Schedule s WHERE (s.endAt IS NULL OR s.endAt > CURRENT_TIMESTAMP) " +
-        "AND s.teacher.id = :teacherId " +
-        "AND ((s.startTime >= :startTime AND s.startTime < :endTime) OR " +
-        "(s.endTime > :startTime AND s.endTime <= :endTime) OR " +
-        "(s.startTime <= :startTime AND s.endTime >= :endTime)) " +
-        "AND (:excludeId IS NULL OR s.id != :excludeId)")
-boolean existsTeacherConflict(@Param("teacherId") Integer teacherId,
-                              @Param("startTime") OffsetDateTime startTime,
-                              @Param("endTime") OffsetDateTime endTime,
-                              @Param("excludeId") Integer excludeId);
+    @Query("SELECT COUNT(s) > 0 FROM Schedule s WHERE (s.endAt IS NULL OR s.endAt > CURRENT_TIMESTAMP) " +
+            "AND s.teacher.id = :teacherId " +
+            "AND ((s.startTime >= :startTime AND s.startTime < :endTime) OR " +
+            "(s.endTime > :startTime AND s.endTime <= :endTime) OR " +
+            "(s.startTime <= :startTime AND s.endTime >= :endTime)) " +
+            "AND (:excludeId IS NULL OR s.id != :excludeId)")
+    boolean existsTeacherConflict(@Param("teacherId") Integer teacherId,
+                                  @Param("startTime") OffsetDateTime startTime,
+                                  @Param("endTime") OffsetDateTime endTime,
+                                  @Param("excludeId") Integer excludeId);
 }
