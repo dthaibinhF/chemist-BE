@@ -191,7 +191,7 @@ public class ScheduleService {
                 {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "Group already has schedules between " + startDate + " and " + endDate);
                 }
-            };
+            });
         }
 
 
