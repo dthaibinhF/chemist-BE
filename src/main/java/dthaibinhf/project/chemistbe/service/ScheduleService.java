@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
 @Service
 @Transactional
@@ -35,6 +36,9 @@ public class ScheduleService {
     private final GroupRepository groupRepository;
     private final TeacherRepository teacherRepository;
     private final RoomRepository roomRepository;
+    // Add at the top of the class or in a separate Constants class
+    private static final Set<String> VALID_DELIVERY_MODES = Set.of("ONLINE", "OFFLINE", "HYBRID");
+    private static final String ONLINE_DELIVERY_MODE = "ONLINE";
 
     private void validateParameters(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
         if (groupId != null && groupRepository.findActiveById(groupId).isEmpty()) {
@@ -86,19 +90,34 @@ public class ScheduleService {
         }
     }
 
-    @Transactional(readOnly = true)
     public ScheduleDTO getScheduleById(Integer id) {
+        log.info("Fetching schedule by id: {}", id);
+        return executeWithErrorHandling(
+                () -> {
+                    Schedule schedule = findScheduleOrThrow(id);
+                    return scheduleMapper.toDto(schedule);
+                },
+                "Failed to fetch schedule",
+                "Schedule not found with id: " + id
+        );
+    }
+
+    private Schedule findScheduleOrThrow(Integer id) {
+        return scheduleRepository.findActiveById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Schedule not found: " + id));
+    }
+
+    private <T> T executeWithErrorHandling(Supplier<T> operation, String errorMessage, String notFoundMessage) {
         try {
-            log.info("Fetching schedule by id: {}", id);
-            Schedule schedule = scheduleRepository.findActiveById(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule not found: " + id));
-            return scheduleMapper.toDto(schedule);
+            return operation.get();
         } catch (ResponseStatusException e) {
-            log.error("Schedule not found with id: {}", id);
+            log.error(notFoundMessage);
             throw e;
         } catch (Exception e) {
-            log.error("Error fetching schedule with id: {}", id, e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch schedule");
+            log.error(errorMessage, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
         }
     }
 
@@ -161,19 +180,34 @@ public class ScheduleService {
     }
 
     private void validateSchedule(ScheduleDTO scheduleDTO) {
+        validateTimeOrder(scheduleDTO);
+        validateDeliveryMode(scheduleDTO);
+        validateRequiredFields(scheduleDTO);
+    }
+
+    private void validateTimeOrder(ScheduleDTO scheduleDTO) {
         if (scheduleDTO.getStartTime().isAfter(scheduleDTO.getEndTime())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start time must be before end time");
         }
+    }
 
-        if (!Set.of("ONLINE", "OFFLINE", "HYBRID").contains(scheduleDTO.getDeliveryMode())) {
+    private void validateDeliveryMode(ScheduleDTO scheduleDTO) {
+        String deliveryMode = scheduleDTO.getDeliveryMode();
+
+        if (!VALID_DELIVERY_MODES.contains(deliveryMode)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid delivery mode");
         }
 
-        if ("ONLINE".equals(scheduleDTO.getDeliveryMode()) &&
-                (scheduleDTO.getMeetingLink() == null || scheduleDTO.getMeetingLink().trim().isEmpty())) {
+        if (ONLINE_DELIVERY_MODE.equals(deliveryMode) && isEmptyMeetingLink(scheduleDTO)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Meeting link required for online delivery");
         }
+    }
 
+    private boolean isEmptyMeetingLink(ScheduleDTO scheduleDTO) {
+        return scheduleDTO.getMeetingLink() == null || scheduleDTO.getMeetingLink().trim().isEmpty();
+    }
+
+    private void validateRequiredFields(ScheduleDTO scheduleDTO) {
         if (scheduleDTO.getGroupId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Group ID is required");
         }
@@ -300,32 +334,47 @@ public class ScheduleService {
 
     private void generateSchedulesFromTemplate(Group group, OffsetDateTime startDate,
                                                OffsetDateTime endDate, Set<Schedule> schedules) {
-        List<GroupSchedule> sortedMainSchedule = group.getGroupSchedules().stream()
+        List<GroupSchedule> sortedSchedules = getSortedGroupSchedules(group);
+
+        for (GroupSchedule groupSchedule : sortedSchedules) {
+            OffsetDateTime date = findNextMatchingDay(startDate, endDate, groupSchedule.getDayOfWeekEnum());
+
+            if (date != null) {
+                tryAddScheduleForDate(group, groupSchedule, date, schedules);
+            }
+        }
+    }
+
+    private List<GroupSchedule> getSortedGroupSchedules(Group group) {
+        return group.getGroupSchedules().stream()
                 .sorted(Comparator.comparing(GroupSchedule::getDayOfWeekEnum))
                 .toList();
+    }
 
-        AtomicReference<OffsetDateTime> currentDate = new AtomicReference<>(startDate);
+    private OffsetDateTime findNextMatchingDay(OffsetDateTime startDate, OffsetDateTime endDate,
+                                               java.time.DayOfWeek targetDay) {
+        OffsetDateTime current = startDate;
 
-        sortedMainSchedule.forEach(groupSchedule -> {
-            do {
-                if (currentDate.get().getDayOfWeek().equals(groupSchedule.getDayOfWeekEnum())) {
-                    Schedule schedule = createScheduleFromTemplate(group, groupSchedule, currentDate.get());
+        while (current.isBefore(endDate)) {
+            if (current.getDayOfWeek().equals(targetDay)) {
+                return current;
+            }
+            current = current.plusDays(1);
+        }
 
-                    try {
-                        checkScheduleConflicts(scheduleMapper.toDto(schedule));
-                        schedules.add(schedule);
-                    } catch (ResponseStatusException e) {
-                        log.warn("Conflict detected for schedule on date: {} - {}",
-                                currentDate.get(), e.getMessage());
-                    }
+        return null; // No matching day found before endDate
+    }
 
-                    break;
-                }
-                currentDate.set(currentDate.get().plusDays(1));
-            } while (currentDate.get().isBefore(endDate));
+    private void tryAddScheduleForDate(Group group, GroupSchedule groupSchedule,
+                                       OffsetDateTime date, Set<Schedule> schedules) {
+        Schedule schedule = createScheduleFromTemplate(group, groupSchedule, date);
 
-            currentDate.set(startDate);
-        });
+        try {
+            checkScheduleConflicts(scheduleMapper.toDto(schedule));
+            schedules.add(schedule);
+        } catch (ResponseStatusException e) {
+            log.warn("Conflict detected for schedule on date: {} - {}", date, e.getMessage());
+        }
     }
 
     private Schedule createScheduleFromTemplate(Group group, GroupSchedule template, OffsetDateTime date) {
