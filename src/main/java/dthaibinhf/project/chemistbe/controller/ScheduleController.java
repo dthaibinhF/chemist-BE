@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
@@ -32,8 +33,8 @@ public class ScheduleController {
     public ResponseEntity<List<ScheduleDTO>> getAllSchedulesPageable(
             @PageableDefault Pageable pageable,
             @RequestParam(value = "groupId", required = false) Integer groupId,
-            @RequestParam(value = "startDate", required = false) OffsetDateTime startDate,
-            @RequestParam(value = "endDate", required = false) OffsetDateTime endDate
+            @RequestParam(value = "startDate", required = false) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) LocalDate endDate
     ) {
         return ResponseEntity.ok(scheduleService.getAllSchedulesPageable(pageable, groupId, startDate, endDate));
     }
@@ -62,10 +63,10 @@ public class ScheduleController {
     /* Schedule Generation Feature Implementation*/
     /*creates schedules for one group, From start date to end date */
     @PostMapping("/weekly")
-    public ResponseEntity<Set<Schedule>> generateWeeklySchedule(
+    public ResponseEntity<Set<ScheduleDTO>> generateWeeklySchedule(
             @RequestParam Integer groupId,
-            @RequestParam OffsetDateTime startDate,
-            @RequestParam OffsetDateTime endDate
+            @RequestParam(defaultValue = "#{T(java.time.LocalDate).now()}") LocalDate startDate, //date when the schedule starts
+            @RequestParam LocalDate endDate //date when the schedule ends
     ) {
         return ResponseEntity.ok(scheduleService.generateWeeklySchedule(groupId, startDate, endDate));
     }

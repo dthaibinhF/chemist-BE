@@ -97,6 +97,8 @@ public class GroupScheduleService {
 
         // Get current date/time
         OffsetDateTime now = OffsetDateTime.now();
+        LocalDate nowDate = now.toLocalDate();
+
 
         // Find all active schedules for this group that are in the future
         List<Schedule> schedules = scheduleRepository.findAllActivePageable(

@@ -1,7 +1,7 @@
 ```toml
 name = 'Search'
 method = 'GET'
-url = '{{baseUrl}}/schedule/search?groupId=1&startDate=2025-07-16T01:34:25.617457200+07:00&endDate=2025-07-19T01:34:25.617457200+07:00'
+url = '{{baseUrl}}/schedule/search?groupId=1&startDate=2025-07-23&endDate=2025-07-30'
 sortWeight = 2000000
 id = '7e982a65-3593-4f0a-b3db-7b429bb9250d'
 
@@ -11,11 +11,11 @@ value = '1'
 
 [[queryParams]]
 key = 'startDate'
-value = '2025-07-16T01:34:25.617457200+07:00'
+value = '2025-07-23'
 
 [[queryParams]]
 key = 'endDate'
-value = '2025-07-19T01:34:25.617457200+07:00'
+value = '2025-07-30'
 
 [[headers]]
 key = 'Authorization'

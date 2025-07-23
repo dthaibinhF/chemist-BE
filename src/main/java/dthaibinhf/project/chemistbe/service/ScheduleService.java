@@ -16,16 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.function.Supplier;
 
@@ -34,16 +29,16 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 @Slf4j
 public class ScheduleService {
+    // Add at the top of the class or in a separate Constants class
+    private static final Set<String> VALID_DELIVERY_MODES = Set.of("ONLINE", "OFFLINE", "HYBRID");
+    private static final String ONLINE_DELIVERY_MODE = "ONLINE";
     private final ScheduleRepository scheduleRepository;
     private final ScheduleMapper scheduleMapper;
     private final GroupRepository groupRepository;
     private final TeacherRepository teacherRepository;
     private final RoomRepository roomRepository;
-    // Add at the top of the class or in a separate Constants class
-    private static final Set<String> VALID_DELIVERY_MODES = Set.of("ONLINE", "OFFLINE", "HYBRID");
-    private static final String ONLINE_DELIVERY_MODE = "ONLINE";
 
-/**
+    /**
      * Combines a LocalDate with a LocalTime to create an OffsetDateTime using Ho Chi Minh City timezone.
      * This is used to convert GroupSchedule template times (LocalTime) with schedule dates (LocalDate)
      * into Schedule entity times (OffsetDateTime).
@@ -53,7 +48,7 @@ public class ScheduleService {
         return OffsetDateTime.of(date, time, hoChiMinhZone.getRules().getOffset(date.atTime(time)));
     }
 
-    private void validateParameters(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
+    private void validateParameters(Integer groupId, LocalDate startDate, LocalDate endDate) {
         if (groupId != null && groupRepository.findActiveById(groupId).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + groupId);
         }
@@ -62,14 +57,8 @@ public class ScheduleService {
         }
     }
 
-    private boolean matchesFilter(Schedule schedule, Integer groupId,
-                                  OffsetDateTime startDate, OffsetDateTime endDate) {
-        return (groupId == null || schedule.getGroup().getId().equals(groupId)) &&
-                (startDate == null || !schedule.getStartTime().isBefore(startDate)) &&
-                (endDate == null || !schedule.getEndTime().isAfter(endDate));
-    }
 
-    @Transactional(readOnly = true)
+    @Transactional()
     public List<ScheduleDTO> getAllSchedules() {
         try {
             log.info("Fetching all active schedules");
@@ -83,14 +72,17 @@ public class ScheduleService {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ScheduleDTO> getAllSchedulesPageable(Pageable pageable, Integer groupId,
-                                                     OffsetDateTime startDate, OffsetDateTime endDate) {
+                                                     LocalDate startDate, LocalDate endDate) {
         try {
             log.info("Fetching pageable schedules with filters - groupId: {}, startDate: {}, endDate: {}",
                     groupId, startDate, endDate);
             validateParameters(groupId, startDate, endDate);
-            List<Schedule> schedules = scheduleRepository.findAllActivePageable(groupId, startDate, endDate, pageable).getContent();
+
+            OffsetDateTime offsetStartDate = (startDate != null) ? startDate.atTime(0, 0).atOffset(ZoneOffset.ofHours(7)) : null;
+            OffsetDateTime offsetEndDate = (endDate != null) ? endDate.atTime(23, 59).atOffset(ZoneOffset.ofHours(7)) : null;
+            List<Schedule> schedules = scheduleRepository.findAllActivePageable(groupId, offsetStartDate, offsetEndDate, pageable).getContent();
             return schedules.stream()
                     .map(scheduleMapper::toDto)
                     .collect(Collectors.toList());
@@ -110,7 +102,6 @@ public class ScheduleService {
                     Schedule schedule = findScheduleOrThrow(id);
                     return scheduleMapper.toDto(schedule);
                 },
-                "Failed to fetch schedule",
                 "Schedule not found with id: " + id
         );
     }
@@ -122,15 +113,15 @@ public class ScheduleService {
                         "Schedule not found: " + id));
     }
 
-    private <T> T executeWithErrorHandling(Supplier<T> operation, String errorMessage, String notFoundMessage) {
+    private <T> T executeWithErrorHandling(Supplier<T> operation, String notFoundMessage) {
         try {
             return operation.get();
         } catch (ResponseStatusException e) {
             log.error(notFoundMessage);
             throw e;
         } catch (Exception e) {
-            log.error(errorMessage, e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
+            log.error("Failed to fetch schedule", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch schedule");
         }
     }
 
@@ -278,17 +269,17 @@ public class ScheduleService {
         }
     }
 
-    public Set<Schedule> generateWeeklySchedule(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
+    public Set<ScheduleDTO> generateWeeklySchedule(Integer groupId, LocalDate startDate, LocalDate endDate) {
         try {
             log.info("Generating weekly schedule for group: {} from {} to {}", groupId, startDate, endDate);
-            
+
             // Step 1: Validate input parameters
             validateScheduleGenerationParams(groupId, startDate, endDate);
 
             // Step 2: Get the group and validate it exists
             Group group = getActiveGroupById(groupId);
 
-            // Step 3: Check if group has schedule templates
+            // Step 3: Check if a group has schedule templates
             if (group.getGroupSchedules().isEmpty()) {
                 log.warn("Group {} has no schedule templates configured", groupId);
                 return new LinkedHashSet<>();
@@ -308,7 +299,9 @@ public class ScheduleService {
                 log.info("No schedules could be generated for group: {} (possible conflicts)", groupId);
             }
 
-            return newSchedules;
+            Set<ScheduleDTO> scheduleDTOs = newSchedules.stream().map(scheduleMapper::toDto).collect(Collectors.toCollection(LinkedHashSet::new));
+
+            return scheduleDTOs;
         } catch (ResponseStatusException e) {
             log.error("Validation error generating weekly schedule for group {}: {}", groupId, e.getMessage());
             throw e;
@@ -318,7 +311,7 @@ public class ScheduleService {
         }
     }
 
-    private void validateScheduleGenerationParams(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
+    private void validateScheduleGenerationParams(Integer groupId, LocalDate startDate, LocalDate endDate) {
         if (groupId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Group ID is required");
         }
@@ -331,42 +324,47 @@ public class ScheduleService {
         if (startDate.isAfter(endDate)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be before end date");
         }
-        if (startDate.isBefore(OffsetDateTime.now().minusDays(1))) {
+        if (startDate.isBefore(LocalDate.now().minusDays(1))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date cannot be in the past");
         }
     }
-    
+
     private Group getActiveGroupById(Integer groupId) {
         return groupRepository.findActiveById(groupId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + groupId));
     }
 
-    private void validateNoExistingSchedules(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
+    private void validateNoExistingSchedules(Integer groupId, LocalDate startDate, LocalDate endDate) {
+        OffsetDateTime offsetStartDate = startDate.atStartOfDay()
+                .atOffset(ZoneOffset.ofHours(7));
+
+        OffsetDateTime offsetEndDate = endDate.atTime(23, 59)
+                .atOffset(ZoneOffset.ofHours(7)); // Result: 2025-07-23T23:59:00+07:00
         List<Schedule> existingSchedules = scheduleRepository.findAllActivePageable(
-                groupId, startDate, endDate, Pageable.unpaged()).getContent();
+                groupId, offsetStartDate, offsetEndDate, Pageable.unpaged()).getContent();
 
         if (!existingSchedules.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     String.format("Group %d already has %d schedules between %s and %s. Remove existing schedules first.",
-                            groupId, existingSchedules.size(), startDate.toLocalDate(), endDate.toLocalDate()));
+                            groupId, existingSchedules.size(), startDate, endDate));
         }
     }
 
-    private Set<Schedule> createSchedulesFromTemplates(Group group, OffsetDateTime startDate, OffsetDateTime endDate) {
+    private Set<Schedule> createSchedulesFromTemplates(Group group, LocalDate startDate, LocalDate endDate) {
         Set<Schedule> newSchedules = new LinkedHashSet<>();
         List<GroupSchedule> templates = getSortedGroupScheduleTemplates(group);
 
         for (GroupSchedule template : templates) {
-            OffsetDateTime nextMatchingDate = findFirstMatchingDayOfWeek(startDate, endDate, template.getDayOfWeekEnum());
-            
+            LocalDate nextMatchingDate = findFirstMatchingDayOfWeek(startDate, endDate, template.getDayOfWeekEnum());
+
             if (nextMatchingDate != null) {
                 Schedule newSchedule = createScheduleFromTemplate(group, template, nextMatchingDate);
-                
+
                 if (isScheduleValid(newSchedule)) {
                     newSchedules.add(newSchedule);
                 } else {
-                    log.warn("Skipping schedule for {} on {} due to conflicts", 
-                            template.getDayOfWeekEnum(), nextMatchingDate.toLocalDate());
+                    log.warn("Skipping schedule for {} on {} due to conflicts",
+                            template.getDayOfWeekEnum(), nextMatchingDate);
                 }
             }
         }
@@ -374,15 +372,22 @@ public class ScheduleService {
         return newSchedules;
     }
 
+    /**
+     * Retrieves a list of group schedule templates sorted by the day of the week.
+     *
+     * @param group The group object containing the unsorted group schedules.
+     * @return A sorted list of GroupSchedule objects based on the day of the week.
+     */
     private List<GroupSchedule> getSortedGroupScheduleTemplates(Group group) {
         return group.getGroupSchedules().stream()
                 .sorted(Comparator.comparing(GroupSchedule::getDayOfWeekEnum))
                 .toList();
     }
 
-    private OffsetDateTime findFirstMatchingDayOfWeek(OffsetDateTime startDate, OffsetDateTime endDate,
-                                                      java.time.DayOfWeek targetDayOfWeek) {
-        OffsetDateTime current = startDate;
+    private LocalDate findFirstMatchingDayOfWeek(LocalDate startDate,
+                                                      LocalDate endDate,
+                                                      DayOfWeek targetDayOfWeek) {
+        LocalDate current = startDate;
 
         while (current.isBefore(endDate)) {
             if (current.getDayOfWeek().equals(targetDayOfWeek)) {
@@ -403,21 +408,20 @@ public class ScheduleService {
         }
     }
 
-    private Schedule createScheduleFromTemplate(Group group, GroupSchedule template, OffsetDateTime date) {
-        LocalDate scheduleDate = date.toLocalDate();
-        
+    private Schedule createScheduleFromTemplate(Group group, GroupSchedule template, LocalDate date) {
+
         Schedule schedule = Schedule.builder()
                 .group(group)
-                .startTime(combineDateTime(scheduleDate, template.getStartTime()))
-                .endTime(combineDateTime(scheduleDate, template.getEndTime()))
+                .startTime(combineDateTime(date, template.getStartTime()))
+                .endTime(combineDateTime(date, template.getEndTime()))
                 .deliveryMode("OFFLINE")  // Default delivery mode
                 .teacher(null)  // Teacher to be assigned later
-                .room(template.getRoom())  // Use room from template
+                .room(template.getRoom())  // Use room from a template
                 .meetingLink(null)  // No meeting link for offline mode
                 .attendances(null)  // No attendances yet
                 .build();
 
-        schedule.setId(null);  // Ensure new record
+        schedule.setId(null);  // Ensure a new record
         return schedule;
     }
 }

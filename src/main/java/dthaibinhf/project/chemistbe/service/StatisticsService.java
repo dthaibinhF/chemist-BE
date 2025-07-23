@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -86,7 +87,10 @@ public class StatisticsService {
                     OffsetDateTime.now().getDayOfWeek().getValue() - 1);
             OffsetDateTime endOfWeek = startOfWeek.plusDays(7);
             
-            return (long) scheduleRepository.findAllActivePageable(null, startOfWeek, endOfWeek, 
+            LocalDate startDate = startOfWeek.toLocalDate();
+            LocalDate endDate = endOfWeek.toLocalDate();
+            
+            return (long) scheduleRepository.findAllActivePageable(null, startOfWeek, endOfWeek,
                     org.springframework.data.domain.Pageable.unpaged()).getContent().size();
         } catch (Exception e) {
             log.warn("Error calculating this week schedules count", e);
