@@ -8,6 +8,8 @@ class ChemistBeApplicationTests {
 
     @Test
     void contextLoads() {
+        // This test will simply check if the Spring application context loads successfully
+        // No additional logic is needed here as we are just verifying the application setup
     }
 
 }

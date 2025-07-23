@@ -127,3 +127,50 @@ All entities must implement soft delete:
 3. **Cache Keys**: Use meaningful keys for parameterized queries (e.g., `'grade_' + #gradeId`)
 4. **TTL Strategy**: 30 minutes for static data, shorter TTL for frequently changing data
 5. **Memory Management**: Monitor cache size and adjust `maximumSize` as needed
+
+## Spring Boot Unit Testing Progress (2025-07-23)
+
+### Completed Testing Work
+**Successfully implemented comprehensive endpoint integration tests for two major APIs:**
+
+#### ✅ School API Testing - COMPLETED
+- **File**: `src/test/java/dthaibinhf/project/chemistbe/controller/SchoolControllerTest.java`
+- **Status**: ✅ **16/16 tests passing** - All tests successful
+- **Coverage**: CRUD operations, validation, authorization (ADMIN/MANAGER/TESTER roles), soft delete behavior
+- **Approach**: Endpoint integration tests using MockMvc, H2 in-memory database, @SpringBootTest
+
+#### ⚠️ Schedule API Testing - IN PROGRESS  
+- **File**: `src/test/java/dthaibinhf/project/chemistbe/controller/ScheduleControllerTest.java`
+- **Status**: ⚠️ **15/20 tests passing** - Minor issues remaining
+- **Coverage**: CRUD operations, search with LocalDate parameters, weekly generation, validation, timezone conversion
+- **Complex Setup**: Group-Room-AcademicYear-Grade-Fee entity relationships, LocalDate to OffsetDateTime conversion
+
+### Testing Framework Established
+**Spring Boot testing patterns and conventions:**
+- **Framework**: @SpringBootTest + @AutoConfigureMockMvc + @ActiveProfiles("test")
+- **Security**: @WithMockUser for authentication simulation
+- **Database**: H2 in-memory database with @Transactional + @DirtiesContext for test isolation
+- **Approach**: Endpoint integration tests (repository layer excluded per user feedback)
+- **Validation**: Business logic, authorization, soft delete, timezone handling
+
+### Pending Tasks for Next Session
+⚠️ **Schedule API Test Fixes Required:**
+1. **Fix 4 failing tests**: JSON property naming issues (snake_case vs camelCase in assertions)
+   - Tests expect `delivery_mode`, `group_id`, `meeting_link` properties
+   - Need to verify actual DTO @JsonProperty mappings
+2. **Fix 1 error test**: Fee entity constraint violation in search filter test
+3. **Verification**: Run `./mvnw test` to confirm all Schedule API tests pass
+
+### Testing Guidelines Established
+1. **Focus on endpoint integration tests** - Not repository layer (per user preference)
+2. **Use proper Spring Boot testing annotations** - @SpringBootTest, @AutoConfigureMockMvc, @WithMockUser
+3. **Test comprehensive scenarios** - CRUD, validation, authorization, business logic, error cases
+4. **Maintain test isolation** - @DirtiesContext and @Transactional for clean test environment
+5. **Handle complex entity relationships** - Proper setup of dependent entities (Group→Fee, Room, etc.)
+
+### Files Created/Modified
+- ✅ `SchoolControllerTest.java` - Complete and passing (16 tests)
+- ⚠️ `ScheduleControllerTest.java` - Needs minor fixes (5 failing/error tests)
+
+### Next Session Priority
+Fix remaining Schedule API test issues to achieve 100% test success rate for both School and Schedule endpoints.
