@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +26,14 @@ public class AcademicYearService {
     AcademicYearRepository academicYearRepository;
     AcademicYearMapper academicYearMapper;
 
+    @Cacheable("academic-years")
     public List<AcademicYearDTO> getAllAcademicYears() {
         return academicYearRepository.findAllActiveAcademicYears().stream()
                 .map(academicYearMapper::toDto)
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "academic-years", key = "#id")
     public AcademicYearDTO getAcademicYearById(Integer id) {
         AcademicYear academicYear = academicYearRepository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Academic Year not found: " + id));
@@ -38,6 +41,7 @@ public class AcademicYearService {
     }
 
     @Transactional
+    @CacheEvict(value = "academic-years", allEntries = true)
     public AcademicYearDTO createAcademicYear(@Valid AcademicYearDTO academicYearDTO) {
         AcademicYear academicYear = academicYearMapper.toEntity(academicYearDTO);
         academicYear.setId(null);
@@ -46,6 +50,7 @@ public class AcademicYearService {
     }
 
     @Transactional
+    @CacheEvict(value = "academic-years", allEntries = true)
     public AcademicYearDTO updateAcademicYear(Integer id, @Valid AcademicYearDTO academicYearDTO) {
         AcademicYear academicYear = academicYearRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Academic Year not found: " + id));
@@ -55,7 +60,7 @@ public class AcademicYearService {
     }
 
     @Transactional
-    @CacheEvict(value = {"academicYears", "allAcademicYears"}, key = "#id")
+    @CacheEvict(value = "academic-years", allEntries = true)
     public void deleteAcademicYear(Integer id) {
         AcademicYear academicYear = academicYearRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Academic Year not found: " + id));

@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +26,14 @@ public class RoomService {
     RoomRepository roomRepository;
     RoomMapper roomMapper;
 
+    @Cacheable("rooms")
     public List<RoomDTO> getAllRooms() {
         return roomRepository.findAllActiveRooms().stream()
                 .map(roomMapper::toDto)
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "rooms", key = "#id")
     public RoomDTO getRoomById(Integer id) {
         Room room = roomRepository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found: " + id));
@@ -37,6 +41,7 @@ public class RoomService {
     }
 
     @Transactional
+    @CacheEvict(value = "rooms", allEntries = true)
     public RoomDTO createRoom(@Valid RoomDTO roomDTO) {
         Room room = roomMapper.toEntity(roomDTO);
         room.setId(null);
@@ -45,6 +50,7 @@ public class RoomService {
     }
 
     @Transactional
+    @CacheEvict(value = "rooms", allEntries = true)
     public RoomDTO updateRoom(Integer id, @Valid RoomDTO roomDTO) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found: " + id));
@@ -54,6 +60,7 @@ public class RoomService {
     }
 
     @Transactional
+    @CacheEvict(value = "rooms", allEntries = true)
     public void deleteRoom(Integer id) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found: " + id));

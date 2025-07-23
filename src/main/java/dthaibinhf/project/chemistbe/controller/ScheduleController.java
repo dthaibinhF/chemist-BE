@@ -60,7 +60,7 @@ public class ScheduleController {
     }
 
     /* Schedule Generation Feature Implementation*/
-    /*create schedule for one group, From start date to end date */
+    /*creates schedules for one group, From start date to end date */
     @PostMapping("/weekly")
     public ResponseEntity<Set<Schedule>> generateWeeklySchedule(
             @RequestParam Integer groupId,

@@ -76,8 +76,7 @@ public class ScheduleDTO extends BaseDTO implements Serializable {
 
     /**
      * The room where this schedule takes place.
-     * Required field.
+     * Optional field.
      */
-    @NotNull
     RoomDTO room;
 }

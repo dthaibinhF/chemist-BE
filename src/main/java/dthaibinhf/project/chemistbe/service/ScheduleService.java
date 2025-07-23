@@ -16,7 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,7 +34,6 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 @Slf4j
 public class ScheduleService {
-
     private final ScheduleRepository scheduleRepository;
     private final ScheduleMapper scheduleMapper;
     private final GroupRepository groupRepository;
@@ -39,6 +42,16 @@ public class ScheduleService {
     // Add at the top of the class or in a separate Constants class
     private static final Set<String> VALID_DELIVERY_MODES = Set.of("ONLINE", "OFFLINE", "HYBRID");
     private static final String ONLINE_DELIVERY_MODE = "ONLINE";
+
+/**
+     * Combines a LocalDate with a LocalTime to create an OffsetDateTime using Ho Chi Minh City timezone.
+     * This is used to convert GroupSchedule template times (LocalTime) with schedule dates (LocalDate)
+     * into Schedule entity times (OffsetDateTime).
+     */
+    private OffsetDateTime combineDateTime(LocalDate date, LocalTime time) {
+        ZoneId hoChiMinhZone = ZoneId.of("Asia/Ho_Chi_Minh");
+        return OffsetDateTime.of(date, time, hoChiMinhZone.getRules().getOffset(date.atTime(time)));
+    }
 
     private void validateParameters(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
         if (groupId != null && groupRepository.findActiveById(groupId).isEmpty()) {
@@ -391,21 +404,19 @@ public class ScheduleService {
     }
 
     private Schedule createScheduleFromTemplate(Group group, GroupSchedule template, OffsetDateTime date) {
+        LocalDate scheduleDate = date.toLocalDate();
+        
         Schedule schedule = Schedule.builder()
                 .group(group)
-                .startTime(date.withHour(template.getStartTime().getHour())
-                        .withMinute(template.getStartTime().getMinute())
-                        .withSecond(template.getStartTime().getSecond()))
-                .endTime(date.withHour(template.getEndTime().getHour())
-                        .withMinute(template.getEndTime().getMinute())
-                        .withSecond(template.getEndTime().getSecond()))
+                .startTime(combineDateTime(scheduleDate, template.getStartTime()))
+                .endTime(combineDateTime(scheduleDate, template.getEndTime()))
                 .deliveryMode("OFFLINE")  // Default delivery mode
                 .teacher(null)  // Teacher to be assigned later
                 .room(template.getRoom())  // Use room from template
                 .meetingLink(null)  // No meeting link for offline mode
                 .attendances(null)  // No attendances yet
                 .build();
-        
+
         schedule.setId(null);  // Ensure new record
         return schedule;
     }

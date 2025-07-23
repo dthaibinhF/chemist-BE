@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,10 +32,12 @@ public class GroupService {
     GroupMapper groupMapper;
     GroupScheduleService groupScheduleService;
 
+    @Cacheable("groups")
     public List<GroupListDTO> getAllGroups() {
         return groupRepository.findAllActiveGroups().stream().map(groupMapper::toListDto).collect(Collectors.toList());
     }
 
+    @Cacheable(value = "groups", key = "#id")
     public GroupDTO getGroupById(Integer id) {
         Group group = groupRepository.findActiveById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + id)
@@ -41,22 +45,26 @@ public class GroupService {
         return groupMapper.toDto(group);
     }
 
+    @Cacheable(value = "groups", key = "'academic_year_' + #academicYearId")
     public List<GroupListDTO> getGroupsByAcademicYearId(Integer academicYearId) {
         return groupRepository.findActiveByAcademicYearId(academicYearId)
                 .stream().map(groupMapper::toListDto).collect(Collectors.toList());
     }
 
+    @Cacheable(value = "groups", key = "'grade_' + #gradeId")
     public List<GroupListDTO> getGroupsByGradeId(Integer gradeId) {
         return groupRepository.findActiveByGradeId(gradeId).stream()
                 .map(groupMapper::toListDto)
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "groups", key = "'with_detail'")
     public List<GroupDTO> getAllGroupsWithDetail() {
         return groupRepository.findAllActiveGroups().stream().map(groupMapper::toDto).collect(Collectors.toList());
     }
 
     @Transactional
+    @CacheEvict(value = "groups", allEntries = true)
     public GroupDTO createGroup(@Valid GroupDTO groupDTO) {
         Group group = groupMapper.toEntity(groupDTO);
         group.setId(null);
@@ -65,6 +73,7 @@ public class GroupService {
     }
 
     @Transactional
+    @CacheEvict(value = "groups", allEntries = true)
     public GroupDTO updateGroup(Integer id, @Valid GroupDTO groupDTO) {
         Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + id));
@@ -110,6 +119,7 @@ public class GroupService {
     }
 
     @Transactional
+    @CacheEvict(value = "groups", allEntries = true)
     public void deleteGroup(Integer id) {
         Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + id));

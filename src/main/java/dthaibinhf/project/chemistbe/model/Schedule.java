@@ -46,7 +46,7 @@ public class Schedule extends BaseEntity {
 
     /**
      * The mode of delivery for this schedule (e.g., "online", "in-person").
-     * Required field with maximum length of 20 characters.
+     * Required field with a maximum length of 20 characters.
      */
     @Column(name = "delivery_mode", nullable = false, length = 20)
     private String deliveryMode;
@@ -73,8 +73,8 @@ public class Schedule extends BaseEntity {
      * Many schedules can be assigned to one room.
      * Required field.
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "room_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
     private Room room;
 
     /**

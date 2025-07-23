@@ -55,7 +55,7 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
             AND (:parentPhone IS NULL OR s.parent_phone LIKE LOWER(:parentPhone))\s
             AND (:studentName IS NULL OR LOWER(s.name) LIKE LOWER(:studentName))\s
             AND (:groupName IS NULL OR LOWER(g.name) LIKE LOWER(:groupName))\s
-            AND (:schoolName IS NOT NULL OR LOWER(sc.name) LIKE lower(:schoolName))\s
+            AND (:schoolName IS NULL OR LOWER(sc.name) LIKE lower(:schoolName))\s
             AND (:className IS NULL OR LOWER(scl.name) LIKE LOWER(:className))\s
             """, nativeQuery = true
     )
