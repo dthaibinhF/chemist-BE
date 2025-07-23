@@ -2,7 +2,7 @@ package dthaibinhf.project.chemistbe.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import dthaibinhf.project.chemistbe.model.StudentDetailDTO;
+import dthaibinhf.project.chemistbe.dto.StudentDetailDTO;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 

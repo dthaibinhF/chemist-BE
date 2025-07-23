@@ -268,117 +268,130 @@ public class ScheduleService {
     public Set<Schedule> generateWeeklySchedule(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
         try {
             log.info("Generating weekly schedule for group: {} from {} to {}", groupId, startDate, endDate);
-            validateGenerateWeeklyScheduleParams(groupId, startDate, endDate);
+            
+            // Step 1: Validate input parameters
+            validateScheduleGenerationParams(groupId, startDate, endDate);
 
-            Group group = groupRepository.findActiveById(groupId).orElseThrow(
-                    () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + groupId)
-            );
+            // Step 2: Get the group and validate it exists
+            Group group = getActiveGroupById(groupId);
 
-            checkForExistingSchedules(groupId, startDate, endDate);
-
-            Set<Schedule> schedules = group.getGroupSchedules().isEmpty() ?
-                    new LinkedHashSet<>() : new LinkedHashSet<>(group.getSchedules());
-
-            generateSchedulesFromTemplate(group, startDate, endDate, schedules);
-
-            if (!schedules.isEmpty()) {
-                schedules.forEach(schedule -> {
-                    schedule.setId(null);
-                    setRelatedEntities(schedule, scheduleMapper.toDto(schedule));
-                });
-                scheduleRepository.saveAll(schedules);
-                log.info("Generated {} schedules for group: {}", schedules.size(), groupId);
-            } else {
-                log.info("No schedules generated for group: {}", groupId);
+            // Step 3: Check if group has schedule templates
+            if (group.getGroupSchedules().isEmpty()) {
+                log.warn("Group {} has no schedule templates configured", groupId);
+                return new LinkedHashSet<>();
             }
 
-            return schedules;
+            // Step 4: Check for existing schedules in the date range
+            validateNoExistingSchedules(groupId, startDate, endDate);
+
+            // Step 5: Generate new schedules based on templates
+            Set<Schedule> newSchedules = createSchedulesFromTemplates(group, startDate, endDate);
+
+            // Step 6: Save generated schedules
+            if (!newSchedules.isEmpty()) {
+                scheduleRepository.saveAll(newSchedules);
+                log.info("Successfully generated {} schedules for group: {}", newSchedules.size(), groupId);
+            } else {
+                log.info("No schedules could be generated for group: {} (possible conflicts)", groupId);
+            }
+
+            return newSchedules;
         } catch (ResponseStatusException e) {
-            log.error("Error generating weekly schedule", e);
+            log.error("Validation error generating weekly schedule for group {}: {}", groupId, e.getMessage());
             throw e;
         } catch (Exception e) {
-            log.error("Unexpected error generating weekly schedule", e);
+            log.error("Unexpected error generating weekly schedule for group {}", groupId, e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to generate weekly schedule");
         }
     }
 
-    private void validateGenerateWeeklyScheduleParams(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
+    private void validateScheduleGenerationParams(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
         if (groupId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Group ID is required");
         }
-
+        if (startDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date is required");
+        }
+        if (endDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "End date is required");
+        }
         if (startDate.isAfter(endDate)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be before end date");
         }
-
-        if (startDate.isBefore(OffsetDateTime.now())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be in the future");
+        if (startDate.isBefore(OffsetDateTime.now().minusDays(1))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date cannot be in the past");
         }
     }
+    
+    private Group getActiveGroupById(Integer groupId) {
+        return groupRepository.findActiveById(groupId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + groupId));
+    }
 
-    private void checkForExistingSchedules(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
+    private void validateNoExistingSchedules(Integer groupId, OffsetDateTime startDate, OffsetDateTime endDate) {
         List<Schedule> existingSchedules = scheduleRepository.findAllActivePageable(
                 groupId, startDate, endDate, Pageable.unpaged()).getContent();
 
         if (!existingSchedules.isEmpty()) {
-            existingSchedules.forEach(schedule -> {
-                if (schedule.getEndTime().getDayOfMonth() == endDate.getDayOfMonth() &&
-                        schedule.getEndTime().getMonthValue() == endDate.getMonthValue() &&
-                        schedule.getEndTime().getYear() == endDate.getYear()) {
-                    throw new ResponseStatusException(HttpStatus.CONFLICT,
-                            "Group already has schedules between " + startDate + " and " + endDate);
-                }
-            });
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    String.format("Group %d already has %d schedules between %s and %s. Remove existing schedules first.",
+                            groupId, existingSchedules.size(), startDate.toLocalDate(), endDate.toLocalDate()));
         }
     }
 
-    private void generateSchedulesFromTemplate(Group group, OffsetDateTime startDate,
-                                               OffsetDateTime endDate, Set<Schedule> schedules) {
-        List<GroupSchedule> sortedSchedules = getSortedGroupSchedules(group);
+    private Set<Schedule> createSchedulesFromTemplates(Group group, OffsetDateTime startDate, OffsetDateTime endDate) {
+        Set<Schedule> newSchedules = new LinkedHashSet<>();
+        List<GroupSchedule> templates = getSortedGroupScheduleTemplates(group);
 
-        for (GroupSchedule groupSchedule : sortedSchedules) {
-            OffsetDateTime date = findNextMatchingDay(startDate, endDate, groupSchedule.getDayOfWeekEnum());
-
-            if (date != null) {
-                tryAddScheduleForDate(group, groupSchedule, date, schedules);
+        for (GroupSchedule template : templates) {
+            OffsetDateTime nextMatchingDate = findFirstMatchingDayOfWeek(startDate, endDate, template.getDayOfWeekEnum());
+            
+            if (nextMatchingDate != null) {
+                Schedule newSchedule = createScheduleFromTemplate(group, template, nextMatchingDate);
+                
+                if (isScheduleValid(newSchedule)) {
+                    newSchedules.add(newSchedule);
+                } else {
+                    log.warn("Skipping schedule for {} on {} due to conflicts", 
+                            template.getDayOfWeekEnum(), nextMatchingDate.toLocalDate());
+                }
             }
         }
+
+        return newSchedules;
     }
 
-    private List<GroupSchedule> getSortedGroupSchedules(Group group) {
+    private List<GroupSchedule> getSortedGroupScheduleTemplates(Group group) {
         return group.getGroupSchedules().stream()
                 .sorted(Comparator.comparing(GroupSchedule::getDayOfWeekEnum))
                 .toList();
     }
 
-    private OffsetDateTime findNextMatchingDay(OffsetDateTime startDate, OffsetDateTime endDate,
-                                               java.time.DayOfWeek targetDay) {
+    private OffsetDateTime findFirstMatchingDayOfWeek(OffsetDateTime startDate, OffsetDateTime endDate,
+                                                      java.time.DayOfWeek targetDayOfWeek) {
         OffsetDateTime current = startDate;
 
         while (current.isBefore(endDate)) {
-            if (current.getDayOfWeek().equals(targetDay)) {
+            if (current.getDayOfWeek().equals(targetDayOfWeek)) {
                 return current;
             }
             current = current.plusDays(1);
         }
 
-        return null; // No matching day found before endDate
+        return null; // No matching day found in range
     }
 
-    private void tryAddScheduleForDate(Group group, GroupSchedule groupSchedule,
-                                       OffsetDateTime date, Set<Schedule> schedules) {
-        Schedule schedule = createScheduleFromTemplate(group, groupSchedule, date);
-
+    private boolean isScheduleValid(Schedule schedule) {
         try {
             checkScheduleConflicts(scheduleMapper.toDto(schedule));
-            schedules.add(schedule);
+            return true;
         } catch (ResponseStatusException e) {
-            log.warn("Conflict detected for schedule on date: {} - {}", date, e.getMessage());
+            return false;
         }
     }
 
     private Schedule createScheduleFromTemplate(Group group, GroupSchedule template, OffsetDateTime date) {
-        return Schedule.builder()
+        Schedule schedule = Schedule.builder()
                 .group(group)
                 .startTime(date.withHour(template.getStartTime().getHour())
                         .withMinute(template.getStartTime().getMinute())
@@ -386,11 +399,14 @@ public class ScheduleService {
                 .endTime(date.withHour(template.getEndTime().getHour())
                         .withMinute(template.getEndTime().getMinute())
                         .withSecond(template.getEndTime().getSecond()))
-                .deliveryMode("OFFLINE")
-                .attendances(null)
-                .teacher(null)
-                .room(template.getRoom())
-                .meetingLink(null)
+                .deliveryMode("OFFLINE")  // Default delivery mode
+                .teacher(null)  // Teacher to be assigned later
+                .room(template.getRoom())  // Use room from template
+                .meetingLink(null)  // No meeting link for offline mode
+                .attendances(null)  // No attendances yet
                 .build();
+        
+        schedule.setId(null);  // Ensure new record
+        return schedule;
     }
 }
