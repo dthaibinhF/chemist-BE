@@ -53,14 +53,18 @@ public class ScheduleDTO extends BaseDTO implements Serializable {
     /**
      * The mode of delivery for this schedule (e.g., "online", "in-person").
      * Required field, must not be blank.
+     * Mapped to "delivery_mode" in JSON.
      */
     @NotBlank
+    @JsonProperty("delivery_mode")
     String deliveryMode;
 
     /**
      * The meeting link for online sessions.
      * Optional field.
+     * Mapped to "meeting_link" in JSON.
      */
+    @JsonProperty("meeting_link")
     String meetingLink;
 
     /**
