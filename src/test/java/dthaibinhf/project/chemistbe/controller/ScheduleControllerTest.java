@@ -139,6 +139,9 @@ class ScheduleControllerTest {
     }
 
     private ScheduleDTO createValidScheduleDTO() {
+        RoomDTO roomDTO = new RoomDTO(testRoom.getName(), testRoom.getLocation(), testRoom.getCapacity());
+        roomDTO.setId(testRoom.getId()); // Set the room ID which is required by service validation
+        
         return new ScheduleDTO(
                 testGroup.getId(),
                 testGroup.getName(),
@@ -148,7 +151,7 @@ class ScheduleControllerTest {
                 null,
                 null,
                 null,
-                new RoomDTO(testRoom.getName(), testRoom.getLocation(), testRoom.getCapacity())
+                roomDTO
         );
     }
 
@@ -238,6 +241,9 @@ class ScheduleControllerTest {
     @Test
     @WithMockUser
     void createSchedule_MissingGroupId_ShouldReturnBadRequest() throws Exception {
+        RoomDTO roomDTO = new RoomDTO(testRoom.getName(), testRoom.getLocation(), testRoom.getCapacity());
+        roomDTO.setId(testRoom.getId());
+        
         ScheduleDTO invalidDTO = new ScheduleDTO(
                 null, // missing groupId
                 null,
@@ -247,7 +253,7 @@ class ScheduleControllerTest {
                 null,
                 null,
                 null,
-                new RoomDTO(testRoom.getName(), testRoom.getLocation(), testRoom.getCapacity())
+                roomDTO
         );
 
         mockMvc.perform(post("/api/v1/schedule")
@@ -259,6 +265,9 @@ class ScheduleControllerTest {
     @Test
     @WithMockUser
     void createSchedule_InvalidDeliveryMode_ShouldReturnBadRequest() throws Exception {
+        RoomDTO roomDTO = new RoomDTO(testRoom.getName(), testRoom.getLocation(), testRoom.getCapacity());
+        roomDTO.setId(testRoom.getId());
+        
         ScheduleDTO invalidDTO = new ScheduleDTO(
                 testGroup.getId(),
                 testGroup.getName(),
@@ -268,7 +277,7 @@ class ScheduleControllerTest {
                 null,
                 null,
                 null,
-                new RoomDTO(testRoom.getName(), testRoom.getLocation(), testRoom.getCapacity())
+                roomDTO
         );
 
         mockMvc.perform(post("/api/v1/schedule")
@@ -280,6 +289,9 @@ class ScheduleControllerTest {
     @Test
     @WithMockUser
     void createSchedule_StartTimeAfterEndTime_ShouldReturnBadRequest() throws Exception {
+        RoomDTO roomDTO = new RoomDTO(testRoom.getName(), testRoom.getLocation(), testRoom.getCapacity());
+        roomDTO.setId(testRoom.getId());
+        
         ScheduleDTO invalidDTO = new ScheduleDTO(
                 testGroup.getId(),
                 testGroup.getName(),
@@ -289,7 +301,7 @@ class ScheduleControllerTest {
                 null,
                 null,
                 null,
-                new RoomDTO(testRoom.getName(), testRoom.getLocation(), testRoom.getCapacity())
+                roomDTO
         );
 
         mockMvc.perform(post("/api/v1/schedule")
@@ -303,6 +315,9 @@ class ScheduleControllerTest {
     void updateSchedule_ValidRequest_ShouldReturnUpdatedSchedule() throws Exception {
         Schedule savedSchedule = scheduleRepository.save(testSchedule);
         
+        RoomDTO roomDTO = new RoomDTO(testRoom.getName(), testRoom.getLocation(), testRoom.getCapacity());
+        roomDTO.setId(testRoom.getId()); // Set the room ID which is required by service validation
+        
         ScheduleDTO updateDTO = new ScheduleDTO(
                 testGroup.getId(),
                 testGroup.getName(),
@@ -312,7 +327,7 @@ class ScheduleControllerTest {
                 "https://meet.updated.com",
                 null,
                 null,
-                new RoomDTO(testRoom.getName(), testRoom.getLocation(), testRoom.getCapacity())
+                roomDTO
         );
 
         mockMvc.perform(put("/api/v1/schedule/{id}", savedSchedule.getId())
@@ -387,6 +402,7 @@ class ScheduleControllerTest {
         anotherGroup.setLevel("Advanced");
         anotherGroup.setAcademicYear(testGroup.getAcademicYear());
         anotherGroup.setGrade(testGroup.getGrade());
+        anotherGroup.setFee(testGroup.getFee()); // Set the required Fee
         anotherGroup = groupRepository.save(anotherGroup);
 
         // Create schedules for both groups
