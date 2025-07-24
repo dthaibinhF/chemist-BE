@@ -9,8 +9,11 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -67,5 +71,47 @@ public class TeacherService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher not found: " + id));
         teacher.softDelete();
         teacherRepository.save(teacher);
+    }
+
+    /**
+     * Search teachers with pagination and sorting
+     * Search by teacher name, phone, or email
+     *
+     * @param teacherName    search by teacher full name (contains, case-insensitive)
+     * @param phone         search by phone number (contains)
+     * @param email         search by email (contains, case-insensitive)
+     * @param pageable      pagination and sorting parameters
+     * @return page of teachers matching the criteria
+     */
+    public Page<TeacherDTO> search(Pageable pageable,
+                                  String teacherName,
+                                  String phone,
+                                  String email) {
+        try {
+            log.info("Searching teachers - page: {}, size: {}, sort: {}",
+                    pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
+            
+            // Prepare search patterns for LIKE queries (add wildcards)
+            String teacherNamePattern = (teacherName != null && !teacherName.isEmpty()) ? "%" + teacherName + "%" : null;
+            String phonePattern = (phone != null && !phone.isEmpty()) ? "%" + phone + "%" : null;
+            String emailPattern = (email != null && !email.isEmpty()) ? "%" + email + "%" : null;
+
+            // Call repository method
+            Page<Teacher> teachersPage = teacherRepository.searchTeachers(
+                    teacherNamePattern,
+                    phonePattern,
+                    emailPattern,
+                    pageable);
+
+            log.info("Found {} teachers matching search criteria", teachersPage.getTotalElements());
+
+            // Convert Page<Entity> to Page<DTO>
+            return teachersPage.map(teacherMapper::toDto);
+
+        } catch (Exception e) {
+            log.error("Error searching teachers with pagination", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Failed to search teachers");
+        }
     }
 }

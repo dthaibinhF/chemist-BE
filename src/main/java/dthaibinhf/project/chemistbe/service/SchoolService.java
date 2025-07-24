@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,7 @@ public class SchoolService {
 
 
     @Transactional
+    @CacheEvict(value = "schools", allEntries = true)
     public SchoolDTO createSchool(@Valid SchoolDTO schoolDTO) {
         if (schoolRepository.findSchoolByName(schoolDTO.getName()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "School name already exists");
@@ -36,12 +39,14 @@ public class SchoolService {
         return schoolMapper.toDto(savedSchool);
     }
 
+    @Cacheable("schools")
     public List<SchoolDTO> getAllSchools() {
         return schoolRepository.findAllActiveSchools().stream()
                 .map(schoolMapper::toDto)
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "schools", key = "#id")
     public SchoolDTO getSchoolById(Integer id) {
         School school = schoolRepository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "School not found: " + id));
@@ -49,6 +54,7 @@ public class SchoolService {
     }
 
     @Transactional
+    @CacheEvict(value = "schools", allEntries = true)
     public SchoolDTO updateSchool(Integer id, @Valid SchoolDTO schoolDTO) {
         School school = schoolRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "School not found: " + id));
@@ -58,6 +64,7 @@ public class SchoolService {
     }
 
     @Transactional
+    @CacheEvict(value = "schools", allEntries = true)
     public void deleteSchool(Integer id) {
         School school = schoolRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "School not found: " + id));

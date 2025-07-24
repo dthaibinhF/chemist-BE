@@ -17,7 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +33,16 @@ public class GroupScheduleService {
     GroupScheduleRepository groupScheduleRepository;
     GroupScheduleMapper groupScheduleMapper;
     ScheduleRepository scheduleRepository;
+
+    /**
+     * Combines a LocalDate with a LocalTime to create an OffsetDateTime using Ho Chi Minh City timezone.
+     * This is used to convert GroupSchedule template times (LocalTime) with schedule dates (LocalDate)
+     * into Schedule entity times (OffsetDateTime).
+     */
+    private OffsetDateTime combineDateTime(LocalDate date, LocalTime time) {
+        ZoneId hoChiMinhZone = ZoneId.of("Asia/Ho_Chi_Minh");
+        return OffsetDateTime.of(date, time, hoChiMinhZone.getRules().getOffset(date.atTime(time)));
+    }
 
 
     public List<GroupScheduleDTO> getAllGroupSchedules() {
@@ -83,6 +97,8 @@ public class GroupScheduleService {
 
         // Get current date/time
         OffsetDateTime now = OffsetDateTime.now();
+        LocalDate nowDate = now.toLocalDate();
+
 
         // Find all active schedules for this group that are in the future
         List<Schedule> schedules = scheduleRepository.findAllActivePageable(
@@ -96,16 +112,11 @@ public class GroupScheduleService {
         // Update each matching schedule
         for (Schedule schedule : matchingSchedules) {
             // Update the start time while preserving the date
-            OffsetDateTime newStartTime = schedule.getStartTime()
-                    .withHour(groupSchedule.getStartTime().getHour())
-                    .withMinute(groupSchedule.getStartTime().getMinute())
-                    .withSecond(groupSchedule.getStartTime().getSecond());
+            LocalDate scheduleDate = schedule.getStartTime().toLocalDate();
+            OffsetDateTime newStartTime = combineDateTime(scheduleDate, groupSchedule.getStartTime());
 
             // Update the end time while preserving the date
-            OffsetDateTime newEndTime = schedule.getEndTime()
-                    .withHour(groupSchedule.getEndTime().getHour())
-                    .withMinute(groupSchedule.getEndTime().getMinute())
-                    .withSecond(groupSchedule.getEndTime().getSecond());
+            OffsetDateTime newEndTime = combineDateTime(scheduleDate, groupSchedule.getEndTime());
 
             // Set the new times
             schedule.setStartTime(newStartTime);

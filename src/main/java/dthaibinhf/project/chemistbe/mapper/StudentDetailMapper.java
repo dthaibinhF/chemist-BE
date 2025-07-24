@@ -1,7 +1,7 @@
 package dthaibinhf.project.chemistbe.mapper;
 
 import dthaibinhf.project.chemistbe.model.StudentDetail;
-import dthaibinhf.project.chemistbe.model.StudentDetailDTO;
+import dthaibinhf.project.chemistbe.dto.StudentDetailDTO;
 import org.mapstruct.*;
 import org.springframework.context.annotation.Primary;
 

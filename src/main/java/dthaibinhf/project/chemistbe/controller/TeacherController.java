@@ -6,6 +6,9 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,5 +46,15 @@ public class TeacherController {
     public ResponseEntity<Void> deleteTeacher(@PathVariable Integer id) {
         teacherService.deleteTeacher(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<TeacherDTO>> searchTeachers(
+            @PageableDefault Pageable pageable,
+            @RequestParam(value = "teacherName", required = false) String teacherName,
+            @RequestParam(value = "phone", required = false) String phone,
+            @RequestParam(value = "email", required = false) String email
+    ) {
+        return ResponseEntity.ok(teacherService.search(pageable, teacherName, phone, email));
     }
 }
