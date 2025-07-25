@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * DTO (Data Transfer Object) for
  * {@link dthaibinhf.project.chemistbe.model.Schedule}
- * 
+ * <p>
  * This class is used for transferring schedule data between layers,
  * particularly
  * between the service layer and the controller layer. It contains all the
@@ -45,6 +45,7 @@ public class ScheduleDTO extends BaseDTO implements Serializable {
      * Required field.
      */
     @NotNull
+    @JsonProperty("start_time")
     OffsetDateTime startTime;
 
     /**
@@ -52,6 +53,7 @@ public class ScheduleDTO extends BaseDTO implements Serializable {
      * Required field.
      */
     @NotNull
+    @JsonProperty("end_time")
     OffsetDateTime endTime;
 
     /**
