@@ -5,9 +5,9 @@ spring:
   application:
     name: chemist-BE
   datasource:
+    url: jdbc:postgresql://db.zbxgzvwcfufjyqznkawn.supabase.co:5432/postgres?sslmode=require
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:18112003_Supabase}
-    url: jdbc:postgresql://db.zbxgzvwcfufjyqznkawn.supabase.co:5432/postgres
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -16,6 +16,7 @@ spring:
     open-in-view: true
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         cache:
           use_second_level_cache: false
 

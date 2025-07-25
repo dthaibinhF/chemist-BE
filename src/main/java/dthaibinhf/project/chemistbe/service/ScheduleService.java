@@ -232,9 +232,9 @@ public class ScheduleService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Room is already booked for the specified time");
         }
 
-        if (scheduleDTO.getTeacher() != null && scheduleDTO.getTeacher().getId() != null) {
+        if (scheduleDTO.getTeacherId() != null) {
             if (scheduleRepository.existsTeacherConflict(
-                    scheduleDTO.getTeacher().getId(),
+                    scheduleDTO.getTeacherId(),
                     scheduleDTO.getStartTime(),
                     scheduleDTO.getEndTime(),
                     excludeIdParam)) {
@@ -255,10 +255,10 @@ public class ScheduleService {
                             "Room not found: " + scheduleDTO.getRoom().getId()));
             schedule.setRoom(room);
 
-            if (scheduleDTO.getTeacher() != null && scheduleDTO.getTeacher().getId() != null) {
-                Teacher teacher = teacherRepository.findActiveById(scheduleDTO.getTeacher().getId())
+            if (scheduleDTO.getTeacherId() != null && scheduleDTO.getTeacherId() > 0) {
+                Teacher teacher = teacherRepository.findActiveById(scheduleDTO.getTeacherId())
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "Teacher not found: " + scheduleDTO.getTeacher().getId()));
+                                "Teacher not found: " + scheduleDTO.getTeacherId()));
                 schedule.setTeacher(teacher);
             } else {
                 schedule.setTeacher(null); // Teacher is optional
@@ -285,23 +285,27 @@ public class ScheduleService {
                 return new LinkedHashSet<>();
             }
 
-            // Step 4: Check for existing schedules in the date range
-            validateNoExistingSchedules(groupId, startDate, endDate);
+            // Step 4: Get existing schedule dates in the range
+            Set<LocalDate> existingScheduleDates = getExistingScheduleDates(groupId, startDate, endDate);
 
-            // Step 5: Generate new schedules based on templates
-            Set<Schedule> newSchedules = createSchedulesFromTemplates(group, startDate, endDate);
+            // Step 5: Generate new schedules based on templates, skipping existing dates
+            Set<Schedule> newSchedules = createSchedulesFromTemplates(group, startDate, endDate, existingScheduleDates);
 
             // Step 6: Save generated schedules
             if (!newSchedules.isEmpty()) {
                 scheduleRepository.saveAll(newSchedules);
-                log.info("Successfully generated {} schedules for group: {}", newSchedules.size(), groupId);
+                log.info("Successfully generated {} new schedules for group: {} (skipped {} existing dates)", 
+                        newSchedules.size(), groupId, existingScheduleDates.size());
             } else {
-                log.info("No schedules could be generated for group: {} (possible conflicts)", groupId);
+                if (existingScheduleDates.isEmpty()) {
+                    log.info("No schedules could be generated for group: {} (possible conflicts or no matching days)", groupId);
+                } else {
+                    log.info("No new schedules generated for group: {} - all {} dates in range already have schedules", 
+                            groupId, existingScheduleDates.size());
+                }
             }
 
-            Set<ScheduleDTO> scheduleDTOs = newSchedules.stream().map(scheduleMapper::toDto).collect(Collectors.toCollection(LinkedHashSet::new));
-
-            return scheduleDTOs;
+            return newSchedules.stream().map(scheduleMapper::toDto).collect(Collectors.toCollection(LinkedHashSet::new));
         } catch (ResponseStatusException e) {
             log.error("Validation error generating weekly schedule for group {}: {}", groupId, e.getMessage());
             throw e;
@@ -334,7 +338,7 @@ public class ScheduleService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + groupId));
     }
 
-    private void validateNoExistingSchedules(Integer groupId, LocalDate startDate, LocalDate endDate) {
+    private Set<LocalDate> getExistingScheduleDates(Integer groupId, LocalDate startDate, LocalDate endDate) {
         OffsetDateTime offsetStartDate = startDate.atStartOfDay()
                 .atOffset(ZoneOffset.ofHours(7));
 
@@ -343,14 +347,17 @@ public class ScheduleService {
         List<Schedule> existingSchedules = scheduleRepository.findAllActivePageable(
                 groupId, offsetStartDate, offsetEndDate, Pageable.unpaged()).getContent();
 
-        if (!existingSchedules.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    String.format("Group %d already has %d schedules between %s and %s. Remove existing schedules first.",
-                            groupId, existingSchedules.size(), startDate, endDate));
-        }
+        Set<LocalDate> existingDates = existingSchedules.stream()
+                .map(schedule -> schedule.getStartTime().toLocalDate())
+                .collect(Collectors.toSet());
+        
+        log.info("Found {} existing schedule dates for group {} between {} and {}: {}", 
+                existingDates.size(), groupId, startDate, endDate, existingDates);
+        
+        return existingDates;
     }
 
-    private Set<Schedule> createSchedulesFromTemplates(Group group, LocalDate startDate, LocalDate endDate) {
+    private Set<Schedule> createSchedulesFromTemplates(Group group, LocalDate startDate, LocalDate endDate, Set<LocalDate> existingScheduleDates) {
         Set<Schedule> newSchedules = new LinkedHashSet<>();
         List<GroupSchedule> templates = getSortedGroupScheduleTemplates(group);
 
@@ -358,10 +365,19 @@ public class ScheduleService {
             LocalDate nextMatchingDate = findFirstMatchingDayOfWeek(startDate, endDate, template.getDayOfWeekEnum());
 
             if (nextMatchingDate != null) {
+                // Skip if this date already has a schedule for this group
+                if (existingScheduleDates.contains(nextMatchingDate)) {
+                    log.debug("Skipping schedule creation for {} on {} - schedule already exists", 
+                            template.getDayOfWeekEnum(), nextMatchingDate);
+                    continue;
+                }
+
                 Schedule newSchedule = createScheduleFromTemplate(group, template, nextMatchingDate);
 
                 if (isScheduleValid(newSchedule)) {
                     newSchedules.add(newSchedule);
+                    log.debug("Created new schedule for {} on {}", 
+                            template.getDayOfWeekEnum(), nextMatchingDate);
                 } else {
                     log.warn("Skipping schedule for {} on {} due to conflicts",
                             template.getDayOfWeekEnum(), nextMatchingDate);

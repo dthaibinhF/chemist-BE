@@ -82,8 +82,10 @@ public class ScheduleDTO extends BaseDTO implements Serializable {
      * The teacher assigned to this schedule.
      * Optional field.
      */
-    TeacherDTO teacher;
-
+    @JsonProperty("teacher_id")
+    Integer teacherId;
+    @JsonProperty("teacher_name")
+    String teacherName;
     /**
      * The room where this schedule takes place.
      * Optional field.
