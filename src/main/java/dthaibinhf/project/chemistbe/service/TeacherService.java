@@ -3,7 +3,6 @@ package dthaibinhf.project.chemistbe.service;
 import dthaibinhf.project.chemistbe.dto.TeacherDTO;
 import dthaibinhf.project.chemistbe.mapper.TeacherMapper;
 import dthaibinhf.project.chemistbe.model.Teacher;
-import dthaibinhf.project.chemistbe.repository.AccountRepository;
 import dthaibinhf.project.chemistbe.repository.TeacherRepository;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 public class TeacherService {
 
     TeacherRepository teacherRepository;
-    AccountRepository accountRepository;
     TeacherMapper teacherMapper;
 
     @Cacheable(value = "teachers", key = "'allTeachers'")
@@ -77,22 +75,23 @@ public class TeacherService {
      * Search teachers with pagination and sorting
      * Search by teacher name, phone, or email
      *
-     * @param teacherName    search by teacher full name (contains, case-insensitive)
-     * @param phone         search by phone number (contains)
-     * @param email         search by email (contains, case-insensitive)
-     * @param pageable      pagination and sorting parameters
+     * @param teacherName search by teacher full name (contains, case-insensitive)
+     * @param phone       search by phone number (contains)
+     * @param email       search by email (contains, case-insensitive)
+     * @param pageable    pagination and sorting parameters
      * @return page of teachers matching the criteria
      */
     public Page<TeacherDTO> search(Pageable pageable,
-                                  String teacherName,
-                                  String phone,
-                                  String email) {
+            String teacherName,
+            String phone,
+            String email) {
         try {
             log.info("Searching teachers - page: {}, size: {}, sort: {}",
                     pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
-            
+
             // Prepare search patterns for LIKE queries (add wildcards)
-            String teacherNamePattern = (teacherName != null && !teacherName.isEmpty()) ? "%" + teacherName + "%" : null;
+            String teacherNamePattern = (teacherName != null && !teacherName.isEmpty()) ? "%" + teacherName + "%"
+                    : null;
             String phonePattern = (phone != null && !phone.isEmpty()) ? "%" + phone + "%" : null;
             String emailPattern = (email != null && !email.isEmpty()) ? "%" + email + "%" : null;
 

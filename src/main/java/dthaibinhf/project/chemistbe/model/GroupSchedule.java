@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -42,6 +41,5 @@ public class GroupSchedule extends BaseEntity {
     public DayOfWeek getDayOfWeekEnum() {
         return dayOfWeek != null ? DayOfWeek.valueOf(dayOfWeek) : null;
     }
-
 
 }

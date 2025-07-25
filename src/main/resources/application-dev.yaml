@@ -1,52 +1,40 @@
 server:
   port: 8080
 
-spring: 
+spring:
   application:
     name: chemist-BE
-
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ""
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:18112003_Supabase}
+    url: jdbc:postgresql://db.zbxgzvwcfufjyqznkawn.supabase.co:5432/postgres
+    driver-class-name: org.postgresql.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create-drop
-    show-sql: false
+      ddl-auto: none
+    open-in-view: true
     properties:
       hibernate:
-        format_sql: false
         cache:
           use_second_level_cache: false
-
-  h2:
-    console:
-      enabled: false
 
   jackson:
     time-zone: Asia/Ho_Chi_Minh
 
   cache:
-    type: none
-
-logging:
-  level:
-    org:
-      springframework:
-        web: WARN
-      hibernate: WARN
-    com:
-      zaxxer:
-        hikari: WARN
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=30m
 
 # doc
 springdoc:
   api-docs:
     path: /api-docs
     enabled: true
+    yaml:
+      enabled: true
+      path: /api-docs.yaml
   swagger-ui:
     path: /swagger-ui-custom.html
     enabled: true

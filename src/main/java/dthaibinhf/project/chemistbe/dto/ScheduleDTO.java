@@ -11,11 +11,15 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
- * DTO (Data Transfer Object) for {@link dthaibinhf.project.chemistbe.model.Schedule}
+ * DTO (Data Transfer Object) for
+ * {@link dthaibinhf.project.chemistbe.model.Schedule}
  * 
- * This class is used for transferring schedule data between layers, particularly
- * between the service layer and the controller layer. It contains all the necessary
- * fields to represent a schedule in the system, with appropriate JSON property mappings
+ * This class is used for transferring schedule data between layers,
+ * particularly
+ * between the service layer and the controller layer. It contains all the
+ * necessary
+ * fields to represent a schedule in the system, with appropriate JSON property
+ * mappings
  * for API responses.
  */
 @Value

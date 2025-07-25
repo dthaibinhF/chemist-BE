@@ -17,6 +17,8 @@ public abstract class GroupScheduleMapper {
     @Autowired
     GroupRepository groupRepository;
 
+    @Mapping(source = "roomName", target = "room.name")
+    @Mapping(source = "roomId", target = "room.id")
     @Mapping(target = "group", ignore = true)
     abstract public GroupSchedule toEntity(GroupScheduleDTO groupScheduleDTO);
 
@@ -31,8 +33,10 @@ public abstract class GroupScheduleMapper {
     }
 
 
-    @Mapping(target = "groupId", source = "group.id")
-    @Mapping(target = "groupName", source = "group.name")
+    @Mapping(source = "room.name", target = "roomName")
+    @Mapping(source = "room.id", target = "roomId")
+    @Mapping(source = "group.id", target = "groupId")
+    @Mapping(source = "group.name", target = "groupName")
     abstract public GroupScheduleDTO toDto(GroupSchedule groupSchedule);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
