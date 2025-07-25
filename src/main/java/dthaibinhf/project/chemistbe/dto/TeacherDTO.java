@@ -1,8 +1,11 @@
 package dthaibinhf.project.chemistbe.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import dthaibinhf.project.chemistbe.model.SalaryType;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
@@ -31,4 +34,20 @@ public class TeacherDTO extends BaseDTO implements Serializable {
      * This can be used to calculate the salary of the teacher.
      */
     Set<ScheduleDTO> schedules;
+
+    /**
+     * The type of salary calculation for this teacher.
+     * Mapped to "salary_type" in JSON.
+     */
+    @JsonProperty("salary_type")
+    SalaryType salaryType;
+
+    /**
+     * The base rate for salary calculations.
+     * For PER_LESSON: rate per lesson
+     * For FIXED: monthly base salary
+     * Mapped to "base_rate" in JSON.
+     */
+    @JsonProperty("base_rate")
+    BigDecimal baseRate;
 }

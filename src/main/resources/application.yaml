@@ -16,6 +16,18 @@ spring:
       hibernate:
         cache:
           use_second_level_cache: false
+
+  # Flyway Database Migration Configuration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+    sql-migration-suffixes: .sql
+    validate-on-migrate: true
+    clean-disabled: true
+    schemas: public
+
   jackson:
     time-zone: Asia/Ho_Chi_Minh
   cache:

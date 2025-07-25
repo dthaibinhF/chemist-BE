@@ -67,4 +67,21 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
                         @Param("startTime") OffsetDateTime startTime,
                         @Param("endTime") OffsetDateTime endTime,
                         @Param("excludeId") Integer excludeId);
+
+        /**
+         * Find all active schedules for a specific teacher within a date range.
+         * Used for salary calculation to count lessons taught in a specific month.
+         * 
+         * @param teacherId The ID of the teacher
+         * @param startDateTime Start of the date range
+         * @param endDateTime End of the date range
+         * @return List of schedules for the teacher in the date range
+         */
+        @Query("SELECT s FROM Schedule s WHERE s.teacher.id = :teacherId " +
+               "AND (s.endAt IS NULL OR s.endAt > CURRENT_TIMESTAMP) " +
+               "AND s.startTime >= :startDateTime AND s.startTime <= :endDateTime " +
+               "ORDER BY s.startTime")
+        List<Schedule> findByTeacherIdAndDateRange(@Param("teacherId") Integer teacherId,
+                                                  @Param("startDateTime") OffsetDateTime startDateTime,
+                                                  @Param("endDateTime") OffsetDateTime endDateTime);
 }

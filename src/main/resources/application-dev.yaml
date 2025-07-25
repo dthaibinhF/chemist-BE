@@ -28,6 +28,17 @@ spring:
     caffeine:
       spec: maximumSize=1000,expireAfterWrite=30m
 
+  # Flyway Database Migration Configuration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+    sql-migration-suffixes: .sql
+    validate-on-migrate: true
+    clean-disabled: true
+    schemas: public
+
 # doc
 springdoc:
   api-docs:

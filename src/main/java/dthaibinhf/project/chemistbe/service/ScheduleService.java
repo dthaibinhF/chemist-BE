@@ -201,10 +201,6 @@ public class ScheduleService {
         if (!VALID_DELIVERY_MODES.contains(deliveryMode)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid delivery mode");
         }
-
-        if (ONLINE_DELIVERY_MODE.equals(deliveryMode) && isEmptyMeetingLink(scheduleDTO)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Meeting link required for online delivery");
-        }
     }
 
     private boolean isEmptyMeetingLink(ScheduleDTO scheduleDTO) {
