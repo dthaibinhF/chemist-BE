@@ -23,6 +23,8 @@ public interface ScheduleMapper {
 
     @Mapping(source = "group.id", target = "groupId")
     @Mapping(source = "group.name", target = "groupName")
+    @Mapping(target = "teacherId", source = "teacher.id")
+    @Mapping(target = "teacherName", source = "teacher.account.name")
     ScheduleDTO toDto(Schedule schedule);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

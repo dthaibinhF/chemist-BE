@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: chemist-BE
+  profiles:
+    active: dev
+  datasource:
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:root}
+    url: jdbc:postgresql://127.0.0.1:5432/chemist
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: true
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: false
+
+  # Flyway Database Migration Configuration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+    sql-migration-suffixes: .sql
+    validate-on-migrate: true
+    clean-disabled: true
+    schemas: public
+
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=30m
+
+server:
+  port: 8080

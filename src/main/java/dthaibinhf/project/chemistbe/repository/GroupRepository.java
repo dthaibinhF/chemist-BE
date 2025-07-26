@@ -10,33 +10,40 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface GroupRepository extends JpaRepository<Group, Integer>  {
+public interface GroupRepository extends JpaRepository<Group, Integer> {
     @Query("SELECT g FROM Group g " +
-            "LEFT JOIN FETCH g.fee " +
-            "LEFT JOIN FETCH g.academicYear " +
-            "LEFT JOIN FETCH g.grade " +
-            "WHERE g.id = :id AND (g.endAt IS NULL OR g.endAt > CURRENT_TIMESTAMP)")
+           "LEFT JOIN FETCH g.fee " +
+           "LEFT JOIN FETCH g.academicYear " +
+           "LEFT JOIN FETCH g.grade " +
+           "LEFT JOIN FETCH g.groupSchedules sc " +
+           "LEFT JOIN FETCH sc.room " +
+           "WHERE g.id = :id AND (g.endAt IS NULL OR g.endAt > CURRENT_TIMESTAMP)")
     Optional<Group> findActiveById(@Param("id") Integer id);
 
     @Query("SELECT g FROM Group g " +
-            "LEFT JOIN FETCH g.fee " +
-            "LEFT JOIN FETCH g.academicYear " +
-            "LEFT JOIN FETCH g.grade " +
-            "LEFT JOIN FETCH g.groupSchedules " +
-            "WHERE g.endAt IS NULL OR g.endAt > CURRENT_TIMESTAMP")
+           "LEFT JOIN FETCH g.fee " +
+           "LEFT JOIN FETCH g.academicYear " +
+           "LEFT JOIN FETCH g.grade " +
+           "LEFT JOIN FETCH g.groupSchedules gc " +
+           "LEFT JOIN FETCH gc.room " +
+           "WHERE g.endAt IS NULL OR g.endAt > CURRENT_TIMESTAMP")
     List<Group> findAllActiveGroups();
 
     @Query("SELECT g FROM Group g " +
-            "LEFT JOIN FETCH g.fee " +
-            "LEFT JOIN FETCH g.academicYear " +
-            "LEFT JOIN FETCH g.grade " +
-            "WHERE g.academicYear.id = :academicYearId AND (g.endAt IS NULL OR g.endAt > CURRENT_TIMESTAMP)")
+           "LEFT JOIN FETCH g.fee " +
+           "LEFT JOIN FETCH g.academicYear " +
+           "LEFT JOIN FETCH g.grade " +
+           "LEFT JOIN FETCH g.groupSchedules gc " +
+           "LEFT JOIN FETCH gc.room " +
+           "WHERE g.academicYear.id = :academicYearId AND (g.endAt IS NULL OR g.endAt > CURRENT_TIMESTAMP)")
     List<Group> findActiveByAcademicYearId(@Param("academicYearId") Integer academicYearId);
 
     @Query("SELECT g FROM Group g " +
-            "LEFT JOIN FETCH g.fee " +
-            "LEFT JOIN FETCH g.academicYear " +
-            "LEFT JOIN FETCH g.grade " +
-            "WHERE g.grade.id = :gradeId AND (g.endAt IS NULL OR g.endAt > CURRENT_TIMESTAMP)")
+           "LEFT JOIN FETCH g.fee " +
+           "LEFT JOIN FETCH g.academicYear " +
+           "LEFT JOIN FETCH g.grade " +
+           "LEFT JOIN FETCH g.groupSchedules gc " +
+           "LEFT JOIN FETCH gc.room " +
+           "WHERE g.grade.id = :gradeId AND (g.endAt IS NULL OR g.endAt > CURRENT_TIMESTAMP)")
     List<Group> findActiveByGradeId(@Param("gradeId") Integer gradeId);
 }

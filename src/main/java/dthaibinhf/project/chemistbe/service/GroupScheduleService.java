@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,15 +34,16 @@ public class GroupScheduleService {
     ScheduleRepository scheduleRepository;
 
     /**
-     * Combines a LocalDate with a LocalTime to create an OffsetDateTime using Ho Chi Minh City timezone.
-     * This is used to convert GroupSchedule template times (LocalTime) with schedule dates (LocalDate)
+     * Combines a LocalDate with a LocalTime to create an OffsetDateTime using Ho
+     * Chi Minh City timezone.
+     * This is used to convert GroupSchedule template times (LocalTime) with
+     * schedule dates (LocalDate)
      * into Schedule entity times (OffsetDateTime).
      */
     private OffsetDateTime combineDateTime(LocalDate date, LocalTime time) {
         ZoneId hoChiMinhZone = ZoneId.of("Asia/Ho_Chi_Minh");
         return OffsetDateTime.of(date, time, hoChiMinhZone.getRules().getOffset(date.atTime(time)));
     }
-
 
     public List<GroupScheduleDTO> getAllGroupSchedules() {
         List<GroupSchedule> groupSchedules = groupScheduleRepository.findAllActiveGroupSchedule();
@@ -52,13 +52,13 @@ public class GroupScheduleService {
 
     public GroupScheduleDTO getGroupScheduleById(Integer id) {
         GroupSchedule groupSchedule = groupScheduleRepository.findActiveById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group schedule not found with id: " + id)
-        );
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group schedule not found with id: " + id));
         return groupScheduleMapper.toDto(groupSchedule);
     }
 
     public List<GroupScheduleDTO> getGroupScheduleByGroupId(Integer groupId) {
-        return groupScheduleRepository.findAllActiveByGroupId(groupId).stream().map(groupScheduleMapper::toDto).collect(Collectors.toList());
+        return groupScheduleRepository.findAllActiveByGroupId(groupId).stream().map(groupScheduleMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -72,8 +72,7 @@ public class GroupScheduleService {
     @Transactional
     public GroupScheduleDTO updateGroupSchedule(Integer id, @Valid GroupScheduleDTO groupScheduleDTO) {
         GroupSchedule groupSchedule = groupScheduleRepository.findActiveById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group schedule not found with id: " + id)
-        );
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group schedule not found with id: " + id));
 
         // Store the original day of week before updating
         DayOfWeek originalDayOfWeek = groupSchedule.getDayOfWeekEnum();
@@ -97,8 +96,6 @@ public class GroupScheduleService {
 
         // Get current date/time
         OffsetDateTime now = OffsetDateTime.now();
-        LocalDate nowDate = now.toLocalDate();
-
 
         // Find all active schedules for this group that are in the future
         List<Schedule> schedules = scheduleRepository.findAllActivePageable(
@@ -137,8 +134,7 @@ public class GroupScheduleService {
     @Transactional
     public void deleteGroupSchedule(Integer id) {
         GroupSchedule groupSchedule = groupScheduleRepository.findActiveById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group schedule not found with id: " + id)
-        );
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group schedule not found with id: " + id));
         groupSchedule.softDelete();
         groupScheduleRepository.save(groupSchedule);
     }
