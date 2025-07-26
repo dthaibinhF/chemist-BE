@@ -41,6 +41,11 @@ public abstract class PaymentDetailMapper {
     @Mapping(source = "fee.name", target = "feeName")
     @Mapping(source = "student.id", target = "studentId")
     @Mapping(source = "student.name", target = "studentName")
+    @Mapping(source = "paymentStatus", target = "paymentStatus")
+    @Mapping(source = "dueDate", target = "dueDate")
+    @Mapping(source = "generatedAmount", target = "generatedAmount")
+    @Mapping(target = "effectiveDiscount", expression = "java(paymentDetail.getEffectiveDiscount())")
+    @Mapping(target = "isOverdue", expression = "java(paymentDetail.isOverdue())")
     public abstract PaymentDetailDTO toDto(PaymentDetail paymentDetail);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
