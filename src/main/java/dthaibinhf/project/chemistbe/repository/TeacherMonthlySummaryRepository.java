@@ -138,4 +138,18 @@ public interface TeacherMonthlySummaryRepository extends JpaRepository<TeacherMo
     @Query("SELECT tms FROM TeacherMonthlySummary tms WHERE tms.endAt IS NULL " +
            "ORDER BY tms.year DESC, tms.month DESC, tms.teacher.account.name")
     Page<TeacherMonthlySummary> findAllActive(Pageable pageable);
+    
+    /**
+     * Get all teacher IDs that already have salary summaries for a specific month/year.
+     * Used for bulk existence checking to avoid N+1 queries.
+     * 
+     * @param month The month (1-12)
+     * @param year The year
+     * @return Set of teacher IDs that already have summaries
+     */
+    @Query("SELECT tms.teacher.id FROM TeacherMonthlySummary tms WHERE tms.month = :month " +
+           "AND tms.year = :year AND tms.endAt IS NULL")
+    List<Integer> findTeacherIdsWithSummaryByMonthAndYear(
+            @Param("month") Integer month, 
+            @Param("year") Integer year);
 }

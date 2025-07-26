@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service for calculating teacher salaries based on their schedules and attendance.
@@ -57,15 +58,9 @@ public class SalaryCalculationService {
         // Validate inputs
         validateDateInputs(month, year);
         
-        // Check if teacher exists
+        // Check if a teacher exists
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new IllegalArgumentException("Teacher not found with ID: " + teacherId));
-        
-        // Check if summary already exists
-        if (monthlySummaryRepository.existsByTeacherIdAndMonthAndYear(teacherId, month, year)) {
-            throw new IllegalStateException("Monthly salary summary already exists for teacher " + 
-                                          teacherId + " for " + month + "/" + year);
-        }
         
         // Calculate lesson metrics
         LessonMetrics metrics = calculateLessonMetrics(teacherId, month, year);
@@ -87,12 +82,21 @@ public class SalaryCalculationService {
                 .totalSalary(calculation.totalSalary)
                 .build();
         
-        TeacherMonthlySummary savedSummary = monthlySummaryRepository.save(summary);
-        
-        log.info("Successfully calculated salary for teacher {}: Base={}, Bonus={}, Total={}", 
-                teacherId, calculation.baseSalary, calculation.performanceBonus, calculation.totalSalary);
-        
-        return savedSummary;
+        try {
+            TeacherMonthlySummary savedSummary = monthlySummaryRepository.save(summary);
+            
+            log.info("Successfully calculated salary for teacher {}: Base={}, Bonus={}, Total={}", 
+                    teacherId, calculation.baseSalary, calculation.performanceBonus, calculation.totalSalary);
+            
+            return savedSummary;
+        } catch (Exception e) {
+            // Handle constraint violation (duplicate entry) gracefully
+            if (e.getMessage() != null && e.getMessage().contains("uk_teacher_monthly_summary_unique")) {
+                throw new IllegalStateException("Monthly salary summary already exists for teacher " + 
+                                              teacherId + " for " + month + "/" + year);
+            }
+            throw e;
+        }
     }
     
     /**
@@ -107,10 +111,19 @@ public class SalaryCalculationService {
         
         validateDateInputs(month, year);
         
+        // Get all active teachers
         List<Teacher> activeTeachers = teacherRepository.findAllActiveTeachers();
         
+        // Bulk check for existing summaries to avoid N+1 queries
+        List<Integer> teacherIdsWithExistingSummaries = monthlySummaryRepository
+                .findTeacherIdsWithSummaryByMonthAndYear(month, year);
+        
+        log.info("Found {} active teachers, {} already have summaries for {}/{}", 
+                activeTeachers.size(), teacherIdsWithExistingSummaries.size(), month, year);
+        
+        // Filter out teachers who already have summaries and calculate for the rest
         return activeTeachers.stream()
-                .filter(teacher -> !monthlySummaryRepository.existsByTeacherIdAndMonthAndYear(teacher.getId(), month, year))
+                .filter(teacher -> !teacherIdsWithExistingSummaries.contains(teacher.getId()))
                 .map(teacher -> {
                     try {
                         return calculateMonthlySalary(teacher.getId(), month, year);
@@ -119,7 +132,7 @@ public class SalaryCalculationService {
                         return null;
                     }
                 })
-                .filter(summary -> summary != null)
+                .filter(Objects::nonNull)
                 .toList();
     }
     
@@ -174,19 +187,14 @@ public class SalaryCalculationService {
         
         int scheduledLessons = schedules.size();
         
-        // Count completed lessons (schedules with at least one attendance marked as completed)
-        long completedLessons = schedules.stream()
-                .mapToLong(schedule -> schedule.getAttendances().stream()
-                        .mapToLong(attendance -> "PRESENT".equalsIgnoreCase(attendance.getStatus()) ? 1L : 0L)
-                        .sum())
-                .sum();
+        // Count completed lessons (all scheduled lessons are considered completed by teacher)
+        // Note: Every schedule has an assigned teacher, so we assume teacher presence for all scheduled lessons
+        int completedLessons = scheduledLessons;
         
-        // Calculate completion rate
-        BigDecimal completionRate = scheduledLessons > 0 
-                ? BigDecimal.valueOf(completedLessons).divide(BigDecimal.valueOf(scheduledLessons), 4, RoundingMode.HALF_UP)
-                : BigDecimal.ZERO;
+        // Calculate completion rate (100% since all scheduled lessons are considered completed)
+        BigDecimal completionRate = scheduledLessons > 0 ? BigDecimal.ONE : BigDecimal.ZERO;
         
-        return new LessonMetrics((int) completedLessons, scheduledLessons, completionRate);
+        return new LessonMetrics(completedLessons, scheduledLessons, completionRate);
     }
     
     /**
@@ -236,11 +244,14 @@ public class SalaryCalculationService {
             throw new IllegalArgumentException("Year must be between 2020 and 2100");
         }
         
-        // Prevent calculation for future months
+        // Prevent calculation for future months (allow current month and past months)
         LocalDate now = LocalDate.now();
         LocalDate requestedDate = LocalDate.of(year, month, 1);
-        if (requestedDate.isAfter(now.withDayOfMonth(1))) {
-            throw new IllegalArgumentException("Cannot calculate salary for future months");
+        LocalDate currentMonth = now.withDayOfMonth(1);
+        
+        if (requestedDate.isAfter(currentMonth)) {
+            throw new IllegalArgumentException("Cannot calculate salary for future months. " +
+                    "Requested: " + year + "/" + month + ", Current: " + now.getYear() + "/" + now.getMonthValue());
         }
     }
     

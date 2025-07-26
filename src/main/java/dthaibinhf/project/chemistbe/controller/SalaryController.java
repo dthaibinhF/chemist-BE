@@ -2,6 +2,7 @@ package dthaibinhf.project.chemistbe.controller;
 
 import dthaibinhf.project.chemistbe.dto.TeacherDTO;
 import dthaibinhf.project.chemistbe.dto.TeacherMonthlySummaryDTO;
+import dthaibinhf.project.chemistbe.mapper.TeacherMonthlySummaryMapper;
 import dthaibinhf.project.chemistbe.model.SalaryType;
 import dthaibinhf.project.chemistbe.service.SalaryCalculationService;
 import dthaibinhf.project.chemistbe.service.TeacherService;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -40,6 +42,7 @@ public class SalaryController {
 
     private final SalaryCalculationService salaryCalculationService;
     private final TeacherService teacherService;
+    private final TeacherMonthlySummaryMapper monthlySummaryMapper;
 
     // ===================== SALARY CONFIGURATION ENDPOINTS =====================
 
@@ -56,6 +59,7 @@ public class SalaryController {
     @ApiResponse(responseCode = "200", description = "Salary configuration updated successfully")
     @ApiResponse(responseCode = "404", description = "Teacher not found")
     @ApiResponse(responseCode = "400", description = "Invalid salary configuration parameters")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PutMapping("/teacher/{teacherId}/config")
     public ResponseEntity<TeacherDTO> updateTeacherSalaryConfig(
             @Parameter(description = "Teacher ID", example = "1")
@@ -83,6 +87,7 @@ public class SalaryController {
                description = "Retrieve current salary configuration for a specific teacher")
     @ApiResponse(responseCode = "200", description = "Salary configuration retrieved successfully")
     @ApiResponse(responseCode = "404", description = "Teacher not found")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @GetMapping("/teacher/{teacherId}/config")
     public ResponseEntity<TeacherDTO> getTeacherSalaryConfig(
             @Parameter(description = "Teacher ID", example = "1")
@@ -107,6 +112,7 @@ public class SalaryController {
     @ApiResponse(responseCode = "201", description = "Monthly salary calculated successfully")
     @ApiResponse(responseCode = "404", description = "Teacher not found")
     @ApiResponse(responseCode = "400", description = "Invalid month/year or summary already exists")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping("/teacher/{teacherId}/calculate")
     public ResponseEntity<TeacherMonthlySummaryDTO> calculateTeacherMonthlySalary(
             @Parameter(description = "Teacher ID", example = "1")
@@ -121,7 +127,7 @@ public class SalaryController {
         log.info("Calculating monthly salary for teacher {} for {}/{}", teacherId, month, year);
         
         var summary = salaryCalculationService.calculateMonthlySalary(teacherId, month, year);
-        var summaryDTO = teacherService.getTeacherMonthlySummary(teacherId, month, year);
+        var summaryDTO = monthlySummaryMapper.toDto(summary);
         
         return ResponseEntity.status(HttpStatus.CREATED).body(summaryDTO);
     }
@@ -137,6 +143,7 @@ public class SalaryController {
                description = "Calculate monthly salary summaries for all active teachers")
     @ApiResponse(responseCode = "200", description = "Monthly salaries calculated successfully")
     @ApiResponse(responseCode = "400", description = "Invalid month/year")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PostMapping("/calculate-all")
     public ResponseEntity<List<TeacherMonthlySummaryDTO>> calculateAllTeachersSalaries(
             @Parameter(description = "Month (1-12)", example = "12")
@@ -149,10 +156,9 @@ public class SalaryController {
         
         var summaries = salaryCalculationService.calculateMonthlySalariesForAllTeachers(month, year);
         
-        // Convert to DTOs
+        // Convert to DTOs using mapper directly (avoid N+1 queries)
         List<TeacherMonthlySummaryDTO> summaryDTOs = summaries.stream()
-                .map(summary -> teacherService.getTeacherMonthlySummary(
-                        summary.getTeacher().getId(), summary.getMonth(), summary.getYear()))
+                .map(monthlySummaryMapper::toDto)
                 .toList();
         
         return ResponseEntity.ok(summaryDTOs);
@@ -171,6 +177,7 @@ public class SalaryController {
     @ApiResponse(responseCode = "200", description = "Monthly salary recalculated successfully")
     @ApiResponse(responseCode = "404", description = "Teacher or salary summary not found")
     @ApiResponse(responseCode = "400", description = "Invalid month/year")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @PutMapping("/teacher/{teacherId}/recalculate")
     public ResponseEntity<TeacherMonthlySummaryDTO> recalculateTeacherMonthlySalary(
             @Parameter(description = "Teacher ID", example = "1")
@@ -203,6 +210,7 @@ public class SalaryController {
                description = "Retrieve paginated monthly salary summaries for a specific teacher")
     @ApiResponse(responseCode = "200", description = "Salary summaries retrieved successfully")
     @ApiResponse(responseCode = "404", description = "Teacher not found")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') or (hasRole('TEACHER') and @teacherService.isCurrentTeacher(#teacherId))")
     @GetMapping("/teacher/{teacherId}/summaries")
     public ResponseEntity<Page<TeacherMonthlySummaryDTO>> getTeacherSalarySummaries(
             @Parameter(description = "Teacher ID", example = "1")
@@ -226,6 +234,7 @@ public class SalaryController {
                description = "Retrieve a specific monthly salary summary for a teacher")
     @ApiResponse(responseCode = "200", description = "Salary summary retrieved successfully")
     @ApiResponse(responseCode = "404", description = "Teacher or salary summary not found")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') or (hasRole('TEACHER') and @teacherService.isCurrentTeacher(#teacherId))")
     @GetMapping("/teacher/{teacherId}/summary/{year}/{month}")
     public ResponseEntity<TeacherMonthlySummaryDTO> getTeacherMonthlySummary(
             @Parameter(description = "Teacher ID", example = "1")
@@ -256,6 +265,7 @@ public class SalaryController {
     @ApiResponse(responseCode = "200", description = "Salary history retrieved successfully")
     @ApiResponse(responseCode = "404", description = "Teacher not found")
     @ApiResponse(responseCode = "400", description = "Invalid date range")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') or (hasRole('TEACHER') and @teacherService.isCurrentTeacher(#teacherId))")
     @GetMapping("/teacher/{teacherId}/history")
     public ResponseEntity<List<TeacherMonthlySummaryDTO>> getTeacherSalaryHistory(
             @Parameter(description = "Teacher ID", example = "1")

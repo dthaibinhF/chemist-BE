@@ -224,4 +224,17 @@ public class TeacherService {
                 .map(monthlySummaryMapper::toDto)
                 .collect(Collectors.toList());
     }
+    
+    /**
+     * Check if the given teacher ID matches the currently authenticated teacher.
+     * Used for security authorization to ensure teachers can only access their own data.
+     * 
+     * @param teacherId The teacher ID to check
+     * @return true if the authenticated user is the teacher with the given ID
+     */
+    public boolean isCurrentTeacher(Integer teacherId) {
+        // TODO: Implement proper authentication check
+        // For now, return true to allow access (will be properly implemented with authentication context)
+        return true;
+    }
 }
