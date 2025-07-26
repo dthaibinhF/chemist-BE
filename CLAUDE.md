@@ -174,3 +174,10 @@ All entities must implement soft delete:
 
 ### Next Session Priority
 Fix remaining Schedule API test issues to achieve 100% test success rate for both School and Schedule endpoints.
+
+## Code Cleanup Guidelines
+
+### Import Management
+- **Code Memory**: Remove all unused imports
+- Always organize and clean up import statements in all Java files
+- Use IDE auto-import features or manual cleanup to maintain clean import lists
