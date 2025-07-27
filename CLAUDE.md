@@ -13,11 +13,25 @@ Chemist-BE is a Spring Boot 3.4.7 REST API application for managing educational 
 - `./mvnw test` - Run all unit and integration tests
 - `./mvnw spring-boot:run` - Start the application on localhost:8080
 - `./mvnw clean package` - Build JAR file for deployment
+- `./mvnw test -Dtest=ClassName#methodName` - Run single test method
+
+### Critical Maven Configuration
+**Annotation Processor Setup** (Required for Lombok + MapStruct):
+```xml
+<annotationProcessorPaths>
+  <path>org.mapstruct:mapstruct-processor:1.5.5.Final</path>
+  <path>org.projectlombok:lombok:1.18.34</path>
+  <path>org.projectlombok:lombok-mapstruct-binding:0.2.0</path>
+</annotationProcessorPaths>
+```
+**Critical**: Processor order matters - MapStruct must come before Lombok for proper integration.
 
 ### Database Setup
 - Requires PostgreSQL database named `chemist` running on localhost:5432
 - Default credentials: username=postgres, password=root (configurable via environment variables)
 - Uses environment variables: `DB_USERNAME` and `DB_PASSWORD`
+- **Flyway Migrations**: Located in `src/main/resources/db/migration/`
+- **Timezone**: All timestamps use `Asia/Ho_Chi_Minh` via `OffsetDateTime` fields
 
 ### Development Profiles
 - `dev` - Development profile (default)
@@ -50,23 +64,28 @@ Follow this strict 6-layer pattern for all entities:
 - **URLs**: kebab-case for multi-word endpoints (e.g., `/academic-year`)
 
 ### Soft Delete Implementation
-All entities must implement soft delete:
-- Add `Boolean deleted = false` field to entities
+All entities must implement soft delete using `endAt` field:
+- Add `OffsetDateTime endAt` field to entities (null = active, timestamp = deleted)
+- Use `softDelete()` method: `this.endAt = OffsetDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"))`
 - Create `findActiveById()` and `findAllActive()` repository methods
-- Filter deleted records in all queries
+- Filter deleted records in all queries with `WHERE endAt IS NULL`
 
 ### Authentication and Security
-- JWT tokens required for most endpoints
+- JWT tokens required for most endpoints (Bearer token in Authorization header)
 - Role-based access control (ADMIN, TEACHER, MANAGER roles)
-- Custom authentication filter in SecurityConfig
+- Custom JWT filter before UsernamePasswordAuthenticationFilter
+- **JWT Configuration**: 1-hour access tokens, 7-day refresh tokens
+- **CORS**: Enabled for localhost:3000/3005/5173 and Netlify deployment
 - Some endpoints require specific roles (documented in INSTRUCTION.md)
 
 ## Important Files and Configurations
 
 ### Configuration Files
-- `SecurityConfig.java` - JWT and role-based security setup
-- `BlazePersistenceConfiguration.java` - Advanced query capabilities configuration
+- `SecurityConfig.java` - JWT and role-based security setup with CORS configuration
+- `BlazePersistenceConfiguration.java` - Advanced query capabilities and entity views
 - `application.properties` - Database and timezone settings (Asia/Ho_Chi_Minh)
+- `src/main/resources/db/migration/` - Flyway database migration scripts
+- **Entity Views**: GroupListView.java for performance optimization with Blaze Persistence
 
 ### Core Entity Relationships
 - Students belong to Groups
