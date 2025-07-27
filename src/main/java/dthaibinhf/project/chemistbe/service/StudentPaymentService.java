@@ -61,18 +61,18 @@ public class StudentPaymentService {
         Fee fee = group.getFee();
         AcademicYear academicYear = group.getAcademicYear();
         
-        // Check if payment summary already exists
+        // Check if the payment summary already exists
         if (summaryRepository.existsByStudentFeeAcademicYearAndGroup(studentId, fee.getId(), 
                 academicYear.getId(), groupId)) {
             throw new IllegalStateException("Payment summary already exists for student " + studentId + 
                                           " in group " + groupId);
         }
         
-        // Calculate payment amount (with pro-rata if needed)
+        // Calculate the payment amount (with pro rata if needed)
         BigDecimal amountDue = calculateAmountDue(fee, academicYear);
         OffsetDateTime dueDate = calculateDueDate();
         
-        // Create payment summary
+        // Create a payment summary
         StudentPaymentSummary summary = StudentPaymentSummary.builder()
                 .student(student)
                 .fee(fee)
@@ -158,6 +158,66 @@ public class StudentPaymentService {
         
         log.info("Updated payment summary for student {}: paid={}, status={}", 
                 studentId, totalPaid, summary.getPaymentStatus());
+    }
+    
+    /**
+     * Update payment summary after a payment is made, or create one if it doesn't exist.
+     * This method handles the case where a payment detail is created before a payment summary exists.
+     * 
+     * @param studentId The student ID
+     * @param feeId The fee ID
+     * @param academicYearId The academic year ID
+     * @param groupId The group ID (optional)
+     */
+    public void updateOrCreatePaymentSummaryAfterPayment(Integer studentId, Integer feeId, 
+                                                        Integer academicYearId, Integer groupId) {
+        log.info("Updating or creating payment summary for student {} after payment", studentId);
+        
+        // Try to find existing summary
+        var existingSummary = summaryRepository
+                .findActiveByStudentFeeAcademicYearAndGroup(studentId, feeId, academicYearId, groupId);
+        
+        if (existingSummary.isPresent()) {
+            // Update existing summary
+            StudentPaymentSummary summary = existingSummary.get();
+            BigDecimal totalPaid = paymentDetailRepository.getTotalAmountPaidByStudentAndFee(studentId, feeId);
+            
+            summary.setTotalAmountPaid(totalPaid);
+            summary.recalculateStatus();
+            summaryRepository.save(summary);
+            
+            log.info("Updated existing payment summary for student {}: paid={}, status={}", 
+                    studentId, totalPaid, summary.getPaymentStatus());
+        } else {
+            // Create new summary if groupId is provided
+            if (groupId != null) {
+                try {
+                    generatePaymentForStudentInGroup(studentId, groupId);
+                    log.info("Created new payment summary for student {} in group {}", studentId, groupId);
+                    
+                    // Now update the newly created summary
+                    var newSummary = summaryRepository
+                            .findActiveByStudentFeeAcademicYearAndGroup(studentId, feeId, academicYearId, groupId);
+                    
+                    if (newSummary.isPresent()) {
+                        StudentPaymentSummary summary = newSummary.get();
+                        BigDecimal totalPaid = paymentDetailRepository.getTotalAmountPaidByStudentAndFee(studentId, feeId);
+                        
+                        summary.setTotalAmountPaid(totalPaid);
+                        summary.recalculateStatus();
+                        summaryRepository.save(summary);
+                        
+                        log.info("Updated newly created payment summary for student {}: paid={}, status={}", 
+                                studentId, totalPaid, summary.getPaymentStatus());
+                    }
+                } catch (Exception e) {
+                    log.warn("Failed to create payment summary for student {} in group {}: {}", 
+                            studentId, groupId, e.getMessage());
+                }
+            } else {
+                log.warn("Cannot create payment summary for student {} - no group ID provided", studentId);
+            }
+        }
     }
     
     /**

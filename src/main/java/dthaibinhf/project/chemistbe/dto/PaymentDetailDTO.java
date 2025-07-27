@@ -54,11 +54,6 @@ public class PaymentDetailDTO extends BaseDTO implements Serializable {
     @JsonProperty("generated_amount")
     BigDecimal generatedAmount;
     
-    /**
-     * Effective discount amount.
-     */
-    @JsonProperty("effective_discount")
-    BigDecimal effectiveDiscount;
     
     /**
      * Whether this payment is overdue.

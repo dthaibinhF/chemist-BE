@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Primary;
 @Primary
 public interface StudentDetailMapper {
     @Mapping(target = "student", ignore = true)
+    @Mapping(target = "endAt", ignore = true)  // Prevent soft delete timestamp from being mapped
     @Mapping(source = "groupId", target = "group.id")
     @Mapping(source = "school", target = "school")
     @Mapping(source = "schoolClass", target = "schoolClass")
@@ -43,6 +44,7 @@ public interface StudentDetailMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "student", ignore = true)
+    @Mapping(target = "endAt", ignore = true)  // Prevent soft delete timestamp from being overwritten
     StudentDetail partialUpdate(StudentDetailDTO studentDetailDTO, @MappingTarget StudentDetail studentDetail);
 
     @AfterMapping

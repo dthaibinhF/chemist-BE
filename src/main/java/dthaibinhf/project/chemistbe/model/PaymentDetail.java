@@ -23,15 +23,31 @@ public class PaymentDetail extends BaseEntity {
     @JsonBackReference
     private Student student;
 
+    /**
+     * Payment method used for this transaction.
+     * Common values: CASH, BANK_TRANSFER, CREDIT_CARD, ONLINE_PAYMENT, etc.
+     */
     @Column(name = "pay_method", nullable = false, length = 20)
     private String payMethod;
 
+    /**
+     * Final amount actually paid by the student (after any discounts applied).
+     * This represents the net payment amount received.
+     */
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
+    /**
+     * Optional description or notes about this payment.
+     * Can include transaction references, payment details, etc.
+     */
     @Column(name = "description", length = Integer.MAX_VALUE)
     private String description;
 
+    /**
+     * Discount amount that was available/applied to this payment.
+     * This helps track the original vs discounted amount.
+     */
     @Column(name = "have_discount", precision = 10, scale = 2)
     private BigDecimal haveDiscount;
 
@@ -51,23 +67,14 @@ public class PaymentDetail extends BaseEntity {
     private OffsetDateTime dueDate;
 
     /**
-     * Original amount that was supposed to be paid before any discounts.
-     * This helps track the full fee amount vs actual payment amount.
+     * Original fee amount that was supposed to be paid (before any discounts).
+     * This represents the base amount from the fee structure.
+     * Used to calculate effective discounts: generatedAmount - amount = discount applied.
      */
     @Column(name = "generated_amount", precision = 10, scale = 2)
     private BigDecimal generatedAmount;
 
 
-    /**
-     * Calculate the effective discount applied to this payment.
-     * @return discount amount (generatedAmount - amount)
-     */
-    public BigDecimal getEffectiveDiscount() {
-        if (generatedAmount == null || amount == null) {
-            return haveDiscount != null ? haveDiscount : BigDecimal.ZERO;
-        }
-        return generatedAmount.subtract(amount);
-    }
 
     /**
      * Check if this payment is overdue.
@@ -82,22 +89,39 @@ public class PaymentDetail extends BaseEntity {
     /**
      * Update payment status based on current conditions.
      * This method should be called when payment amounts or dates change.
+     * 
+     * Business Logic:
+     * - amount: Final amount actually paid by student (after any discounts)
+     * - generatedAmount: Original amount that was supposed to be paid (before discounts)
+     * - haveDiscount: Available discount amount
+     * - Each PaymentDetail record represents an actual payment made
      */
     public void updatePaymentStatus() {
-        if (amount == null || generatedAmount == null) {
+        if (amount == null) {
             paymentStatus = PaymentStatus.PENDING;
             return;
         }
 
-        if (amount.compareTo(generatedAmount) >= 0) {
-            paymentStatus = PaymentStatus.PAID;
-        } else if (amount.compareTo(BigDecimal.ZERO) > 0) {
-            if (isOverdue()) {
-                paymentStatus = PaymentStatus.OVERDUE;
+        // If amount > 0, it means a payment has been made
+        if (amount.compareTo(BigDecimal.ZERO) > 0) {
+            // Calculate the expected amount (original - discount)
+            BigDecimal expectedAmount = generatedAmount != null ? generatedAmount : amount;
+            BigDecimal discountAmount = haveDiscount != null ? haveDiscount : BigDecimal.ZERO;
+            BigDecimal requiredAmount = expectedAmount.subtract(discountAmount);
+            
+            // Check if payment meets or exceeds the required amount
+            if (amount.compareTo(requiredAmount) >= 0) {
+                paymentStatus = PaymentStatus.PAID;
             } else {
-                paymentStatus = PaymentStatus.PARTIAL;
+                // Partial payment made
+                if (isOverdue()) {
+                    paymentStatus = PaymentStatus.OVERDUE;
+                } else {
+                    paymentStatus = PaymentStatus.PARTIAL;
+                }
             }
         } else {
+            // No payment made yet
             if (isOverdue()) {
                 paymentStatus = PaymentStatus.OVERDUE;
             } else {

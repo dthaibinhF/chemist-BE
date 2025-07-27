@@ -27,7 +27,6 @@ public class PaymentDetailService {
     PaymentDetailMapper paymentDetailMapper;
     StudentPaymentService studentPaymentService;
 
-    @Transactional(readOnly = true)
     public List<PaymentDetailDTO> getAllActivePaymentDetails() {
         return paymentDetailRepository.findAllActivePaymentDetails()
                 .stream()
@@ -35,7 +34,6 @@ public class PaymentDetailService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public PaymentDetailDTO getActivePaymentDetailById(Integer id) {
         PaymentDetail paymentDetail = paymentDetailRepository.findActiveById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Payment Detail not found with id: " + id));
@@ -44,8 +42,11 @@ public class PaymentDetailService {
 
     @Transactional
     public PaymentDetailDTO createPaymentDetail(PaymentDetailDTO paymentDetailDTO) {
+        // Validate payment amount integrity before creating an entity
+        validatePaymentAmountIntegrity(paymentDetailDTO);
+
         PaymentDetail paymentDetail = paymentDetailMapper.toEntity(paymentDetailDTO);
-        
+
         // Set default values for new fields if not provided
         if (paymentDetail.getPaymentStatus() == null) {
             paymentDetail.setPaymentStatus(PaymentStatus.PENDING);
@@ -54,29 +55,43 @@ public class PaymentDetailService {
             paymentDetail.setGeneratedAmount(paymentDetail.getAmount());
         }
         if (paymentDetail.getDueDate() == null) {
-            // Set default due date to 30 days from now
+            // Set the default due date to 30 days from now
             paymentDetail.setDueDate(OffsetDateTime.now().plusDays(30));
         }
-        
+
         // Update payment status based on amounts and due date
         paymentDetail.updatePaymentStatus();
-        
+
         PaymentDetail savedPaymentDetail = paymentDetailRepository.save(paymentDetail);
-        
-        // Update payment summary after creating payment detail
+
+        // Update the payment summary after creating payment detail
         try {
-            studentPaymentService.updatePaymentSummaryAfterPayment(
+            Integer academicYearId = savedPaymentDetail.getStudent()
+                    .getStudentDetails().stream()
+                    .filter(detail -> detail.getEndAt() == null)
+                    .findFirst()
+                    .map(detail -> detail.getAcademicYear().getId())
+                    .orElse(null);
+            
+            Integer groupId = savedPaymentDetail.getStudent()
+                    .getStudentDetails().stream()
+                    .filter(detail -> detail.getEndAt() == null)
+                    .findFirst()
+                    .map(detail -> detail.getGroup().getId())
+                    .orElse(null);
+
+            // Try to update existing payment summary, or create one if it doesn't exist
+            studentPaymentService.updateOrCreatePaymentSummaryAfterPayment(
                 savedPaymentDetail.getStudent().getId(),
                 savedPaymentDetail.getFee().getId(),
-                // Note: We need academic year and group from the student's current enrollment
-                // This is a simplified approach - in practice, you might need to pass these as parameters
-                null, // academicYearId - would need to be determined from current enrollment
-                null  // groupId - would need to be determined from current enrollment
+                academicYearId,
+                groupId
             );
+            return paymentDetailMapper.toDto(savedPaymentDetail);
         } catch (Exception e) {
-            log.warn("Failed to update payment summary after creating payment detail: {}", e.getMessage());
+            log.warn("Failed to update/create payment summary after creating payment detail: {}", e.getMessage());
         }
-        
+
         return paymentDetailMapper.toDto(savedPaymentDetail);
     }
 
@@ -85,25 +100,42 @@ public class PaymentDetailService {
         PaymentDetail existingPaymentDetail = paymentDetailRepository.findActiveById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Payment Detail not found with id: " + id));
 
+        // Validate payment amount integrity before updating
+        validatePaymentAmountIntegrity(paymentDetailDTO);
+
         PaymentDetail updatedPaymentDetail = paymentDetailMapper.partialUpdate(paymentDetailDTO, existingPaymentDetail);
-        
+
         // Update payment status based on new amounts and due date
         updatedPaymentDetail.updatePaymentStatus();
-        
+
         PaymentDetail savedPaymentDetail = paymentDetailRepository.save(updatedPaymentDetail);
-        
+
         // Update payment summary after updating payment detail
         try {
-            studentPaymentService.updatePaymentSummaryAfterPayment(
+            Integer academicYearId = savedPaymentDetail.getStudent()
+                    .getStudentDetails().stream()
+                    .filter(detail -> detail.getEndAt() == null)
+                    .findFirst()
+                    .map(detail -> detail.getAcademicYear().getId())
+                    .orElse(null);
+            
+            Integer groupId = savedPaymentDetail.getStudent()
+                    .getStudentDetails().stream()
+                    .filter(detail -> detail.getEndAt() == null)
+                    .findFirst()
+                    .map(detail -> detail.getGroup().getId())
+                    .orElse(null);
+
+            studentPaymentService.updateOrCreatePaymentSummaryAfterPayment(
                 savedPaymentDetail.getStudent().getId(),
                 savedPaymentDetail.getFee().getId(),
-                null, // academicYearId
-                null  // groupId
+                academicYearId,
+                groupId
             );
         } catch (Exception e) {
-            log.warn("Failed to update payment summary after updating payment detail: {}", e.getMessage());
+            log.warn("Failed to update/create payment summary after updating payment detail: {}", e.getMessage());
         }
-        
+
         return paymentDetailMapper.toDto(savedPaymentDetail);
     }
 
@@ -115,7 +147,6 @@ public class PaymentDetailService {
         paymentDetailRepository.save(paymentDetail);
     }
 
-    @Transactional(readOnly = true)
     public List<PaymentDetailDTO> getPaymentDetailsByStudentId(Integer studentId) {
         return paymentDetailRepository.findActiveByStudentId(studentId)
                 .stream()
@@ -123,7 +154,6 @@ public class PaymentDetailService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public List<PaymentDetailDTO> getPaymentDetailsByFeeId(Integer feeId) {
         return paymentDetailRepository.findActiveByFeeId(feeId)
                 .stream()
@@ -131,7 +161,6 @@ public class PaymentDetailService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public List<PaymentDetailDTO> getPaymentDetailsByStudentIdAndFeeId(Integer studentId, Integer feeId) {
         return paymentDetailRepository.findActiveByStudentIdAndFeeId(studentId, feeId)
                 .stream()
@@ -141,7 +170,7 @@ public class PaymentDetailService {
 
     /**
      * Get payment details by payment status.
-     * 
+     *
      * @param status The payment status
      * @return List of payment details with the specified status
      */
@@ -155,7 +184,7 @@ public class PaymentDetailService {
 
     /**
      * Get total amount paid by a student for a specific fee.
-     * 
+     *
      * @param studentId The student ID
      * @param feeId The fee ID
      * @return Total amount paid
@@ -167,7 +196,7 @@ public class PaymentDetailService {
 
     /**
      * Get payment details within a date range.
-     * 
+     *
      * @param startDate Start date
      * @param endDate End date
      * @return List of payment details within the date range
@@ -183,18 +212,21 @@ public class PaymentDetailService {
     /**
      * Create payment detail with automatic summary update.
      * This method ensures that payment summaries are properly updated.
-     * 
+     *
      * @param paymentDetailDTO The payment detail DTO
      * @param academicYearId The academic year ID for summary update
      * @param groupId The group ID for summary update
      * @return Created payment detail DTO
      */
     @Transactional
-    public PaymentDetailDTO createPaymentDetailWithSummaryUpdate(PaymentDetailDTO paymentDetailDTO, 
-                                                                Integer academicYearId, 
+    public PaymentDetailDTO createPaymentDetailWithSummaryUpdate(PaymentDetailDTO paymentDetailDTO,
+                                                                Integer academicYearId,
                                                                 Integer groupId) {
+        // Validate payment amount integrity before creating entity
+        validatePaymentAmountIntegrity(paymentDetailDTO);
+
         PaymentDetail paymentDetail = paymentDetailMapper.toEntity(paymentDetailDTO);
-        
+
         // Set default values for new fields if not provided
         if (paymentDetail.getPaymentStatus() == null) {
             paymentDetail.setPaymentStatus(PaymentStatus.PENDING);
@@ -205,23 +237,56 @@ public class PaymentDetailService {
         if (paymentDetail.getDueDate() == null) {
             paymentDetail.setDueDate(OffsetDateTime.now().plusDays(30));
         }
-        
+
         // Update payment status
         paymentDetail.updatePaymentStatus();
-        
+
         PaymentDetail savedPaymentDetail = paymentDetailRepository.save(paymentDetail);
-        
+
         // Update the payment summary with proper academic year and group info
-        studentPaymentService.updatePaymentSummaryAfterPayment(
+        studentPaymentService.updateOrCreatePaymentSummaryAfterPayment(
             savedPaymentDetail.getStudent().getId(),
             savedPaymentDetail.getFee().getId(),
             academicYearId,
             groupId
         );
-        
-        log.info("Created payment detail for student {} with amount {} and updated payment summary", 
+
+        log.info("Created payment detail for student {} with amount {} and updated payment summary",
                 savedPaymentDetail.getStudent().getId(), savedPaymentDetail.getAmount());
-        
+
         return paymentDetailMapper.toDto(savedPaymentDetail);
+    }
+
+    /**
+     * Validates that payment amount integrity is maintained.
+     * Ensures: amount + have_discount = generated_amount
+     *
+     * @param paymentDetailDTO The payment detail to validate
+     * @throws IllegalArgumentException if validation fails
+     */
+    private void validatePaymentAmountIntegrity(PaymentDetailDTO paymentDetailDTO) {
+        // Skip validation if generated_amount is null (backward compatibility)
+        if (paymentDetailDTO.getGeneratedAmount() == null || paymentDetailDTO.getAmount() == null) {
+            return;
+        }
+
+        BigDecimal discount = paymentDetailDTO.getHaveDiscount() != null ?
+            paymentDetailDTO.getHaveDiscount() : BigDecimal.ZERO;
+        BigDecimal expectedTotal = paymentDetailDTO.getAmount().add(discount);
+
+        if (!expectedTotal.equals(paymentDetailDTO.getGeneratedAmount())) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Payment amount integrity violation: amount (%.2f) + discount (%.2f) = %.2f must equal generated_amount (%.2f)",
+                    paymentDetailDTO.getAmount(),
+                    discount,
+                    expectedTotal,
+                    paymentDetailDTO.getGeneratedAmount()
+                )
+            );
+        }
+
+        log.debug("Payment amount integrity validated: amount={}, discount={}, generated_amount={}",
+                 paymentDetailDTO.getAmount(), discount, paymentDetailDTO.getGeneratedAmount());
     }
 }

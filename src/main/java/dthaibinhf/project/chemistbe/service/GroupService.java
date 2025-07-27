@@ -126,4 +126,13 @@ public class GroupService {
         group.softDelete();
         groupRepository.save(group);
     }
+
+    public GroupListDTO getGroupByGroupName(String groupName) {
+        String groupNamePattern = '%' + groupName + '%';
+        // Use findActiveByGroupName to search for the group by name
+        Group group = groupRepository.findActiveByGroupName(groupNamePattern).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + groupName)
+        );
+        return groupMapper.toListDto(group);
+    }
 }

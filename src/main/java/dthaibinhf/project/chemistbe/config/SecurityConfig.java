@@ -72,7 +72,11 @@ public class SecurityConfig {
                                         "/api/v1/payment-detail/**",
                                         "/api/v1/group-session/**",
                                         "/api/v1/student-detail/**",
-                                        "/api/v1/salary/**"
+                                        "/api/v1/salary/**",
+                                        "/api/v1/student-payment/**",
+                                        "/api/v1/statistics/**",
+                                        "/api/v1/notification/**",
+                                        "/api/v1/financial/**"
                                 ).authenticated()
                 )
 

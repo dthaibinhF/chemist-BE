@@ -15,11 +15,17 @@ raw = '''
 {
   "fee_id": 1,
   "fee_name": "học phí hè 12 2025-2026",
-  "student_id": 6,
-  "student_name": "Lê Khả Hân",
-  "pay_method": "CASH",
-  "amount": 100000,
-  "description": "Tiền tài liệu đóng trước",
-  "have_discount": 0
+  "student_id": 114,
+  "student_name": "Trần Huy Đạt",
+  "pay_method": "BANK_TRANSFER",
+  "amount": 1500000,
+  "description": "",
+  "have_discount": 0,
+  "payment_status": "PAID",
+  "due_date": "2025-07-27T00:00:00.000Z",
+  "generated_amount": 1500000,
+  "is_overdue": true,
+  "academicYearId": 4,
+  "groupId": 3
 }'''
 ```

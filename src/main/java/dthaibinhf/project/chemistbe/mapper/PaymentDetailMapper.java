@@ -44,7 +44,6 @@ public abstract class PaymentDetailMapper {
     @Mapping(source = "paymentStatus", target = "paymentStatus")
     @Mapping(source = "dueDate", target = "dueDate")
     @Mapping(source = "generatedAmount", target = "generatedAmount")
-    @Mapping(target = "effectiveDiscount", expression = "java(paymentDetail.getEffectiveDiscount())")
     @Mapping(target = "isOverdue", expression = "java(paymentDetail.isOverdue())")
     public abstract PaymentDetailDTO toDto(PaymentDetail paymentDetail);
 
