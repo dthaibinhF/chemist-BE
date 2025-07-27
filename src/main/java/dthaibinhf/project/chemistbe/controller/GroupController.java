@@ -1,3 +1,4 @@
+
 package dthaibinhf.project.chemistbe.controller;
 
 import dthaibinhf.project.chemistbe.dto.GroupDTO;
@@ -28,6 +29,11 @@ public class GroupController {
     @GetMapping("/{id}")
     public ResponseEntity<GroupDTO> getGroup(@PathVariable Integer id) {
         return ResponseEntity.ok(groupService.getGroupById(id));
+    }
+
+    @GetMapping("/name/{groupName}")
+    public ResponseEntity<GroupListDTO> getGroupByGroupName(@PathVariable String groupName) {
+        return ResponseEntity.ok(groupService.getGroupByGroupName(groupName));
     }
 
     @GetMapping
