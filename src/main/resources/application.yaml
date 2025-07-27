@@ -2,7 +2,7 @@ spring:
   application:
     name: chemist-BE
   profiles:
-    active: prod
+    active: dev
   datasource:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:root}

@@ -5,9 +5,9 @@ spring:
   application:
     name: chemist-BE
   datasource:
-    url: jdbc:postgresql://database-chemist.cv6oo2im84e7.ap-southeast-2.rds.amazonaws.com:5432/chemist
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:7AKD8DVuD2zExa1Vx28o}
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
