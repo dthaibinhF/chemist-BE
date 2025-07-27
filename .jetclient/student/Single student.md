@@ -7,7 +7,7 @@ id = 'fe3db4b5-ac2d-4254-bcd1-0f2e07596b9c'
 
 [[pathVariables]]
 key = 'id'
-value = '71'
+value = '6'
 
 [[headers]]
 key = 'Authorization'

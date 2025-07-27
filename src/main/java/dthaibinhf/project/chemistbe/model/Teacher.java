@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -42,4 +43,28 @@ public class Teacher extends BaseEntity {
     @OneToMany(mappedBy = "teacher")
     @JsonManagedReference
     private Set<Schedule> schedules = new LinkedHashSet<>();
+
+    /**
+     * The type of salary calculation for this teacher.
+     * Defaults to PER_LESSON calculation method.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "salary_type", length = 20)
+    private SalaryType salaryType = SalaryType.PER_LESSON;
+
+    /**
+     * The base rate for salary calculations.
+     * For PER_LESSON: rate per lesson
+     * For FIXED: monthly base salary
+     */
+    @Column(name = "base_rate", precision = 10, scale = 2)
+    private BigDecimal baseRate;
+
+    /**
+     * The set of monthly salary summaries for this teacher.
+     * One teacher can have many monthly summaries for tracking salary history.
+     */
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<TeacherMonthlySummary> monthlySummaries = new LinkedHashSet<>();
 }

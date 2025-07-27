@@ -2,7 +2,6 @@ package dthaibinhf.project.chemistbe.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import dthaibinhf.project.chemistbe.dto.StudentDetailDTO;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
@@ -14,7 +13,7 @@ import java.util.Set;
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
-@JsonPropertyOrder({"id", "name", "parent_phone", "scores", "attendances", "payment_details", "student_details"})
+@JsonPropertyOrder({ "id", "name", "parent_phone", "scores", "attendances", "payment_details", "student_details" })
 public class StudentDTO extends BaseDTO implements Serializable {
     String name;
     @JsonProperty("parent_phone")

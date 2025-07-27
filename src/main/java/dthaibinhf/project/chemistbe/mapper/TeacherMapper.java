@@ -15,7 +15,16 @@ public interface TeacherMapper {
         teacher.getTeacherDetails().forEach(teacherDetail -> teacherDetail.setTeacher(teacher));
     }
 
+    @AfterMapping
+    default void linkSchedules(@MappingTarget Teacher teacher) {
+        if (teacher.getSchedules() != null) {
+            teacher.getSchedules().forEach(schedule -> schedule.setTeacher(teacher));
+        }
+    }
+
     TeacherDTO toDto(Teacher teacher);
+
+
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Teacher partialUpdate(TeacherDTO teacherDTO, @MappingTarget Teacher teacher);

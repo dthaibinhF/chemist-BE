@@ -11,11 +11,15 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
- * DTO (Data Transfer Object) for {@link dthaibinhf.project.chemistbe.model.Schedule}
- * 
- * This class is used for transferring schedule data between layers, particularly
- * between the service layer and the controller layer. It contains all the necessary
- * fields to represent a schedule in the system, with appropriate JSON property mappings
+ * DTO (Data Transfer Object) for
+ * {@link dthaibinhf.project.chemistbe.model.Schedule}
+ * <p>
+ * This class is used for transferring schedule data between layers,
+ * particularly
+ * between the service layer and the controller layer. It contains all the
+ * necessary
+ * fields to represent a schedule in the system, with appropriate JSON property
+ * mappings
  * for API responses.
  */
 @Value
@@ -41,6 +45,7 @@ public class ScheduleDTO extends BaseDTO implements Serializable {
      * Required field.
      */
     @NotNull
+    @JsonProperty("start_time")
     OffsetDateTime startTime;
 
     /**
@@ -48,6 +53,7 @@ public class ScheduleDTO extends BaseDTO implements Serializable {
      * Required field.
      */
     @NotNull
+    @JsonProperty("end_time")
     OffsetDateTime endTime;
 
     /**
@@ -76,8 +82,10 @@ public class ScheduleDTO extends BaseDTO implements Serializable {
      * The teacher assigned to this schedule.
      * Optional field.
      */
-    TeacherDTO teacher;
-
+    @JsonProperty("teacher_id")
+    Integer teacherId;
+    @JsonProperty("teacher_name")
+    String teacherName;
     /**
      * The room where this schedule takes place.
      * Optional field.

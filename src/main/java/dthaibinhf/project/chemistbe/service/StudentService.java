@@ -14,16 +14,13 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,10 +57,10 @@ public class StudentService {
 
     @Transactional
     public StudentDTO updateStudent(Integer id, StudentDTO studentDTO) {
-        //find current active student by ID
+        // find current active student by ID
         Student student = studentRepository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found: " + id));
-        //handle new changes of studentDTO
+        // handle new changes of studentDTO
 
         // Update basic student information
         studentMapper.partialUpdate(studentDTO, student);
@@ -131,17 +128,20 @@ public class StudentService {
 
     /**
      * Get list of students by group ID
-     * Returns only the newest non-deleted student detail for each student in the group
+     * Returns only the newest non-deleted student detail for each student in the
+     * group
      *
      * @param groupId the ID of the group
-     * @return list of students with their newest non-deleted student detail for the specified group
+     * @return list of students with their newest non-deleted student detail for the
+     *         specified group
      */
     public List<StudentDTO> getStudentsByGroupId(Integer groupId) {
         if (groupId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Group ID cannot be null");
         }
 
-        // Find students with their newest non-deleted student details for the specified group
+        // Find students with their newest non-deleted student details for the specified
+        // group
         List<Student> students = studentRepository.findByGroupIdWithNewestActiveDetails(groupId);
 
         // Convert students to DTOs
@@ -154,7 +154,8 @@ public class StudentService {
      * Get history of student details for a specific student
      *
      * @param studentId the ID of the student
-     * @return list of all student details for the student, ordered by creation date (newest first)
+     * @return list of all student details for the student, ordered by creation date
+     *         (newest first)
      */
     public List<StudentDetailDTO> getStudentDetailHistory(Integer studentId) {
         if (studentId == null) {
@@ -163,7 +164,8 @@ public class StudentService {
 
         // Check if student exists
         studentRepository.findActiveById(studentId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found: " + studentId));
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found: " + studentId));
 
         // Get all student details for the student, ordered by creation date
         List<StudentDetail> studentDetails = studentDetailRepository.findAllByStudentIdOrderByCreatedAtDesc(studentId);
@@ -178,22 +180,21 @@ public class StudentService {
      * Search students with pagination and sorting
      * Search by student ID, phone, name, group name, school name, or class name
      *
-     * @param studentId  search by student ID (exact match)
-     * @param parentPhone      search by parent phone (contains)
-     * @param studentName       search by student name (contains, case-insensitive)
-     * @param groupName  search by group name (contains, case-insensitive)
-     * @param schoolName search by school name (contains, case-insensitive)
-     * @param className  search by school class name (contains, case-insensitive)
-     * @param pageable   pagination and sorting parameters
+     * @param studentId   search by student ID (exact match)
+     * @param parentPhone search by parent phone (contains)
+     * @param studentName search by student name (contains, case-insensitive)
+     * @param groupName   search by group name (contains, case-insensitive)
+     * @param schoolName  search by school name (contains, case-insensitive)
+     * @param className   search by school class name (contains, case-insensitive)
+     * @param pageable    pagination and sorting parameters
      * @return page of students matching the criteria
      */
     public Page<StudentDTO> search(Pageable pageable,
-                                       String studentName,
-                                       String groupName,
-                                       String schoolName,
-                                       String className,
-                                   String parentPhone
-    ) {
+            String studentName,
+            String groupName,
+            String schoolName,
+            String className,
+            String parentPhone) {
         try {
             log.info("Searching students - page: {}, size: {}, sort: {}",
                     pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
@@ -204,7 +205,6 @@ public class StudentService {
             String schoolNamePattern = !schoolName.isEmpty() ? "%" + schoolName + "%" : null;
             String classNamePattern = !className.isEmpty() ? "%" + className + "%" : null;
             String parentPhonePattern = !parentPhone.isEmpty() ? "%" + parentPhone + "%" : null;
-
 
             // Call repository method
             Page<Student> studentsPage = studentRepository.testSearchStudents(

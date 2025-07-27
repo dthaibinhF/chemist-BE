@@ -8,14 +8,13 @@ import lombok.Value;
 
 import java.io.Serializable;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
 
 /**
  * DTO for {@link GroupSchedule}
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
-@JsonPropertyOrder({"id", "group_id", "group_name", "day_of_week", "start_time", "end_time"})
+@JsonPropertyOrder({ "id", "group_id", "group_name", "day_of_week", "start_time", "end_time", "room_id", "room_name" })
 public class GroupScheduleDTO extends BaseDTO implements Serializable {
     @JsonProperty("group_id")
     Integer groupId;
@@ -27,4 +26,8 @@ public class GroupScheduleDTO extends BaseDTO implements Serializable {
     LocalTime startTime;
     @JsonProperty("end_time")
     LocalTime endTime;
+    @JsonProperty("room_id")
+    Integer roomId;
+    @JsonProperty("room_name")
+    String roomName;
 }

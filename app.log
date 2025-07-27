@@ -1,0 +1,1616 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< dthaibinhF.project:chemist-BE >--------------------
+[INFO] Building chemist-BE 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.4.7:run (default-cli) > test-compile @ chemist-BE >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ chemist-BE ---
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] Copying 3 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ chemist-BE ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 149 source files with javac [debug parameters release 21] to target/classes
+[INFO] MapStruct: Using accessor naming strategy: org.mapstruct.ap.spi.DefaultAccessorNamingStrategy
+[INFO] MapStruct: Using builder provider: org.mapstruct.ap.spi.DefaultBuilderProvider
+[INFO] MapStruct: Using enum naming strategy: org.mapstruct.ap.spi.DefaultEnumMappingStrategy
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.AcademicYearMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.AcademicYear toEntity(dthaibinhf.project.chemistbe.dto.AcademicYearDTO academicYearDTO).
+[INFO] -- MapStruct: mapping property: academicYearDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: academicYearDTO.getId().
+[INFO] -- MapStruct: mapping property: academicYearDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: academicYearDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: academicYearDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: academicYearDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: academicYearDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: academicYearDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: academicYearDTO.getYear() to: setYear(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: academicYearDTO.getYear().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.AcademicYearDTO toDto(dthaibinhf.project.chemistbe.model.AcademicYear academicYear).
+[INFO] -- MapStruct: mapping property: academicYear.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: academicYear.getId().
+[INFO] -- MapStruct: mapping property: academicYear.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: academicYear.getCreatedAt().
+[INFO] -- MapStruct: mapping property: academicYear.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: academicYear.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: academicYear.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: academicYear.getEndAt().
+[INFO] -- MapStruct: mapping property: academicYear.getYear() to: year.
+[INFO] -- MapStruct: selecting property mapping: academicYear.getYear().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.AcademicYear partialUpdate(dthaibinhf.project.chemistbe.dto.AcademicYearDTO academicYearDTO, @MappingTarget dthaibinhf.project.chemistbe.model.AcademicYear academicYear).
+[INFO] -- MapStruct: mapping property: academicYearDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: academicYearDTO.getId().
+[INFO] -- MapStruct: mapping property: academicYearDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: academicYearDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: academicYearDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: academicYearDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: academicYearDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: academicYearDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: academicYearDTO.getYear() to: setYear(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: academicYearDTO.getYear().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.SchoolMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.School toEntity(dthaibinhf.project.chemistbe.dto.SchoolDTO schoolDTO).
+[INFO] -- MapStruct: mapping property: schoolDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getId().
+[INFO] -- MapStruct: mapping property: schoolDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: schoolDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: schoolDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: schoolDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getName().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.SchoolDTO toDto(dthaibinhf.project.chemistbe.model.School school).
+[INFO] -- MapStruct: mapping property: school.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: school.getId().
+[INFO] -- MapStruct: mapping property: school.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: school.getCreatedAt().
+[INFO] -- MapStruct: mapping property: school.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: school.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: school.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: school.getEndAt().
+[INFO] -- MapStruct: mapping property: school.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: school.getName().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.School partialUpdate(dthaibinhf.project.chemistbe.dto.SchoolDTO schoolDTO, @MappingTarget dthaibinhf.project.chemistbe.model.School school).
+[INFO] -- MapStruct: mapping property: schoolDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getId().
+[INFO] -- MapStruct: mapping property: schoolDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: schoolDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: schoolDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: schoolDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getName().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.GradeMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Grade toEntity(dthaibinhf.project.chemistbe.dto.GradeDTO gradeDTO).
+[INFO] -- MapStruct: mapping property: gradeDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: gradeDTO.getId().
+[INFO] -- MapStruct: mapping property: gradeDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: gradeDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: gradeDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: gradeDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: gradeDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: gradeDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: gradeDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: gradeDTO.getName().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.GradeDTO toDto(dthaibinhf.project.chemistbe.model.Grade grade).
+[INFO] -- MapStruct: mapping property: grade.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: grade.getId().
+[INFO] -- MapStruct: mapping property: grade.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: grade.getCreatedAt().
+[INFO] -- MapStruct: mapping property: grade.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: grade.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: grade.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: grade.getEndAt().
+[INFO] -- MapStruct: mapping property: grade.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: grade.getName().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Grade partialUpdate(dthaibinhf.project.chemistbe.dto.GradeDTO gradeDTO, @MappingTarget dthaibinhf.project.chemistbe.model.Grade grade).
+[INFO] -- MapStruct: mapping property: gradeDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: gradeDTO.getId().
+[INFO] -- MapStruct: mapping property: gradeDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: gradeDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: gradeDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: gradeDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: gradeDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: gradeDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: gradeDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: gradeDTO.getName().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.TeacherMonthlySummaryMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.TeacherMonthlySummary toEntity(dthaibinhf.project.chemistbe.dto.TeacherMonthlySummaryDTO dto).
+[INFO] -- MapStruct: mapping property: dto.getMonth() to: month(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: dto.getMonth().
+[INFO] -- MapStruct: mapping property: dto.getYear() to: year(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: dto.getYear().
+[INFO] -- MapStruct: mapping property: dto.getScheduledLessons() to: scheduledLessons(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: dto.getScheduledLessons().
+[INFO] -- MapStruct: mapping property: dto.getCompletedLessons() to: completedLessons(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: dto.getCompletedLessons().
+[INFO] -- MapStruct: mapping property: dto.getCompletionRate() to: completionRate(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: dto.getCompletionRate().
+[INFO] -- MapStruct: mapping property: dto.getRatePerLesson() to: ratePerLesson(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: dto.getRatePerLesson().
+[INFO] -- MapStruct: mapping property: dto.getBaseSalary() to: baseSalary(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: dto.getBaseSalary().
+[INFO] -- MapStruct: mapping property: dto.getPerformanceBonus() to: performanceBonus(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: dto.getPerformanceBonus().
+[INFO] -- MapStruct: mapping property: dto.getTotalSalary() to: totalSalary(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: dto.getTotalSalary().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.TeacherMonthlySummaryDTO toDto(dthaibinhf.project.chemistbe.model.TeacherMonthlySummary entity).
+[INFO] -- MapStruct: mapping property: entityTeacherId( entity ) to: teacherId.
+[INFO] -- MapStruct: selecting property mapping: entityTeacherId( entity ).
+[INFO] -- MapStruct: mapping property: entityTeacherAccountName( entity ) to: teacherName.
+[INFO] -- MapStruct: selecting property mapping: entityTeacherAccountName( entity ).
+[INFO] -- MapStruct: mapping property: entity.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: entity.getId().
+[INFO] -- MapStruct: mapping property: entity.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: entity.getCreatedAt().
+[INFO] -- MapStruct: mapping property: entity.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: entity.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: entity.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: entity.getEndAt().
+[INFO] -- MapStruct: mapping property: entity.getMonth() to: month.
+[INFO] -- MapStruct: selecting property mapping: entity.getMonth().
+[INFO] -- MapStruct: mapping property: entity.getYear() to: year.
+[INFO] -- MapStruct: selecting property mapping: entity.getYear().
+[INFO] -- MapStruct: mapping property: entity.getScheduledLessons() to: scheduledLessons.
+[INFO] -- MapStruct: selecting property mapping: entity.getScheduledLessons().
+[INFO] -- MapStruct: mapping property: entity.getCompletedLessons() to: completedLessons.
+[INFO] -- MapStruct: selecting property mapping: entity.getCompletedLessons().
+[INFO] -- MapStruct: mapping property: entity.getCompletionRate() to: completionRate.
+[INFO] -- MapStruct: selecting property mapping: entity.getCompletionRate().
+[INFO] -- MapStruct: mapping property: entity.getRatePerLesson() to: ratePerLesson.
+[INFO] -- MapStruct: selecting property mapping: entity.getRatePerLesson().
+[INFO] -- MapStruct: mapping property: entity.getBaseSalary() to: baseSalary.
+[INFO] -- MapStruct: selecting property mapping: entity.getBaseSalary().
+[INFO] -- MapStruct: mapping property: entity.getPerformanceBonus() to: performanceBonus.
+[INFO] -- MapStruct: selecting property mapping: entity.getPerformanceBonus().
+[INFO] -- MapStruct: mapping property: entity.getTotalSalary() to: totalSalary.
+[INFO] -- MapStruct: selecting property mapping: entity.getTotalSalary().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.TeacherMonthlySummary partialUpdate(dthaibinhf.project.chemistbe.dto.TeacherMonthlySummaryDTO dto, @MappingTarget dthaibinhf.project.chemistbe.model.TeacherMonthlySummary entity).
+[INFO] -- MapStruct: mapping property: dto.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: dto.getId().
+[INFO] -- MapStruct: mapping property: dto.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: dto.getCreatedAt().
+[INFO] -- MapStruct: mapping property: dto.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: dto.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: dto.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: dto.getEndAt().
+[INFO] -- MapStruct: mapping property: dto.getMonth() to: setMonth(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: dto.getMonth().
+[INFO] -- MapStruct: mapping property: dto.getYear() to: setYear(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: dto.getYear().
+[INFO] -- MapStruct: mapping property: dto.getScheduledLessons() to: setScheduledLessons(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: dto.getScheduledLessons().
+[INFO] -- MapStruct: mapping property: dto.getCompletedLessons() to: setCompletedLessons(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: dto.getCompletedLessons().
+[INFO] -- MapStruct: mapping property: dto.getCompletionRate() to: setCompletionRate(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: dto.getCompletionRate().
+[INFO] -- MapStruct: mapping property: dto.getRatePerLesson() to: setRatePerLesson(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: dto.getRatePerLesson().
+[INFO] -- MapStruct: mapping property: dto.getBaseSalary() to: setBaseSalary(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: dto.getBaseSalary().
+[INFO] -- MapStruct: mapping property: dto.getPerformanceBonus() to: setPerformanceBonus(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: dto.getPerformanceBonus().
+[INFO] -- MapStruct: mapping property: dto.getTotalSalary() to: setTotalSalary(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: dto.getTotalSalary().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.RoomMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Room toEntity(dthaibinhf.project.chemistbe.dto.RoomDTO roomDTO).
+[INFO] -- MapStruct: mapping property: roomDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getId().
+[INFO] -- MapStruct: mapping property: roomDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: roomDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: roomDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: roomDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getName().
+[INFO] -- MapStruct: mapping property: roomDTO.getLocation() to: setLocation(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getLocation().
+[INFO] -- MapStruct: mapping property: roomDTO.getCapacity() to: setCapacity(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getCapacity().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.RoomDTO toDto(dthaibinhf.project.chemistbe.model.Room room).
+[INFO] -- MapStruct: mapping property: room.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: room.getId().
+[INFO] -- MapStruct: mapping property: room.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: room.getCreatedAt().
+[INFO] -- MapStruct: mapping property: room.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: room.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: room.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: room.getEndAt().
+[INFO] -- MapStruct: mapping property: room.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: room.getName().
+[INFO] -- MapStruct: mapping property: room.getLocation() to: location.
+[INFO] -- MapStruct: selecting property mapping: room.getLocation().
+[INFO] -- MapStruct: mapping property: room.getCapacity() to: capacity.
+[INFO] -- MapStruct: selecting property mapping: room.getCapacity().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Room partialUpdate(dthaibinhf.project.chemistbe.dto.RoomDTO roomDTO, @MappingTarget dthaibinhf.project.chemistbe.model.Room room).
+[INFO] -- MapStruct: mapping property: roomDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getId().
+[INFO] -- MapStruct: mapping property: roomDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: roomDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: roomDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: roomDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getName().
+[INFO] -- MapStruct: mapping property: roomDTO.getLocation() to: setLocation(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getLocation().
+[INFO] -- MapStruct: mapping property: roomDTO.getCapacity() to: setCapacity(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getCapacity().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.GroupScheduleMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.GroupSchedule toEntity(dthaibinhf.project.chemistbe.dto.GroupScheduleDTO groupScheduleDTO).
+[INFO] -- MapStruct: mapping property: groupScheduleDTO to: setRoom(dthaibinhf.project.chemistbe.model.Room).
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getRoomName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getRoomName().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getRoomId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getRoomId().
+[INFO] -- MapStruct: creating property mapping: dthaibinhf.project.chemistbe.model.Room #groupScheduleDTOToRoom(groupScheduleDTO).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.Room #groupScheduleDTOToRoom(groupScheduleDTO).
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getId().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getDayOfWeek() to: setDayOfWeek(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getDayOfWeek().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getStartTime() to: setStartTime(java.time.LocalTime).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getStartTime().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getEndTime() to: setEndTime(java.time.LocalTime).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getEndTime().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.GroupScheduleDTO toDto(dthaibinhf.project.chemistbe.model.GroupSchedule groupSchedule).
+[INFO] -- MapStruct: mapping property: groupScheduleRoomName( groupSchedule ) to: roomName.
+[INFO] -- MapStruct: selecting property mapping: groupScheduleRoomName( groupSchedule ).
+[INFO] -- MapStruct: mapping property: groupScheduleRoomId( groupSchedule ) to: roomId.
+[INFO] -- MapStruct: selecting property mapping: groupScheduleRoomId( groupSchedule ).
+[INFO] -- MapStruct: mapping property: groupScheduleGroupId( groupSchedule ) to: groupId.
+[INFO] -- MapStruct: selecting property mapping: groupScheduleGroupId( groupSchedule ).
+[INFO] -- MapStruct: mapping property: groupScheduleGroupName( groupSchedule ) to: groupName.
+[INFO] -- MapStruct: selecting property mapping: groupScheduleGroupName( groupSchedule ).
+[INFO] -- MapStruct: mapping property: groupSchedule.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: groupSchedule.getId().
+[INFO] -- MapStruct: mapping property: groupSchedule.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSchedule.getCreatedAt().
+[INFO] -- MapStruct: mapping property: groupSchedule.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSchedule.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: groupSchedule.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSchedule.getEndAt().
+[INFO] -- MapStruct: mapping property: groupSchedule.getDayOfWeek() to: dayOfWeek.
+[INFO] -- MapStruct: selecting property mapping: groupSchedule.getDayOfWeek().
+[INFO] -- MapStruct: mapping property: groupSchedule.getStartTime() to: startTime.
+[INFO] -- MapStruct: selecting property mapping: groupSchedule.getStartTime().
+[INFO] -- MapStruct: mapping property: groupSchedule.getEndTime() to: endTime.
+[INFO] -- MapStruct: selecting property mapping: groupSchedule.getEndTime().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.GroupSchedule partialUpdate(dthaibinhf.project.chemistbe.dto.GroupScheduleDTO groupScheduleDTO, @MappingTarget dthaibinhf.project.chemistbe.model.GroupSchedule groupSchedule).
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getId().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getDayOfWeek() to: setDayOfWeek(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getDayOfWeek().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getStartTime() to: setStartTime(java.time.LocalTime).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getStartTime().
+[INFO] -- MapStruct: mapping property: groupScheduleDTO.getEndTime() to: setEndTime(java.time.LocalTime).
+[INFO] -- MapStruct: selecting property mapping: groupScheduleDTO.getEndTime().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.FeeMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Fee toEntity(dthaibinhf.project.chemistbe.dto.FeeDTO feeDTO).
+[INFO] -- MapStruct: mapping property: feeDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getId().
+[INFO] -- MapStruct: mapping property: feeDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: feeDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: feeDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: feeDTO.getStartTime() to: setStartTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getStartTime().
+[INFO] -- MapStruct: mapping property: feeDTO.getEndTime() to: setEndTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getEndTime().
+[INFO] -- MapStruct: mapping property: feeDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getName().
+[INFO] -- MapStruct: mapping property: feeDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getDescription().
+[INFO] -- MapStruct: mapping property: feeDTO.getAmount() to: setAmount(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getAmount().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.FeeDTO toDto(dthaibinhf.project.chemistbe.model.Fee fee).
+[INFO] -- MapStruct: mapping property: fee.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: fee.getId().
+[INFO] -- MapStruct: mapping property: fee.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: fee.getCreatedAt().
+[INFO] -- MapStruct: mapping property: fee.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: fee.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: fee.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: fee.getEndAt().
+[INFO] -- MapStruct: mapping property: fee.getPaymentDetails() to: paymentDetails.
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.PaymentDetailDTO PaymentDetailMapper#toDto(paymentDetail).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.PaymentDetailDTO> #paymentDetailSetToPaymentDetailDTOSet(fee.getPaymentDetails()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.PaymentDetailDTO> #paymentDetailSetToPaymentDetailDTOSet(fee.getPaymentDetails()).
+[INFO] -- MapStruct: mapping property: fee.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: fee.getName().
+[INFO] -- MapStruct: mapping property: fee.getDescription() to: description.
+[INFO] -- MapStruct: selecting property mapping: fee.getDescription().
+[INFO] -- MapStruct: mapping property: fee.getAmount() to: amount.
+[INFO] -- MapStruct: selecting property mapping: fee.getAmount().
+[INFO] -- MapStruct: mapping property: fee.getStartTime() to: startTime.
+[INFO] -- MapStruct: selecting property mapping: fee.getStartTime().
+[INFO] -- MapStruct: mapping property: fee.getEndTime() to: endTime.
+[INFO] -- MapStruct: selecting property mapping: fee.getEndTime().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Fee partialUpdate(dthaibinhf.project.chemistbe.dto.FeeDTO feeDTO, @MappingTarget dthaibinhf.project.chemistbe.model.Fee fee).
+[INFO] -- MapStruct: mapping property: feeDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getId().
+[INFO] -- MapStruct: mapping property: feeDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: feeDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: feeDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: feeDTO.getStartTime() to: setStartTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getStartTime().
+[INFO] -- MapStruct: mapping property: feeDTO.getEndTime() to: setEndTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getEndTime().
+[INFO] -- MapStruct: mapping property: feeDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getName().
+[INFO] -- MapStruct: mapping property: feeDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getDescription().
+[INFO] -- MapStruct: mapping property: feeDTO.getAmount() to: setAmount(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: feeDTO.getAmount().
+[INFO] -- MapStruct: mapping property: feeDTO.getPaymentDetails() to: setPaymentDetails(java.util.Set<dthaibinhf.project.chemistbe.model.PaymentDetail>).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.PaymentDetail PaymentDetailMapper#toEntity(paymentDetailDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.PaymentDetail> #paymentDetailDTOSetToPaymentDetailSet(feeDTO.getPaymentDetails()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.PaymentDetail> #paymentDetailDTOSetToPaymentDetailSet(feeDTO.getPaymentDetails()).
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.AttendanceMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Attendance toEntity(dthaibinhf.project.chemistbe.dto.AttendanceDTO attendanceDTO).
+[INFO] -- MapStruct: mapping property: attendanceDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getId().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getStatus() to: setStatus(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getStatus().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getDescription().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.AttendanceDTO toDto(dthaibinhf.project.chemistbe.model.Attendance attendance).
+[INFO] -- MapStruct: mapping property: attendanceScheduleId( attendance ) to: scheduleId.
+[INFO] -- MapStruct: selecting property mapping: attendanceScheduleId( attendance ).
+[INFO] -- MapStruct: mapping property: attendanceStudentId( attendance ) to: studentId.
+[INFO] -- MapStruct: selecting property mapping: attendanceStudentId( attendance ).
+[INFO] -- MapStruct: mapping property: attendanceStudentName( attendance ) to: studentName.
+[INFO] -- MapStruct: selecting property mapping: attendanceStudentName( attendance ).
+[INFO] -- MapStruct: mapping property: attendanceScheduleGroupId( attendance ) to: groupId.
+[INFO] -- MapStruct: selecting property mapping: attendanceScheduleGroupId( attendance ).
+[INFO] -- MapStruct: mapping property: attendanceScheduleGroupName( attendance ) to: groupName.
+[INFO] -- MapStruct: selecting property mapping: attendanceScheduleGroupName( attendance ).
+[INFO] -- MapStruct: mapping property: attendance.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: attendance.getId().
+[INFO] -- MapStruct: mapping property: attendance.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendance.getCreatedAt().
+[INFO] -- MapStruct: mapping property: attendance.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendance.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: attendance.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendance.getEndAt().
+[INFO] -- MapStruct: mapping property: attendance.getStatus() to: status.
+[INFO] -- MapStruct: selecting property mapping: attendance.getStatus().
+[INFO] -- MapStruct: mapping property: attendance.getDescription() to: description.
+[INFO] -- MapStruct: selecting property mapping: attendance.getDescription().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Attendance partialUpdate(dthaibinhf.project.chemistbe.dto.AttendanceDTO attendanceDTO, @MappingTarget dthaibinhf.project.chemistbe.model.Attendance attendance).
+[INFO] -- MapStruct: mapping property: attendanceDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getId().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getStatus() to: setStatus(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getStatus().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getDescription().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.StudentMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Student toEntity(dthaibinhf.project.chemistbe.dto.StudentDTO studentDTO).
+[INFO] -- MapStruct: mapping property: studentDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: studentDTO.getId().
+[INFO] -- MapStruct: mapping property: studentDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: studentDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: studentDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: studentDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: studentDTO.getName().
+[INFO] -- MapStruct: mapping property: studentDTO.getParentPhone() to: setParentPhone(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: studentDTO.getParentPhone().
+[INFO] -- MapStruct: mapping property: studentDTO.getScores() to: setScores(java.util.Set<dthaibinhf.project.chemistbe.model.Score>).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Score ScoreMapper#toEntity(scoreDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Score> #scoreDTOSetToScoreSet(studentDTO.getScores()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Score> #scoreDTOSetToScoreSet(studentDTO.getScores()).
+[INFO] -- MapStruct: mapping property: studentDTO.getAttendances() to: setAttendances(java.util.Set<dthaibinhf.project.chemistbe.model.Attendance>).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Attendance AttendanceMapper#toEntity(attendanceDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Attendance> #attendanceDTOSetToAttendanceSet(studentDTO.getAttendances()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Attendance> #attendanceDTOSetToAttendanceSet(studentDTO.getAttendances()).
+[INFO] -- MapStruct: mapping property: studentDTO.getStudentDetails() to: setStudentDetails(java.util.Set<dthaibinhf.project.chemistbe.model.StudentDetail>).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.StudentDetail StudentDetailMapper#toEntity(studentDetailDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.StudentDetail> #studentDetailDTOSetToStudentDetailSet(studentDTO.getStudentDetails()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.StudentDetail> #studentDetailDTOSetToStudentDetailSet(studentDTO.getStudentDetails()).
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.StudentDTO toDto(dthaibinhf.project.chemistbe.model.Student student).
+[INFO] -- MapStruct: mapping property: student.getScores() to: scores.
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.ScoreDTO ScoreMapper#toDto(score).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.ScoreDTO> #scoreSetToScoreDTOSet(student.getScores()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.ScoreDTO> #scoreSetToScoreDTOSet(student.getScores()).
+[INFO] -- MapStruct: mapping property: student.getStudentDetails() to: studentDetails.
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.StudentDetailDTO StudentDetailMapper#toDto(studentDetail).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.StudentDetailDTO> #studentDetailSetToStudentDetailDTOSet(student.getStudentDetails()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.StudentDetailDTO> #studentDetailSetToStudentDetailDTOSet(student.getStudentDetails()).
+[INFO] -- MapStruct: mapping property: student.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: student.getId().
+[INFO] -- MapStruct: mapping property: student.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: student.getCreatedAt().
+[INFO] -- MapStruct: mapping property: student.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: student.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: student.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: student.getEndAt().
+[INFO] -- MapStruct: mapping property: student.getAttendances() to: attendances.
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.AttendanceDTO AttendanceMapper#toDto(attendance).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.AttendanceDTO> #attendanceSetToAttendanceDTOSet(student.getAttendances()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.AttendanceDTO> #attendanceSetToAttendanceDTOSet(student.getAttendances()).
+[INFO] -- MapStruct: mapping property: student.getPaymentDetails() to: paymentDetails.
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.PaymentDetailDTO PaymentDetailMapper#toDto(paymentDetail).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.PaymentDetailDTO> #paymentDetailSetToPaymentDetailDTOSet(student.getPaymentDetails()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.PaymentDetailDTO> #paymentDetailSetToPaymentDetailDTOSet(student.getPaymentDetails()).
+[INFO] -- MapStruct: mapping property: student.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: student.getName().
+[INFO] -- MapStruct: mapping property: student.getParentPhone() to: parentPhone.
+[INFO] -- MapStruct: selecting property mapping: student.getParentPhone().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Student partialUpdate(dthaibinhf.project.chemistbe.dto.StudentDTO studentDTO, @MappingTarget dthaibinhf.project.chemistbe.model.Student student).
+[INFO] -- MapStruct: mapping property: studentDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: studentDTO.getId().
+[INFO] -- MapStruct: mapping property: studentDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: studentDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: studentDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: studentDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: studentDTO.getName().
+[INFO] -- MapStruct: mapping property: studentDTO.getParentPhone() to: setParentPhone(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: studentDTO.getParentPhone().
+[INFO] -- MapStruct: mapping property: studentDTO.getScores() to: setScores(java.util.Set<dthaibinhf.project.chemistbe.model.Score>).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Score ScoreMapper#toEntity(scoreDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Score> #scoreDTOSetToScoreSet(studentDTO.getScores()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Score> #scoreDTOSetToScoreSet(studentDTO.getScores()).
+[INFO] -- MapStruct: mapping property: studentDTO.getAttendances() to: setAttendances(java.util.Set<dthaibinhf.project.chemistbe.model.Attendance>).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Attendance AttendanceMapper#toEntity(attendanceDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Attendance> #attendanceDTOSetToAttendanceSet(studentDTO.getAttendances()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Attendance> #attendanceDTOSetToAttendanceSet(studentDTO.getAttendances()).
+[INFO] -- MapStruct: mapping property: studentDTO.getPaymentDetails() to: setPaymentDetails(java.util.Set<dthaibinhf.project.chemistbe.model.PaymentDetail>).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.PaymentDetail PaymentDetailMapper#toEntity(paymentDetailDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.PaymentDetail> #paymentDetailDTOSetToPaymentDetailSet(studentDTO.getPaymentDetails()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.PaymentDetail> #paymentDetailDTOSetToPaymentDetailSet(studentDTO.getPaymentDetails()).
+[INFO] -- MapStruct: mapping property: studentDTO.getStudentDetails() to: setStudentDetails(java.util.Set<dthaibinhf.project.chemistbe.model.StudentDetail>).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.StudentDetail StudentDetailMapper#toEntity(studentDetailDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.StudentDetail> #studentDetailDTOSetToStudentDetailSet(studentDTO.getStudentDetails()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.StudentDetail> #studentDetailDTOSetToStudentDetailSet(studentDTO.getStudentDetails()).
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.PaymentDetailMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.PaymentDetail toEntity(dthaibinhf.project.chemistbe.dto.PaymentDetailDTO paymentDetailDTO).
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getId().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getPayMethod() to: setPayMethod(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getPayMethod().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getAmount() to: setAmount(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getAmount().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getDescription().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getHaveDiscount() to: setHaveDiscount(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getHaveDiscount().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.PaymentDetailDTO toDto(dthaibinhf.project.chemistbe.model.PaymentDetail paymentDetail).
+[INFO] -- MapStruct: mapping property: paymentDetailFeeId( paymentDetail ) to: feeId.
+[INFO] -- MapStruct: selecting property mapping: paymentDetailFeeId( paymentDetail ).
+[INFO] -- MapStruct: mapping property: paymentDetailFeeName( paymentDetail ) to: feeName.
+[INFO] -- MapStruct: selecting property mapping: paymentDetailFeeName( paymentDetail ).
+[INFO] -- MapStruct: mapping property: paymentDetailStudentId( paymentDetail ) to: studentId.
+[INFO] -- MapStruct: selecting property mapping: paymentDetailStudentId( paymentDetail ).
+[INFO] -- MapStruct: mapping property: paymentDetailStudentName( paymentDetail ) to: studentName.
+[INFO] -- MapStruct: selecting property mapping: paymentDetailStudentName( paymentDetail ).
+[INFO] -- MapStruct: mapping property: paymentDetail.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: paymentDetail.getId().
+[INFO] -- MapStruct: mapping property: paymentDetail.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: paymentDetail.getCreatedAt().
+[INFO] -- MapStruct: mapping property: paymentDetail.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: paymentDetail.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: paymentDetail.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: paymentDetail.getEndAt().
+[INFO] -- MapStruct: mapping property: paymentDetail.getPayMethod() to: payMethod.
+[INFO] -- MapStruct: selecting property mapping: paymentDetail.getPayMethod().
+[INFO] -- MapStruct: mapping property: paymentDetail.getAmount() to: amount.
+[INFO] -- MapStruct: selecting property mapping: paymentDetail.getAmount().
+[INFO] -- MapStruct: mapping property: paymentDetail.getDescription() to: description.
+[INFO] -- MapStruct: selecting property mapping: paymentDetail.getDescription().
+[INFO] -- MapStruct: mapping property: paymentDetail.getHaveDiscount() to: haveDiscount.
+[INFO] -- MapStruct: selecting property mapping: paymentDetail.getHaveDiscount().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.PaymentDetail partialUpdate(dthaibinhf.project.chemistbe.dto.PaymentDetailDTO paymentDetailDTO, @MappingTarget dthaibinhf.project.chemistbe.model.PaymentDetail paymentDetail).
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getId().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getPayMethod() to: setPayMethod(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getPayMethod().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getAmount() to: setAmount(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getAmount().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getDescription().
+[INFO] -- MapStruct: mapping property: paymentDetailDTO.getHaveDiscount() to: setHaveDiscount(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: paymentDetailDTO.getHaveDiscount().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.SchoolClassMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.SchoolClass toEntity(dthaibinhf.project.chemistbe.dto.SchoolClassDTO schoolClassDTO).
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getId().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getName().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.SchoolClassDTO toDto(dthaibinhf.project.chemistbe.model.SchoolClass schoolClass).
+[INFO] -- MapStruct: mapping property: schoolClass.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: schoolClass.getId().
+[INFO] -- MapStruct: mapping property: schoolClass.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClass.getCreatedAt().
+[INFO] -- MapStruct: mapping property: schoolClass.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClass.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: schoolClass.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClass.getEndAt().
+[INFO] -- MapStruct: mapping property: schoolClass.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: schoolClass.getName().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.SchoolClass partialUpdate(dthaibinhf.project.chemistbe.dto.SchoolClassDTO schoolClassDTO, @MappingTarget dthaibinhf.project.chemistbe.model.SchoolClass schoolClass).
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getId().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getName().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.GroupSessionMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.GroupSession toEntity(dthaibinhf.project.chemistbe.dto.GroupSessionDTO groupSessionDTO).
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getId().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getSessionType() to: setSessionType(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getSessionType().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getDate() to: setDate(java.time.LocalDate).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getDate().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getStartTime() to: setStartTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getStartTime().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getEndTime() to: setEndTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getEndTime().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.GroupSessionDTO toDto(dthaibinhf.project.chemistbe.model.GroupSession groupSession).
+[INFO] -- MapStruct: mapping property: groupSession.getGroups() to: groupIds.
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<java.lang.Integer> #groupsToGroupIds(groupSession.getGroups()).
+[INFO] -- MapStruct: mapping property: groupSession.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: groupSession.getId().
+[INFO] -- MapStruct: mapping property: groupSession.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSession.getCreatedAt().
+[INFO] -- MapStruct: mapping property: groupSession.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSession.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: groupSession.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSession.getEndAt().
+[INFO] -- MapStruct: mapping property: groupSession.getSessionType() to: sessionType.
+[INFO] -- MapStruct: selecting property mapping: groupSession.getSessionType().
+[INFO] -- MapStruct: mapping property: groupSession.getDate() to: date.
+[INFO] -- MapStruct: selecting property mapping: groupSession.getDate().
+[INFO] -- MapStruct: mapping property: groupSession.getStartTime() to: startTime.
+[INFO] -- MapStruct: selecting property mapping: groupSession.getStartTime().
+[INFO] -- MapStruct: mapping property: groupSession.getEndTime() to: endTime.
+[INFO] -- MapStruct: selecting property mapping: groupSession.getEndTime().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.GroupSession partialUpdate(dthaibinhf.project.chemistbe.dto.GroupSessionDTO groupSessionDTO, @MappingTarget dthaibinhf.project.chemistbe.model.GroupSession groupSession).
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getId().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getSessionType() to: setSessionType(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getSessionType().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getDate() to: setDate(java.time.LocalDate).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getDate().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getStartTime() to: setStartTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getStartTime().
+[INFO] -- MapStruct: mapping property: groupSessionDTO.getEndTime() to: setEndTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupSessionDTO.getEndTime().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.TeacherDetailMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.TeacherDetail toEntity(dthaibinhf.project.chemistbe.dto.TeacherDetailDTO teacherDetailDTO).
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getId().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getSchool() to: setSchool(dthaibinhf.project.chemistbe.model.School).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.School SchoolMapper#toEntity(teacherDetailDTO.getSchool()).
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getSchoolClass() to: setSchoolClass(dthaibinhf.project.chemistbe.model.SchoolClass).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.SchoolClass SchoolClassMapper#toEntity(teacherDetailDTO.getSchoolClass()).
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.TeacherDetailDTO toDto(dthaibinhf.project.chemistbe.model.TeacherDetail teacherDetail).
+[INFO] -- MapStruct: mapping property: teacherDetailTeacherId( teacherDetail ) to: teacherId.
+[INFO] -- MapStruct: selecting property mapping: teacherDetailTeacherId( teacherDetail ).
+[INFO] -- MapStruct: mapping property: teacherDetailTeacherAccountName( teacherDetail ) to: teacherName.
+[INFO] -- MapStruct: selecting property mapping: teacherDetailTeacherAccountName( teacherDetail ).
+[INFO] -- MapStruct: mapping property: teacherDetail.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: teacherDetail.getId().
+[INFO] -- MapStruct: mapping property: teacherDetail.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetail.getCreatedAt().
+[INFO] -- MapStruct: mapping property: teacherDetail.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetail.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: teacherDetail.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetail.getEndAt().
+[INFO] -- MapStruct: mapping property: teacherDetail.getSchool() to: school.
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.dto.SchoolDTO SchoolMapper#toDto(teacherDetail.getSchool()).
+[INFO] -- MapStruct: mapping property: teacherDetail.getSchoolClass() to: schoolClass.
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.dto.SchoolClassDTO SchoolClassMapper#toDto(teacherDetail.getSchoolClass()).
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.TeacherDetail partialUpdate(dthaibinhf.project.chemistbe.dto.TeacherDetailDTO teacherDetailDTO, @MappingTarget dthaibinhf.project.chemistbe.model.TeacherDetail teacherDetail).
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getId().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getSchool() to: setSchool(dthaibinhf.project.chemistbe.model.School).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.School SchoolMapper#partialUpdate(teacherDetailDTO.getSchool()).
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getSchoolClass() to: setSchoolClass(dthaibinhf.project.chemistbe.model.SchoolClass).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.SchoolClass SchoolClassMapper#partialUpdate(teacherDetailDTO.getSchoolClass()).
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.GroupMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Group toEntity(dthaibinhf.project.chemistbe.dto.GroupDTO groupDTO).
+[INFO] -- MapStruct: mapping property: groupDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: groupDTO.getId().
+[INFO] -- MapStruct: mapping property: groupDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: groupDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: groupDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: groupDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: groupDTO.getName().
+[INFO] -- MapStruct: mapping property: groupDTO.getLevel() to: setLevel(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: groupDTO.getLevel().
+[INFO] -- MapStruct: mapping property: groupDTO.getGroupSchedules() to: setGroupSchedules(java.util.Set<dthaibinhf.project.chemistbe.model.GroupSchedule>).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.GroupSchedule GroupScheduleMapper#toEntity(groupScheduleDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.GroupSchedule> #groupScheduleDTOSetToGroupScheduleSet(groupDTO.getGroupSchedules()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.GroupSchedule> #groupScheduleDTOSetToGroupScheduleSet(groupDTO.getGroupSchedules()).
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.GroupDTO toDto(dthaibinhf.project.chemistbe.model.Group group).
+[INFO] -- MapStruct: mapping property: groupFeeId( group ) to: feeId.
+[INFO] -- MapStruct: selecting property mapping: groupFeeId( group ).
+[INFO] -- MapStruct: mapping property: groupFeeName( group ) to: feeName.
+[INFO] -- MapStruct: selecting property mapping: groupFeeName( group ).
+[INFO] -- MapStruct: mapping property: groupAcademicYearId( group ) to: academicYearId.
+[INFO] -- MapStruct: selecting property mapping: groupAcademicYearId( group ).
+[INFO] -- MapStruct: mapping property: groupAcademicYearYear( group ) to: academicYear.
+[INFO] -- MapStruct: selecting property mapping: groupAcademicYearYear( group ).
+[INFO] -- MapStruct: mapping property: groupGradeId( group ) to: gradeId.
+[INFO] -- MapStruct: selecting property mapping: groupGradeId( group ).
+[INFO] -- MapStruct: mapping property: groupGradeName( group ) to: gradeName.
+[INFO] -- MapStruct: selecting property mapping: groupGradeName( group ).
+[INFO] -- MapStruct: mapping property: group.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: group.getId().
+[INFO] -- MapStruct: mapping property: group.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: group.getCreatedAt().
+[INFO] -- MapStruct: mapping property: group.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: group.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: group.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: group.getEndAt().
+[INFO] -- MapStruct: mapping property: group.getGroupSchedules() to: groupSchedules.
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.GroupScheduleDTO GroupScheduleMapper#toDto(groupSchedule).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.GroupScheduleDTO> #groupScheduleSetToGroupScheduleDTOSet(group.getGroupSchedules()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.GroupScheduleDTO> #groupScheduleSetToGroupScheduleDTOSet(group.getGroupSchedules()).
+[INFO] -- MapStruct: mapping property: group.getSchedules() to: schedules.
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.ScheduleDTO ScheduleMapper#toDto(schedule).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.ScheduleDTO> #scheduleSetToScheduleDTOSet(group.getSchedules()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.ScheduleDTO> #scheduleSetToScheduleDTOSet(group.getSchedules()).
+[INFO] -- MapStruct: mapping property: group.getStudentDetails() to: studentDetails.
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.StudentDetailDTO StudentDetailMapper#toDto(studentDetail).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.StudentDetailDTO> #studentDetailSetToStudentDetailDTOSet(group.getStudentDetails()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.StudentDetailDTO> #studentDetailSetToStudentDetailDTOSet(group.getStudentDetails()).
+[INFO] -- MapStruct: mapping property: group.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: group.getName().
+[INFO] -- MapStruct: mapping property: group.getLevel() to: level.
+[INFO] -- MapStruct: selecting property mapping: group.getLevel().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.GroupListDTO toListDto(dthaibinhf.project.chemistbe.model.Group group).
+[INFO] -- MapStruct: mapping property: groupFeeId( group ) to: feeId.
+[INFO] -- MapStruct: selecting property mapping: groupFeeId( group ).
+[INFO] -- MapStruct: mapping property: groupFeeName( group ) to: feeName.
+[INFO] -- MapStruct: selecting property mapping: groupFeeName( group ).
+[INFO] -- MapStruct: mapping property: groupAcademicYearId( group ) to: academicYearId.
+[INFO] -- MapStruct: selecting property mapping: groupAcademicYearId( group ).
+[INFO] -- MapStruct: mapping property: groupAcademicYearYear( group ) to: academicYear.
+[INFO] -- MapStruct: selecting property mapping: groupAcademicYearYear( group ).
+[INFO] -- MapStruct: mapping property: groupGradeId( group ) to: gradeId.
+[INFO] -- MapStruct: selecting property mapping: groupGradeId( group ).
+[INFO] -- MapStruct: mapping property: groupGradeName( group ) to: gradeName.
+[INFO] -- MapStruct: selecting property mapping: groupGradeName( group ).
+[INFO] -- MapStruct: mapping property: group.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: group.getId().
+[INFO] -- MapStruct: mapping property: group.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: group.getCreatedAt().
+[INFO] -- MapStruct: mapping property: group.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: group.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: group.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: group.getEndAt().
+[INFO] -- MapStruct: mapping property: group.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: group.getName().
+[INFO] -- MapStruct: mapping property: group.getLevel() to: level.
+[INFO] -- MapStruct: selecting property mapping: group.getLevel().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Group partialUpdate(dthaibinhf.project.chemistbe.dto.GroupDTO groupDTO, @MappingTarget dthaibinhf.project.chemistbe.model.Group group).
+[INFO] -- MapStruct: mapping property: groupDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: groupDTO.getId().
+[INFO] -- MapStruct: mapping property: groupDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: groupDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: groupDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: groupDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: groupDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: groupDTO.getName().
+[INFO] -- MapStruct: mapping property: groupDTO.getLevel() to: setLevel(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: groupDTO.getLevel().
+[INFO] -- MapStruct: mapping property: groupDTO.getGroupSchedules() to: setGroupSchedules(java.util.Set<dthaibinhf.project.chemistbe.model.GroupSchedule>).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.GroupSchedule GroupScheduleMapper#toEntity(groupScheduleDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.GroupSchedule> #groupScheduleDTOSetToGroupScheduleSet(groupDTO.getGroupSchedules()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.GroupSchedule> #groupScheduleDTOSetToGroupScheduleSet(groupDTO.getGroupSchedules()).
+[INFO] -- MapStruct: mapping property: groupDTO.getSchedules() to: setSchedules(java.util.Set<dthaibinhf.project.chemistbe.model.Schedule>).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Schedule ScheduleMapper#toEntity(scheduleDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Schedule> #scheduleDTOSetToScheduleSet(groupDTO.getSchedules()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Schedule> #scheduleDTOSetToScheduleSet(groupDTO.getSchedules()).
+[INFO] -- MapStruct: mapping property: groupDTO.getStudentDetails() to: setStudentDetails(java.util.Set<dthaibinhf.project.chemistbe.model.StudentDetail>).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.StudentDetail StudentDetailMapper#toEntity(studentDetailDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.StudentDetail> #studentDetailDTOSetToStudentDetailSet(groupDTO.getStudentDetails()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.StudentDetail> #studentDetailDTOSetToStudentDetailSet(groupDTO.getStudentDetails()).
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.ExamMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Exam toEntity(dthaibinhf.project.chemistbe.dto.ExamDTO examDTO).
+[INFO] -- MapStruct: mapping property: examDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getId().
+[INFO] -- MapStruct: mapping property: examDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: examDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: examDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: examDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getName().
+[INFO] -- MapStruct: mapping property: examDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getDescription().
+[INFO] -- MapStruct: mapping property: examDTO.getType() to: setType(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getType().
+[INFO] -- MapStruct: mapping property: examDTO.getTestDate() to: setTestDate(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getTestDate().
+[INFO] -- MapStruct: mapping property: examDTO.getScores() to: setScores(java.util.Set<dthaibinhf.project.chemistbe.model.Score>).
+[INFO] -- MapStruct: mapping property: scoreDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getId().
+[INFO] -- MapStruct: mapping property: scoreDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: scoreDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: scoreDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: scoreDTO.getScore() to: setScore(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getScore().
+[INFO] -- MapStruct: mapping property: scoreDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getDescription().
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.model.Score #scoreDTOToScore(scoreDTO).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Score #scoreDTOToScore(scoreDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Score> #scoreDTOSetToScoreSet(examDTO.getScores()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Score> #scoreDTOSetToScoreSet(examDTO.getScores()).
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.ExamDTO toDto(dthaibinhf.project.chemistbe.model.Exam exam).
+[INFO] -- MapStruct: mapping property: exam.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: exam.getId().
+[INFO] -- MapStruct: mapping property: exam.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: exam.getCreatedAt().
+[INFO] -- MapStruct: mapping property: exam.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: exam.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: exam.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: exam.getEndAt().
+[INFO] -- MapStruct: mapping property: exam.getScores() to: scores.
+[INFO] -- MapStruct: mapping property: score.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: score.getId().
+[INFO] -- MapStruct: mapping property: score.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: score.getCreatedAt().
+[INFO] -- MapStruct: mapping property: score.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: score.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: score.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: score.getEndAt().
+[INFO] -- MapStruct: mapping property: score.getScore() to: score.
+[INFO] -- MapStruct: selecting property mapping: score.getScore().
+[INFO] -- MapStruct: mapping property: score.getDescription() to: description.
+[INFO] -- MapStruct: selecting property mapping: score.getDescription().
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.dto.ScoreDTO #scoreToScoreDTO(score).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.ScoreDTO #scoreToScoreDTO(score).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.ScoreDTO> #scoreSetToScoreDTOSet(exam.getScores()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.ScoreDTO> #scoreSetToScoreDTOSet(exam.getScores()).
+[INFO] -- MapStruct: mapping property: exam.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: exam.getName().
+[INFO] -- MapStruct: mapping property: exam.getDescription() to: description.
+[INFO] -- MapStruct: selecting property mapping: exam.getDescription().
+[INFO] -- MapStruct: mapping property: exam.getType() to: type.
+[INFO] -- MapStruct: selecting property mapping: exam.getType().
+[INFO] -- MapStruct: mapping property: exam.getTestDate() to: testDate.
+[INFO] -- MapStruct: selecting property mapping: exam.getTestDate().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Exam partialUpdate(dthaibinhf.project.chemistbe.dto.ExamDTO examDTO, @MappingTarget dthaibinhf.project.chemistbe.model.Exam exam).
+[INFO] -- MapStruct: mapping property: examDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getId().
+[INFO] -- MapStruct: mapping property: examDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: examDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: examDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: examDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getName().
+[INFO] -- MapStruct: mapping property: examDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getDescription().
+[INFO] -- MapStruct: mapping property: examDTO.getType() to: setType(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getType().
+[INFO] -- MapStruct: mapping property: examDTO.getTestDate() to: setTestDate(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: examDTO.getTestDate().
+[INFO] -- MapStruct: mapping property: examDTO.getScores() to: setScores(java.util.Set<dthaibinhf.project.chemistbe.model.Score>).
+[INFO] -- MapStruct: mapping property: scoreDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getId().
+[INFO] -- MapStruct: mapping property: scoreDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: scoreDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: scoreDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: scoreDTO.getScore() to: setScore(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getScore().
+[INFO] -- MapStruct: mapping property: scoreDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getDescription().
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.model.Score #scoreDTOToScore(scoreDTO).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Score #scoreDTOToScore(scoreDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Score> #scoreDTOSetToScoreSet(examDTO.getScores()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Score> #scoreDTOSetToScoreSet(examDTO.getScores()).
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.AccountMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Account toAccount(dthaibinhf.project.chemistbe.dto.request.RegisterRequest registerRequest).
+[INFO] -- MapStruct: mapping property: registerRequest.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: registerRequest.getName().
+[INFO] -- MapStruct: mapping property: registerRequest.getPhone() to: setPhone(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: registerRequest.getPhone().
+[INFO] -- MapStruct: mapping property: registerRequest.getEmail() to: setEmail(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: registerRequest.getEmail().
+[INFO] -- MapStruct: mapping property: registerRequest.getPassword() to: setPassword(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: registerRequest.getPassword().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Account toEntity(dthaibinhf.project.chemistbe.dto.AccountDTO accountDTO).
+[INFO] -- MapStruct: mapping property: accountDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getId().
+[INFO] -- MapStruct: mapping property: accountDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: accountDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: accountDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: accountDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getName().
+[INFO] -- MapStruct: mapping property: accountDTO.getPhone() to: setPhone(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getPhone().
+[INFO] -- MapStruct: mapping property: accountDTO.getEmail() to: setEmail(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getEmail().
+[INFO] -- MapStruct: mapping property: accountDTO.getPassword() to: setPassword(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getPassword().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.AccountDTO toDto(dthaibinhf.project.chemistbe.model.Account account).
+[INFO] -- MapStruct: mapping property: accountRoleId( account ) to: roleId.
+[INFO] -- MapStruct: selecting property mapping: accountRoleId( account ).
+[INFO] -- MapStruct: mapping property: accountRoleName( account ) to: roleName.
+[INFO] -- MapStruct: selecting property mapping: accountRoleName( account ).
+[INFO] -- MapStruct: mapping property: account.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: account.getId().
+[INFO] -- MapStruct: mapping property: account.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: account.getCreatedAt().
+[INFO] -- MapStruct: mapping property: account.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: account.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: account.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: account.getEndAt().
+[INFO] -- MapStruct: mapping property: account.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: account.getName().
+[INFO] -- MapStruct: mapping property: account.getPhone() to: phone.
+[INFO] -- MapStruct: selecting property mapping: account.getPhone().
+[INFO] -- MapStruct: mapping property: account.getEmail() to: email.
+[INFO] -- MapStruct: selecting property mapping: account.getEmail().
+[INFO] -- MapStruct: mapping property: account.getPassword() to: password.
+[INFO] -- MapStruct: selecting property mapping: account.getPassword().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Account partialUpdate(dthaibinhf.project.chemistbe.dto.AccountDTO accountDTO, @MappingTarget dthaibinhf.project.chemistbe.model.Account account).
+[INFO] -- MapStruct: mapping property: accountDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getId().
+[INFO] -- MapStruct: mapping property: accountDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: accountDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: accountDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: accountDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getName().
+[INFO] -- MapStruct: mapping property: accountDTO.getPhone() to: setPhone(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getPhone().
+[INFO] -- MapStruct: mapping property: accountDTO.getEmail() to: setEmail(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getEmail().
+[INFO] -- MapStruct: mapping property: accountDTO.getPassword() to: setPassword(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: accountDTO.getPassword().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.ScheduleMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Schedule toEntity(dthaibinhf.project.chemistbe.dto.ScheduleDTO scheduleDTO).
+[INFO] -- MapStruct: mapping property: scheduleDTO.getStartTime() to: startTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getStartTime().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getEndTime() to: endTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getEndTime().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getDeliveryMode() to: deliveryMode(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getDeliveryMode().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getMeetingLink() to: meetingLink(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getMeetingLink().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getRoom() to: room(dthaibinhf.project.chemistbe.model.Room).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.Room RoomMapper#toEntity(scheduleDTO.getRoom()).
+[INFO] -- MapStruct: mapping property: scheduleDTO.getAttendances() to: attendances(java.util.Set<dthaibinhf.project.chemistbe.model.Attendance>).
+[INFO] -- MapStruct: mapping property: attendanceDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getId().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getStatus() to: setStatus(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getStatus().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getDescription().
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.model.Attendance #attendanceDTOToAttendance(attendanceDTO).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Attendance #attendanceDTOToAttendance(attendanceDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Attendance> #attendanceDTOListToAttendanceSet(scheduleDTO.getAttendances()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Attendance> #attendanceDTOListToAttendanceSet(scheduleDTO.getAttendances()).
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.ScheduleDTO toDto(dthaibinhf.project.chemistbe.model.Schedule schedule).
+[INFO] -- MapStruct: mapping property: scheduleGroupId( schedule ) to: groupId.
+[INFO] -- MapStruct: selecting property mapping: scheduleGroupId( schedule ).
+[INFO] -- MapStruct: mapping property: scheduleGroupName( schedule ) to: groupName.
+[INFO] -- MapStruct: selecting property mapping: scheduleGroupName( schedule ).
+[INFO] -- MapStruct: mapping property: scheduleTeacherId( schedule ) to: teacherId.
+[INFO] -- MapStruct: selecting property mapping: scheduleTeacherId( schedule ).
+[INFO] -- MapStruct: mapping property: scheduleTeacherAccountName( schedule ) to: teacherName.
+[INFO] -- MapStruct: selecting property mapping: scheduleTeacherAccountName( schedule ).
+[INFO] -- MapStruct: mapping property: schedule.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: schedule.getId().
+[INFO] -- MapStruct: mapping property: schedule.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schedule.getCreatedAt().
+[INFO] -- MapStruct: mapping property: schedule.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schedule.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: schedule.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schedule.getEndAt().
+[INFO] -- MapStruct: mapping property: schedule.getAttendances() to: attendances.
+[INFO] -- MapStruct: mapping property: attendance.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: attendance.getId().
+[INFO] -- MapStruct: mapping property: attendance.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendance.getCreatedAt().
+[INFO] -- MapStruct: mapping property: attendance.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendance.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: attendance.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendance.getEndAt().
+[INFO] -- MapStruct: mapping property: attendance.getStatus() to: status.
+[INFO] -- MapStruct: selecting property mapping: attendance.getStatus().
+[INFO] -- MapStruct: mapping property: attendance.getDescription() to: description.
+[INFO] -- MapStruct: selecting property mapping: attendance.getDescription().
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.dto.AttendanceDTO #attendanceToAttendanceDTO(attendance).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.AttendanceDTO #attendanceToAttendanceDTO(attendance).
+[INFO] -- MapStruct: creating property mapping: java.util.List<dthaibinhf.project.chemistbe.dto.AttendanceDTO> #attendanceSetToAttendanceDTOList(schedule.getAttendances()).
+[INFO] -- MapStruct: selecting property mapping: java.util.List<dthaibinhf.project.chemistbe.dto.AttendanceDTO> #attendanceSetToAttendanceDTOList(schedule.getAttendances()).
+[INFO] -- MapStruct: mapping property: schedule.getStartTime() to: startTime.
+[INFO] -- MapStruct: selecting property mapping: schedule.getStartTime().
+[INFO] -- MapStruct: mapping property: schedule.getEndTime() to: endTime.
+[INFO] -- MapStruct: selecting property mapping: schedule.getEndTime().
+[INFO] -- MapStruct: mapping property: schedule.getDeliveryMode() to: deliveryMode.
+[INFO] -- MapStruct: selecting property mapping: schedule.getDeliveryMode().
+[INFO] -- MapStruct: mapping property: schedule.getMeetingLink() to: meetingLink.
+[INFO] -- MapStruct: selecting property mapping: schedule.getMeetingLink().
+[INFO] -- MapStruct: mapping property: schedule.getRoom() to: room.
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.dto.RoomDTO RoomMapper#toDto(schedule.getRoom()).
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Schedule partialUpdate(dthaibinhf.project.chemistbe.dto.ScheduleDTO scheduleDTO, @MappingTarget dthaibinhf.project.chemistbe.model.Schedule schedule).
+[INFO] -- MapStruct: mapping property: scheduleDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getId().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getStartTime() to: setStartTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getStartTime().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getEndTime() to: setEndTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getEndTime().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getDeliveryMode() to: setDeliveryMode(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getDeliveryMode().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getMeetingLink() to: setMeetingLink(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getMeetingLink().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getRoom() to: setRoom(dthaibinhf.project.chemistbe.model.Room).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.Room RoomMapper#partialUpdate(scheduleDTO.getRoom()).
+[INFO] -- MapStruct: mapping property: scheduleDTO.getAttendances() to: setAttendances(java.util.Set<dthaibinhf.project.chemistbe.model.Attendance>).
+[INFO] -- MapStruct: mapping property: attendanceDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getId().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getStatus() to: setStatus(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getStatus().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getDescription().
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.model.Attendance #attendanceDTOToAttendance(attendanceDTO).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Attendance #attendanceDTOToAttendance(attendanceDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Attendance> #attendanceDTOListToAttendanceSet(scheduleDTO.getAttendances()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Attendance> #attendanceDTOListToAttendanceSet(scheduleDTO.getAttendances()).
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.ScoreMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Score toEntity(dthaibinhf.project.chemistbe.dto.ScoreDTO scoreDTO).
+[INFO] -- MapStruct: mapping property: scoreDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getId().
+[INFO] -- MapStruct: mapping property: scoreDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: scoreDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: scoreDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: scoreDTO.getScore() to: setScore(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getScore().
+[INFO] -- MapStruct: mapping property: scoreDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getDescription().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.ScoreDTO toDto(dthaibinhf.project.chemistbe.model.Score score).
+[INFO] -- MapStruct: mapping property: scoreExamId( score ) to: examId.
+[INFO] -- MapStruct: selecting property mapping: scoreExamId( score ).
+[INFO] -- MapStruct: mapping property: scoreExamName( score ) to: examName.
+[INFO] -- MapStruct: selecting property mapping: scoreExamName( score ).
+[INFO] -- MapStruct: mapping property: scoreStudentId( score ) to: studentId.
+[INFO] -- MapStruct: selecting property mapping: scoreStudentId( score ).
+[INFO] -- MapStruct: mapping property: scoreStudentName( score ) to: studentName.
+[INFO] -- MapStruct: selecting property mapping: scoreStudentName( score ).
+[INFO] -- MapStruct: mapping property: score.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: score.getId().
+[INFO] -- MapStruct: mapping property: score.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: score.getCreatedAt().
+[INFO] -- MapStruct: mapping property: score.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: score.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: score.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: score.getEndAt().
+[INFO] -- MapStruct: mapping property: score.getScore() to: score.
+[INFO] -- MapStruct: selecting property mapping: score.getScore().
+[INFO] -- MapStruct: mapping property: score.getDescription() to: description.
+[INFO] -- MapStruct: selecting property mapping: score.getDescription().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Score partialUpdate(dthaibinhf.project.chemistbe.dto.ScoreDTO scoreDTO, @MappingTarget dthaibinhf.project.chemistbe.model.Score score).
+[INFO] -- MapStruct: mapping property: scoreDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getId().
+[INFO] -- MapStruct: mapping property: scoreDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: scoreDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: scoreDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: scoreDTO.getScore() to: setScore(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getScore().
+[INFO] -- MapStruct: mapping property: scoreDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: scoreDTO.getDescription().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.StudentDetailMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.StudentDetail toEntity(dthaibinhf.project.chemistbe.dto.StudentDetailDTO studentDetailDTO).
+[INFO] -- MapStruct: mapping property: studentDetailDTO to: setGroup(dthaibinhf.project.chemistbe.model.Group).
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getGroupId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: studentDetailDTO.getGroupId().
+[INFO] -- MapStruct: creating property mapping: dthaibinhf.project.chemistbe.model.Group #studentDetailDTOToGroup(studentDetailDTO).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.Group #studentDetailDTOToGroup(studentDetailDTO).
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getSchool() to: setSchool(dthaibinhf.project.chemistbe.model.School).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.School SchoolMapper#toEntity(studentDetailDTO.getSchool()).
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getSchoolClass() to: setSchoolClass(dthaibinhf.project.chemistbe.model.SchoolClass).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.SchoolClass SchoolClassMapper#toEntity(studentDetailDTO.getSchoolClass()).
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getAcademicYear() to: setAcademicYear(dthaibinhf.project.chemistbe.model.AcademicYear).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.AcademicYear AcademicYearMapper#toEntity(studentDetailDTO.getAcademicYear()).
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getGrade() to: setGrade(dthaibinhf.project.chemistbe.model.Grade).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.Grade GradeMapper#toEntity(studentDetailDTO.getGrade()).
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: studentDetailDTO.getId().
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDetailDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDetailDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDetailDTO.getEndAt().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.StudentDetailDTO toDto(dthaibinhf.project.chemistbe.model.StudentDetail studentDetail).
+[INFO] -- MapStruct: mapping property: studentDetailGroupId( studentDetail ) to: groupId.
+[INFO] -- MapStruct: selecting property mapping: studentDetailGroupId( studentDetail ).
+[INFO] -- MapStruct: mapping property: studentDetailGroupName( studentDetail ) to: groupName.
+[INFO] -- MapStruct: selecting property mapping: studentDetailGroupName( studentDetail ).
+[INFO] -- MapStruct: mapping property: studentDetailStudentId( studentDetail ) to: studentId.
+[INFO] -- MapStruct: selecting property mapping: studentDetailStudentId( studentDetail ).
+[INFO] -- MapStruct: mapping property: studentDetailStudentName( studentDetail ) to: studentName.
+[INFO] -- MapStruct: selecting property mapping: studentDetailStudentName( studentDetail ).
+[INFO] -- MapStruct: mapping property: studentDetail.getSchool() to: school.
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.dto.SchoolDTO SchoolMapper#toDto(studentDetail.getSchool()).
+[INFO] -- MapStruct: mapping property: studentDetail.getSchoolClass() to: schoolClass.
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.dto.SchoolClassDTO SchoolClassMapper#toDto(studentDetail.getSchoolClass()).
+[INFO] -- MapStruct: mapping property: studentDetail.getAcademicYear() to: academicYear.
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.dto.AcademicYearDTO AcademicYearMapper#toDto(studentDetail.getAcademicYear()).
+[INFO] -- MapStruct: mapping property: studentDetail.getGrade() to: grade.
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.dto.GradeDTO GradeMapper#toDto(studentDetail.getGrade()).
+[INFO] -- MapStruct: mapping property: studentDetail.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: studentDetail.getId().
+[INFO] -- MapStruct: mapping property: studentDetail.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDetail.getCreatedAt().
+[INFO] -- MapStruct: mapping property: studentDetail.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDetail.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: studentDetail.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDetail.getEndAt().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.StudentDetail partialUpdate(dthaibinhf.project.chemistbe.dto.StudentDetailDTO studentDetailDTO, @MappingTarget dthaibinhf.project.chemistbe.model.StudentDetail studentDetail).
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: studentDetailDTO.getId().
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDetailDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDetailDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: studentDetailDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getSchool() to: setSchool(dthaibinhf.project.chemistbe.model.School).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.School SchoolMapper#partialUpdate(studentDetailDTO.getSchool()).
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getSchoolClass() to: setSchoolClass(dthaibinhf.project.chemistbe.model.SchoolClass).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.SchoolClass SchoolClassMapper#partialUpdate(studentDetailDTO.getSchoolClass()).
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getAcademicYear() to: setAcademicYear(dthaibinhf.project.chemistbe.model.AcademicYear).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.AcademicYear AcademicYearMapper#partialUpdate(studentDetailDTO.getAcademicYear()).
+[INFO] -- MapStruct: mapping property: studentDetailDTO.getGrade() to: setGrade(dthaibinhf.project.chemistbe.model.Grade).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.Grade GradeMapper#partialUpdate(studentDetailDTO.getGrade()).
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.TeacherMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Teacher toEntity(dthaibinhf.project.chemistbe.dto.TeacherDTO teacherDTO).
+[INFO] -- MapStruct: mapping property: teacherDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: teacherDTO.getId().
+[INFO] -- MapStruct: mapping property: teacherDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: teacherDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: teacherDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: teacherDTO.getAccount() to: setAccount(dthaibinhf.project.chemistbe.model.Account).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.Account AccountMapper#toEntity(teacherDTO.getAccount()).
+[INFO] -- MapStruct: mapping property: teacherDTO.getTeacherDetails() to: setTeacherDetails(java.util.Set<dthaibinhf.project.chemistbe.model.TeacherDetail>).
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getId().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getSchool() to: setSchool(dthaibinhf.project.chemistbe.model.School).
+[INFO] -- MapStruct: mapping property: schoolDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getId().
+[INFO] -- MapStruct: mapping property: schoolDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: schoolDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: schoolDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: schoolDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getName().
+[INFO] -- MapStruct: creating property mapping: dthaibinhf.project.chemistbe.model.School #schoolDTOToSchool(teacherDetailDTO.getSchool()).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.School #schoolDTOToSchool(teacherDetailDTO.getSchool()).
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getSchoolClass() to: setSchoolClass(dthaibinhf.project.chemistbe.model.SchoolClass).
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getId().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getName().
+[INFO] -- MapStruct: creating property mapping: dthaibinhf.project.chemistbe.model.SchoolClass #schoolClassDTOToSchoolClass(teacherDetailDTO.getSchoolClass()).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.SchoolClass #schoolClassDTOToSchoolClass(teacherDetailDTO.getSchoolClass()).
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.model.TeacherDetail #teacherDetailDTOToTeacherDetail(teacherDetailDTO).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.TeacherDetail #teacherDetailDTOToTeacherDetail(teacherDetailDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.TeacherDetail> #teacherDetailDTOSetToTeacherDetailSet(teacherDTO.getTeacherDetails()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.TeacherDetail> #teacherDetailDTOSetToTeacherDetailSet(teacherDTO.getTeacherDetails()).
+[INFO] -- MapStruct: mapping property: teacherDTO.getSchedules() to: setSchedules(java.util.Set<dthaibinhf.project.chemistbe.model.Schedule>).
+[INFO] -- MapStruct: mapping property: scheduleDTO.getStartTime() to: startTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getStartTime().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getEndTime() to: endTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getEndTime().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getDeliveryMode() to: deliveryMode(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getDeliveryMode().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getMeetingLink() to: meetingLink(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getMeetingLink().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getRoom() to: room(dthaibinhf.project.chemistbe.model.Room).
+[INFO] -- MapStruct: mapping property: roomDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getId().
+[INFO] -- MapStruct: mapping property: roomDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: roomDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: roomDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: roomDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getName().
+[INFO] -- MapStruct: mapping property: roomDTO.getLocation() to: setLocation(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getLocation().
+[INFO] -- MapStruct: mapping property: roomDTO.getCapacity() to: setCapacity(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getCapacity().
+[INFO] -- MapStruct: creating property mapping: dthaibinhf.project.chemistbe.model.Room #roomDTOToRoom(scheduleDTO.getRoom()).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.Room #roomDTOToRoom(scheduleDTO.getRoom()).
+[INFO] -- MapStruct: mapping property: scheduleDTO.getAttendances() to: attendances(java.util.Set<dthaibinhf.project.chemistbe.model.Attendance>).
+[INFO] -- MapStruct: mapping property: attendanceDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getId().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getStatus() to: setStatus(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getStatus().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getDescription().
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.model.Attendance #attendanceDTOToAttendance(attendanceDTO).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Attendance #attendanceDTOToAttendance(attendanceDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Attendance> #attendanceDTOListToAttendanceSet(scheduleDTO.getAttendances()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Attendance> #attendanceDTOListToAttendanceSet(scheduleDTO.getAttendances()).
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.model.Schedule #scheduleDTOToSchedule(scheduleDTO).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Schedule #scheduleDTOToSchedule(scheduleDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Schedule> #scheduleDTOSetToScheduleSet(teacherDTO.getSchedules()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Schedule> #scheduleDTOSetToScheduleSet(teacherDTO.getSchedules()).
+[INFO] -- MapStruct: mapping property: teacherDTO.getSalaryType() to: setSalaryType(dthaibinhf.project.chemistbe.model.SalaryType).
+[INFO] -- MapStruct: selecting property mapping: teacherDTO.getSalaryType().
+[INFO] -- MapStruct: mapping property: teacherDTO.getBaseRate() to: setBaseRate(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: teacherDTO.getBaseRate().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.TeacherDTO toDto(dthaibinhf.project.chemistbe.model.Teacher teacher).
+[INFO] -- MapStruct: mapping property: teacher.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: teacher.getId().
+[INFO] -- MapStruct: mapping property: teacher.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacher.getCreatedAt().
+[INFO] -- MapStruct: mapping property: teacher.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacher.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: teacher.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacher.getEndAt().
+[INFO] -- MapStruct: mapping property: teacher.getTeacherDetails() to: teacherDetails.
+[INFO] -- MapStruct: mapping property: teacherDetail.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: teacherDetail.getId().
+[INFO] -- MapStruct: mapping property: teacherDetail.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetail.getCreatedAt().
+[INFO] -- MapStruct: mapping property: teacherDetail.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetail.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: teacherDetail.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetail.getEndAt().
+[INFO] -- MapStruct: mapping property: teacherDetail.getSchool() to: school.
+[INFO] -- MapStruct: mapping property: school.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: school.getId().
+[INFO] -- MapStruct: mapping property: school.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: school.getCreatedAt().
+[INFO] -- MapStruct: mapping property: school.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: school.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: school.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: school.getEndAt().
+[INFO] -- MapStruct: mapping property: school.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: school.getName().
+[INFO] -- MapStruct: creating property mapping: dthaibinhf.project.chemistbe.dto.SchoolDTO #schoolToSchoolDTO(teacherDetail.getSchool()).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.dto.SchoolDTO #schoolToSchoolDTO(teacherDetail.getSchool()).
+[INFO] -- MapStruct: mapping property: teacherDetail.getSchoolClass() to: schoolClass.
+[INFO] -- MapStruct: mapping property: schoolClass.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: schoolClass.getId().
+[INFO] -- MapStruct: mapping property: schoolClass.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClass.getCreatedAt().
+[INFO] -- MapStruct: mapping property: schoolClass.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClass.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: schoolClass.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClass.getEndAt().
+[INFO] -- MapStruct: mapping property: schoolClass.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: schoolClass.getName().
+[INFO] -- MapStruct: creating property mapping: dthaibinhf.project.chemistbe.dto.SchoolClassDTO #schoolClassToSchoolClassDTO(teacherDetail.getSchoolClass()).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.dto.SchoolClassDTO #schoolClassToSchoolClassDTO(teacherDetail.getSchoolClass()).
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.dto.TeacherDetailDTO #teacherDetailToTeacherDetailDTO(teacherDetail).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.TeacherDetailDTO #teacherDetailToTeacherDetailDTO(teacherDetail).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.TeacherDetailDTO> #teacherDetailSetToTeacherDetailDTOSet(teacher.getTeacherDetails()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.TeacherDetailDTO> #teacherDetailSetToTeacherDetailDTOSet(teacher.getTeacherDetails()).
+[INFO] -- MapStruct: mapping property: teacher.getSchedules() to: schedules.
+[INFO] -- MapStruct: mapping property: schedule.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: schedule.getId().
+[INFO] -- MapStruct: mapping property: schedule.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schedule.getCreatedAt().
+[INFO] -- MapStruct: mapping property: schedule.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schedule.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: schedule.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schedule.getEndAt().
+[INFO] -- MapStruct: mapping property: schedule.getAttendances() to: attendances.
+[INFO] -- MapStruct: mapping property: attendance.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: attendance.getId().
+[INFO] -- MapStruct: mapping property: attendance.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendance.getCreatedAt().
+[INFO] -- MapStruct: mapping property: attendance.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendance.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: attendance.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendance.getEndAt().
+[INFO] -- MapStruct: mapping property: attendance.getStatus() to: status.
+[INFO] -- MapStruct: selecting property mapping: attendance.getStatus().
+[INFO] -- MapStruct: mapping property: attendance.getDescription() to: description.
+[INFO] -- MapStruct: selecting property mapping: attendance.getDescription().
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.dto.AttendanceDTO #attendanceToAttendanceDTO(attendance).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.AttendanceDTO #attendanceToAttendanceDTO(attendance).
+[INFO] -- MapStruct: creating property mapping: java.util.List<dthaibinhf.project.chemistbe.dto.AttendanceDTO> #attendanceSetToAttendanceDTOList(schedule.getAttendances()).
+[INFO] -- MapStruct: selecting property mapping: java.util.List<dthaibinhf.project.chemistbe.dto.AttendanceDTO> #attendanceSetToAttendanceDTOList(schedule.getAttendances()).
+[INFO] -- MapStruct: mapping property: schedule.getStartTime() to: startTime.
+[INFO] -- MapStruct: selecting property mapping: schedule.getStartTime().
+[INFO] -- MapStruct: mapping property: schedule.getEndTime() to: endTime.
+[INFO] -- MapStruct: selecting property mapping: schedule.getEndTime().
+[INFO] -- MapStruct: mapping property: schedule.getDeliveryMode() to: deliveryMode.
+[INFO] -- MapStruct: selecting property mapping: schedule.getDeliveryMode().
+[INFO] -- MapStruct: mapping property: schedule.getMeetingLink() to: meetingLink.
+[INFO] -- MapStruct: selecting property mapping: schedule.getMeetingLink().
+[INFO] -- MapStruct: mapping property: schedule.getRoom() to: room.
+[INFO] -- MapStruct: mapping property: room.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: room.getId().
+[INFO] -- MapStruct: mapping property: room.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: room.getCreatedAt().
+[INFO] -- MapStruct: mapping property: room.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: room.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: room.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: room.getEndAt().
+[INFO] -- MapStruct: mapping property: room.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: room.getName().
+[INFO] -- MapStruct: mapping property: room.getLocation() to: location.
+[INFO] -- MapStruct: selecting property mapping: room.getLocation().
+[INFO] -- MapStruct: mapping property: room.getCapacity() to: capacity.
+[INFO] -- MapStruct: selecting property mapping: room.getCapacity().
+[INFO] -- MapStruct: creating property mapping: dthaibinhf.project.chemistbe.dto.RoomDTO #roomToRoomDTO(schedule.getRoom()).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.dto.RoomDTO #roomToRoomDTO(schedule.getRoom()).
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.dto.ScheduleDTO #scheduleToScheduleDTO(schedule).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.dto.ScheduleDTO #scheduleToScheduleDTO(schedule).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.ScheduleDTO> #scheduleSetToScheduleDTOSet(teacher.getSchedules()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.dto.ScheduleDTO> #scheduleSetToScheduleDTOSet(teacher.getSchedules()).
+[INFO] -- MapStruct: mapping property: teacher.getAccount() to: account.
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.dto.AccountDTO AccountMapper#toDto(teacher.getAccount()).
+[INFO] -- MapStruct: mapping property: teacher.getSalaryType() to: salaryType.
+[INFO] -- MapStruct: selecting property mapping: teacher.getSalaryType().
+[INFO] -- MapStruct: mapping property: teacher.getBaseRate() to: baseRate.
+[INFO] -- MapStruct: selecting property mapping: teacher.getBaseRate().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Teacher partialUpdate(dthaibinhf.project.chemistbe.dto.TeacherDTO teacherDTO, @MappingTarget dthaibinhf.project.chemistbe.model.Teacher teacher).
+[INFO] -- MapStruct: mapping property: teacherDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: teacherDTO.getId().
+[INFO] -- MapStruct: mapping property: teacherDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: teacherDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: teacherDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: teacherDTO.getAccount() to: setAccount(dthaibinhf.project.chemistbe.model.Account).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.Account AccountMapper#partialUpdate(teacherDTO.getAccount()).
+[INFO] -- MapStruct: mapping property: teacherDTO.getTeacherDetails() to: setTeacherDetails(java.util.Set<dthaibinhf.project.chemistbe.model.TeacherDetail>).
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getId().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: teacherDetailDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getSchool() to: setSchool(dthaibinhf.project.chemistbe.model.School).
+[INFO] -- MapStruct: mapping property: schoolDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getId().
+[INFO] -- MapStruct: mapping property: schoolDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: schoolDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: schoolDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: schoolDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: schoolDTO.getName().
+[INFO] -- MapStruct: creating property mapping: dthaibinhf.project.chemistbe.model.School #schoolDTOToSchool(teacherDetailDTO.getSchool()).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.School #schoolDTOToSchool(teacherDetailDTO.getSchool()).
+[INFO] -- MapStruct: mapping property: teacherDetailDTO.getSchoolClass() to: setSchoolClass(dthaibinhf.project.chemistbe.model.SchoolClass).
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getId().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: schoolClassDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: schoolClassDTO.getName().
+[INFO] -- MapStruct: creating property mapping: dthaibinhf.project.chemistbe.model.SchoolClass #schoolClassDTOToSchoolClass(teacherDetailDTO.getSchoolClass()).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.SchoolClass #schoolClassDTOToSchoolClass(teacherDetailDTO.getSchoolClass()).
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.model.TeacherDetail #teacherDetailDTOToTeacherDetail(teacherDetailDTO).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.TeacherDetail #teacherDetailDTOToTeacherDetail(teacherDetailDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.TeacherDetail> #teacherDetailDTOSetToTeacherDetailSet(teacherDTO.getTeacherDetails()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.TeacherDetail> #teacherDetailDTOSetToTeacherDetailSet(teacherDTO.getTeacherDetails()).
+[INFO] -- MapStruct: mapping property: teacherDTO.getSchedules() to: setSchedules(java.util.Set<dthaibinhf.project.chemistbe.model.Schedule>).
+[INFO] -- MapStruct: mapping property: scheduleDTO.getStartTime() to: startTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getStartTime().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getEndTime() to: endTime(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getEndTime().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getDeliveryMode() to: deliveryMode(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getDeliveryMode().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getMeetingLink() to: meetingLink(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: scheduleDTO.getMeetingLink().
+[INFO] -- MapStruct: mapping property: scheduleDTO.getRoom() to: room(dthaibinhf.project.chemistbe.model.Room).
+[INFO] -- MapStruct: mapping property: roomDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getId().
+[INFO] -- MapStruct: mapping property: roomDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: roomDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: roomDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: roomDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getName().
+[INFO] -- MapStruct: mapping property: roomDTO.getLocation() to: setLocation(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getLocation().
+[INFO] -- MapStruct: mapping property: roomDTO.getCapacity() to: setCapacity(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: roomDTO.getCapacity().
+[INFO] -- MapStruct: creating property mapping: dthaibinhf.project.chemistbe.model.Room #roomDTOToRoom(scheduleDTO.getRoom()).
+[INFO] -- MapStruct: selecting property mapping: dthaibinhf.project.chemistbe.model.Room #roomDTOToRoom(scheduleDTO.getRoom()).
+[INFO] -- MapStruct: mapping property: scheduleDTO.getAttendances() to: attendances(java.util.Set<dthaibinhf.project.chemistbe.model.Attendance>).
+[INFO] -- MapStruct: mapping property: attendanceDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getId().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getStatus() to: setStatus(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getStatus().
+[INFO] -- MapStruct: mapping property: attendanceDTO.getDescription() to: setDescription(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: attendanceDTO.getDescription().
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.model.Attendance #attendanceDTOToAttendance(attendanceDTO).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Attendance #attendanceDTOToAttendance(attendanceDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Attendance> #attendanceDTOListToAttendanceSet(scheduleDTO.getAttendances()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Attendance> #attendanceDTOListToAttendanceSet(scheduleDTO.getAttendances()).
+[INFO] -- MapStruct: creating element mapping: dthaibinhf.project.chemistbe.model.Schedule #scheduleDTOToSchedule(scheduleDTO).
+[INFO] -- MapStruct: selecting element mapping: dthaibinhf.project.chemistbe.model.Schedule #scheduleDTOToSchedule(scheduleDTO).
+[INFO] -- MapStruct: creating property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Schedule> #scheduleDTOSetToScheduleSet(teacherDTO.getSchedules()).
+[INFO] -- MapStruct: selecting property mapping: java.util.Set<dthaibinhf.project.chemistbe.model.Schedule> #scheduleDTOSetToScheduleSet(teacherDTO.getSchedules()).
+[INFO] -- MapStruct: mapping property: teacherDTO.getSalaryType() to: setSalaryType(dthaibinhf.project.chemistbe.model.SalaryType).
+[INFO] -- MapStruct: selecting property mapping: teacherDTO.getSalaryType().
+[INFO] -- MapStruct: mapping property: teacherDTO.getBaseRate() to: setBaseRate(java.math.BigDecimal).
+[INFO] -- MapStruct: selecting property mapping: teacherDTO.getBaseRate().
+[INFO]  MapStruct: processing: dthaibinhf.project.chemistbe.mapper.RoleMapper.
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Role toEntity(dthaibinhf.project.chemistbe.dto.RoleDTO roleDTO).
+[INFO] -- MapStruct: mapping property: roleDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: roleDTO.getId().
+[INFO] -- MapStruct: mapping property: roleDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roleDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: roleDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roleDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: roleDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roleDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: roleDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: roleDTO.getName().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.dto.RoleDTO toDto(dthaibinhf.project.chemistbe.model.Role role).
+[INFO] -- MapStruct: mapping property: role.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: role.getId().
+[INFO] -- MapStruct: mapping property: role.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: role.getCreatedAt().
+[INFO] -- MapStruct: mapping property: role.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: role.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: role.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: role.getEndAt().
+[INFO] -- MapStruct: mapping property: role.getName() to: name.
+[INFO] -- MapStruct: selecting property mapping: role.getName().
+[INFO] - MapStruct: creating bean mapping method implementation for dthaibinhf.project.chemistbe.model.Role partialUpdate(dthaibinhf.project.chemistbe.dto.RoleDTO roleDTO, @MappingTarget dthaibinhf.project.chemistbe.model.Role role).
+[INFO] -- MapStruct: mapping property: roleDTO.getId() to: setId(java.lang.Integer).
+[INFO] -- MapStruct: selecting property mapping: roleDTO.getId().
+[INFO] -- MapStruct: mapping property: roleDTO.getCreatedAt() to: setCreatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roleDTO.getCreatedAt().
+[INFO] -- MapStruct: mapping property: roleDTO.getUpdatedAt() to: setUpdatedAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roleDTO.getUpdatedAt().
+[INFO] -- MapStruct: mapping property: roleDTO.getEndAt() to: setEndAt(java.time.OffsetDateTime).
+[INFO] -- MapStruct: selecting property mapping: roleDTO.getEndAt().
+[INFO] -- MapStruct: mapping property: roleDTO.getName() to: setName(java.lang.String).
+[INFO] -- MapStruct: selecting property mapping: roleDTO.getName().
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ chemist-BE ---
+[INFO] Not copying test resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ chemist-BE ---
+[INFO] Not compiling test sources
+[INFO] 
+[INFO] <<< spring-boot:3.4.7:run (default-cli) < test-compile @ chemist-BE <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.4.7:run (default-cli) @ chemist-BE ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.7)
+
+2025-07-25T23:02:22.268+07:00  INFO 46423 --- [chemist-BE] [           main] d.p.chemistbe.ChemistBeApplication       : Starting ChemistBeApplication using Java 21.0.8 with PID 46423 (/home/dthaibinh/project/developing/chemist-BE/target/classes started by dthaibinh in /home/dthaibinh/project/developing/chemist-BE)
+2025-07-25T23:02:22.269+07:00  INFO 46423 --- [chemist-BE] [           main] d.p.chemistbe.ChemistBeApplication       : The following 1 profile is active: "dev"
+2025-07-25T23:02:22.832+07:00  INFO 46423 --- [chemist-BE] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-25T23:02:22.879+07:00  INFO 46423 --- [chemist-BE] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 42 ms. Found 21 JPA repository interfaces.
+2025-07-25T23:02:23.153+07:00  INFO 46423 --- [chemist-BE] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-07-25T23:02:23.159+07:00  INFO 46423 --- [chemist-BE] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-25T23:02:23.160+07:00  INFO 46423 --- [chemist-BE] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-25T23:02:23.181+07:00  INFO 46423 --- [chemist-BE] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-25T23:02:23.182+07:00  INFO 46423 --- [chemist-BE] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 895 ms
+2025-07-25T23:02:23.366+07:00  INFO 46423 --- [chemist-BE] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-25T23:02:24.388+07:00  INFO 46423 --- [chemist-BE] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@11d1735e
+2025-07-25T23:02:24.389+07:00  INFO 46423 --- [chemist-BE] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-25T23:02:24.473+07:00  INFO 46423 --- [chemist-BE] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://db.zbxgzvwcfufjyqznkawn.supabase.co:5432/postgres?sslmode=require (PostgreSQL 17.4)
+2025-07-25T23:02:25.476+07:00  INFO 46423 --- [chemist-BE] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 3 migrations (execution time 00:00.288s)
+2025-07-25T23:02:26.417+07:00  INFO 46423 --- [chemist-BE] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": 2
+2025-07-25T23:02:26.504+07:00  INFO 46423 --- [chemist-BE] [           main] o.f.core.internal.command.DbMigrate      : Schema "public" is up to date. No migration necessary.
+2025-07-25T23:02:27.009+07:00  INFO 46423 --- [chemist-BE] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-25T23:02:27.028+07:00  INFO 46423 --- [chemist-BE] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-25T23:02:27.049+07:00  INFO 46423 --- [chemist-BE] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-25T23:02:27.150+07:00  INFO 46423 --- [chemist-BE] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-25T23:02:27.292+07:00  WARN 46423 --- [chemist-BE] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-25T23:02:27.422+07:00  INFO 46423 --- [chemist-BE] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.4
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-25T23:02:28.036+07:00  INFO 46423 --- [chemist-BE] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-25T23:02:28.037+07:00  INFO 46423 --- [chemist-BE] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-25T23:02:28.146+07:00  INFO 46423 --- [chemist-BE] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-07-25T23:02:29.288+07:00  INFO 46423 --- [chemist-BE] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-07-25T23:02:29.288+07:00  WARN 46423 --- [chemist-BE] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-07-25T23:02:29.832+07:00  INFO 46423 --- [chemist-BE] [           main] CriteriaBuilderConfigurationProviderImpl : Blaze-Persistence version: Blaze-Persistence 'Lockjaw' 1.6.15
+2025-07-25T23:02:29.900+07:00  WARN 46423 --- [chemist-BE] [           main] c.blazebit.annotation.AnnotationUtils    : Stereotype annotation can not be found, skipping annotation inheritance via stereotype.
+2025-07-25T23:02:30.314+07:00  INFO 46423 --- [chemist-BE] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2025-07-25T23:02:30.635+07:00  INFO 46423 --- [chemist-BE] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-07-25T23:02:30.642+07:00  INFO 46423 --- [chemist-BE] [           main] d.p.chemistbe.ChemistBeApplication       : Started ChemistBeApplication in 8.584 seconds (process running for 8.723)
+2025-07-25T23:02:38.670+07:00  INFO 46423 --- [chemist-BE] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-25T23:02:38.671+07:00  INFO 46423 --- [chemist-BE] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-25T23:02:38.672+07:00  INFO 46423 --- [chemist-BE] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  05:30 min
+[INFO] Finished at: 2025-07-25T23:07:47+07:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.4.7:run (default-cli) on project chemist-BE: Process terminated with exit code: 137 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

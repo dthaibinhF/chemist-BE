@@ -48,7 +48,7 @@ public class Schedule extends BaseEntity {
      * The mode of delivery for this schedule (e.g., "online", "in-person").
      * Required field with a maximum length of 20 characters.
      */
-    @Column(name = "delivery_mode", nullable = false, length = 20)
+    @Column(name = "delivery_mode", length = 20)
     private String deliveryMode;
 
     /**
