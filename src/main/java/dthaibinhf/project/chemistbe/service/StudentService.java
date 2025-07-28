@@ -13,6 +13,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -35,13 +37,15 @@ public class StudentService {
     StudentDetailMapper studentDetailMapper;
     GroupRepository groupRepository;
 
+    @Tool(description = "Get all active students in the system. Useful for queries like 'show me all students' or 'list all students'")
     public List<StudentDTO> getAllStudents() {
         return studentRepository.findAllActive().stream()
                 .map(studentMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public StudentDTO getStudentById(Integer id) {
+    @Tool(description = "Get detailed information about a specific student by their ID. Useful for queries like 'show me student with ID 123' or 'get details for student 456'")
+    public StudentDTO getStudentById(@ToolParam(description = "The unique ID of the student") Integer id) {
         Student student = studentRepository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found: " + id));
         return studentMapper.toDto(student);
@@ -143,7 +147,8 @@ public class StudentService {
      * @return list of students with their newest non-deleted student detail for the
      *         specified group
      */
-    public List<StudentDTO> getStudentsByGroupId(Integer groupId) {
+    @Tool(description = "Get all students in a specific group or class. Useful for queries like 'show me students in group 5' or 'list students in class ID 10'")
+    public List<StudentDTO> getStudentsByGroupId(@ToolParam(description = "The unique ID of the group or class") Integer groupId) {
         if (groupId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Group ID cannot be null");
         }
@@ -186,22 +191,24 @@ public class StudentService {
 
     /**
      * Search students with pagination and sorting
-     * Search by student ID, phone, name, group name, school name, or class name
+     * Search by phone, name, group name, school name, or class name
      *
      * @param parentPhone search by parent phone (contains)
+     * @param pageable    pagination and sorting parameters
      * @param studentName search by student name (contains, case-insensitive)
      * @param groupName   search by group name (contains, case-insensitive)
      * @param schoolName  search by school name (contains, case-insensitive)
      * @param className   search by school class name (contains, case-insensitive)
-     * @param pageable    pagination and sorting parameters
+     * @param parentPhone search by parent phone (contains)
      * @return page of students matching the criteria
      */
+    @Tool(description = "Search for students by name, group, school, class, or parent phone. Useful for queries like 'find students named John', 'students in Grade 10', or 'students with parent phone 090'")
     public Page<StudentDTO> search(Pageable pageable,
-            String studentName,
-            String groupName,
-            String schoolName,
-            String className,
-            String parentPhone) {
+            @ToolParam(description = "Student name (partial match allowed)") String studentName,
+            @ToolParam(description = "Group or class name") String groupName,
+            @ToolParam(description = "School name") String schoolName,
+            @ToolParam(description = "Class name") String className,
+            @ToolParam(description = "Parent phone number") String parentPhone) {
         try {
             log.info("Searching students - page: {}, size: {}, sort: {}",
                     pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());

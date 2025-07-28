@@ -76,7 +76,9 @@ public class SecurityConfig {
                                         "/api/v1/student-payment/**",
                                         "/api/v1/statistics/**",
                                         "/api/v1/notification/**",
-                                        "/api/v1/financial/**"
+                                        "/api/v1/financial/**",
+                                        "/api/v1/ai/**"
+
                                 ).authenticated()
                 )
 
