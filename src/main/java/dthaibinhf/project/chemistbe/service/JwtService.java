@@ -82,6 +82,26 @@ public class JwtService {
         return Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(jwt).getPayload();
     }
 
+    public String extractRole(String jwt) {
+        try {
+            Claims claims = extractClaims(jwt);
+            // Role is typically stored in authorities or roles claim
+            Object authorities = claims.get("authorities");
+            if (authorities != null) {
+                String authStr = authorities.toString();
+                // Extract role name from authority string like "[ROLE_ADMIN]" or "ADMIN"
+                if (authStr.contains("ROLE_")) {
+                    return authStr.replaceAll(".*ROLE_([A-Z]+).*", "$1");
+                } else if (authStr.matches(".*[A-Z]+.*")) {
+                    return authStr.replaceAll(".*([A-Z]+).*", "$1");
+                }
+            }
+            return "PUBLIC"; // Default if no role found
+        } catch (Exception e) {
+            return "PUBLIC"; // Default if token is invalid
+        }
+    }
+
     private SecretKey getSecretKey() {
         byte[] jwtSecretBytes = Base64.getDecoder().decode(jwtSecret);
         return Keys.hmacShaKeyFor(jwtSecretBytes);

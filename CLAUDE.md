@@ -227,25 +227,40 @@ Fix remaining Schedule API test issues to achieve 100% test success rate for bot
 ## AI Agent Implementation
 
 ### Current Status (2025-07-29)
-✅ **Implementation Complete and Functional**
+✅ **Implementation Complete with Role-Based Access Control**
 - **Files Created**: AIConfiguration, AIAgentService, AIController, ChatRequest/Response DTOs
 - **@Tool Annotations**: Added to StudentService, GroupService, FeeService methods
 - **Critical Fixes Applied**: System prompt added, SpEL syntax corrected, Spring AI dependencies resolved
+- **Role-Based Security**: JWT-based role detection with PUBLIC user support
+- **Vietnamese Language**: Natural conversational responses in Vietnamese
 - **Application Status**: ✅ Successfully compiles and starts
 - **Documentation**: Complete guide available in `AI_AGENT_IMPLEMENTATION_GUIDE.md`
 
 ### AI Architecture
 ```
-User Query → AIController → AIAgentService → ChatClient → Claude API
-                                          ↓
-                          @Tool Methods (StudentService, GroupService, FeeService)
+JWT Token (Optional) → Role Detection → AIController → AIAgentService → ChatClient → Claude API
+                                                         ↓                    ↓
+                                          Role-Based System Prompt    @Tool Methods
+                                          (Vietnamese Language)       (StudentService, GroupService, FeeService)
 ```
 
 ### AI Endpoints
-- `POST /api/v1/ai/chat` - Conversational chat with memory
-- `GET /api/v1/ai/chat/stream` - Real-time streaming responses (SSE)
-- `POST /api/v1/ai/chat/simple` - Stateless interactions
+- `POST /api/v1/ai/chat` - Conversational chat with memory and role-based access
+- `GET /api/v1/ai/chat/stream` - Real-time streaming responses (SSE) with role detection
+- `POST /api/v1/ai/chat/simple` - Stateless interactions with role-based filtering
 - `GET /api/v1/ai/health` - Health check endpoint
+
+### Role-Based Access Control
+**JWT Token Detection:**
+- **With Token**: Extracts role from JWT (ADMIN, MANAGER, TEACHER, STUDENT, PARENT)
+- **No Token**: Automatically treated as PUBLIC user
+
+**Access Levels:**
+- **PUBLIC**: Basic fee info, general schedules, no personal data
+- **STUDENT/PARENT**: Own information, own fees and payments only
+- **TEACHER**: Students in their classes, class schedules, basic fees
+- **MANAGER**: All group/fee information, limited personal data
+- **ADMIN**: Full system access, all information available
 
 ### @Tool Integration Pattern
 Service methods are annotated with `@Tool` for AI function calling:
@@ -254,18 +269,33 @@ Service methods are annotated with `@Tool` for AI function calling:
 public List<StudentDTO> getAllStudents() { ... }
 ```
 
-### AI Development Guidelines
-1. ✅ **Fixed Critical Issues**: System prompt added, SpEL syntax corrected (`#{conversationId}` → `conversationId("default")`), Spring AI dependencies resolved
-2. ✅ **Compilation Success**: Application compiles and starts successfully with all AI components
-3. **Testing Strategy**: Use incremental testing - health endpoint, simple queries, then tool integration
-4. **Error Handling**: Comprehensive try-catch blocks in AIAgentService with user-friendly error messages
-5. **Reference Documentation**: See `AI_AGENT_IMPLEMENTATION_GUIDE.md` for testing and frontend integration
+### Vietnamese Language Support
+**Natural Conversational Style:**
+- All responses in Vietnamese with friendly tone
+- Uses conversational particles: "ạ", "nhé", "dạ" 
+- Concise responses, avoiding technical documentation style
+- Context-appropriate language for educational environment
 
-### Key Fixes Applied (2025-07-29)
-- **pom.xml**: Changed to `spring-ai-starter-model-anthropic` dependency and added snapshot repositories
-- **AIConfiguration**: Added comprehensive role-based system prompt and proper conversation memory setup
-- **application.yaml**: Fixed Spring AI configuration nesting under `spring:` root level
-- **MapStruct**: Corrected compiler args from `-MapStruct` to `-Amapstruct` format
+**Example Responses:**
+```vietnamese
+PUBLIC: "Học phí lớp 12 là 1.500.000 đồng ạ. Có thể đóng bằng tiền mặt hoặc chuyển khoản nhé."
+ADMIN: "Học phí lớp 12 hè 2025-2026 là 1.500.000đ. Hiện có 25 học sinh đã đóng, 5 em chưa đóng..."
+```
+
+### AI Development Guidelines
+1. ✅ **Role-Based Security**: JWT token detection with PUBLIC user fallback implemented
+2. ✅ **Vietnamese Language**: Natural conversational responses replace technical English
+3. ✅ **Access Control**: Different information levels per user role strictly enforced
+4. ✅ **System Prompts**: Dynamic role-based prompts with Vietnamese access restrictions
+5. **Testing Strategy**: Test with different roles (no token, ADMIN token, etc.)
+6. **Reference Documentation**: See `AI_AGENT_IMPLEMENTATION_GUIDE.md` for role-based testing
+
+### Key Updates Applied (2025-07-29)
+- **JwtService**: Added `extractRole()` method for JWT token parsing
+- **AIController**: Added role detection from Authorization header with PUBLIC fallback
+- **AIAgentService**: Implemented `buildRoleBasedSystemMessage()` with Vietnamese prompts
+- **Role-Based Prompts**: Comprehensive Vietnamese access control instructions per role
+- **Error Messages**: Changed to friendly Vietnamese error responses
 
 ## Code Cleanup Guidelines
 
