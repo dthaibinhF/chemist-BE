@@ -1,0 +1,27 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "859762281467.dkr.ecr.ap-southeast-1.amazonaws.com/chemist-backend:latest",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": 8080,
+      "HostPort": 8080
+    }
+  ],
+  "Environment": [
+    {
+      "name": "SPRING_DATASOURCE_URL",
+      "value": "jdbc:postgresql://database-chemist.cv6oo2im84e7.ap-southeast-2.rds.amazonaws.com:5432/chemist"
+    },
+    {
+      "name": "SPRING_DATASOURCE_USERNAME",
+      "value": "postgres"
+    },
+    {
+      "name": "SPRING_DATASOURCE_PASSWORD",
+      "value": "7AKD8DVuD2zExa1Vx28o"
+    }
+  ]
+}
