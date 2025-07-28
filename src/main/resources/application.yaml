@@ -37,7 +37,7 @@ spring:
 sendgrid:
   api-key: ${SENDGRID_API_KEY}
   from:
-    email: noreply@chemist-app.com
+    email: dthaibinh03@gmail.com
     name: Chemist App
 
 server:

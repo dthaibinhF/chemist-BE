@@ -39,6 +39,13 @@ spring:
     clean-disabled: true
     schemas: public
 
+# SendGrid Configuration
+sendgrid:
+  api-key: ${SENDGRID_API_KEY}
+  from:
+    email: dthaibinh03@gmail.com
+    name: Chemist App
+
 # doc
 springdoc:
   api-docs:
