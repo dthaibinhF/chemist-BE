@@ -41,6 +41,15 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- Spring AI BOM -->
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -164,9 +173,9 @@
         <!-- Spring AI Anthropic Integration -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-anthropic-spring-boot-starter</artifactId>
-            <version>1.0.0-M6</version>
+            <artifactId>spring-ai-starter-model-anthropic</artifactId>
         </dependency>
+
 
         <!-- WebSocket for real-time chat -->
         <dependency>
@@ -214,13 +223,35 @@
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>
-                        <arg>-MapStruct.suppressGeneratorTimestamp=true</arg>
-                        <arg>-MapStruct.defaultComponentModel=spring</arg>
-                        <arg>-MapStruct.verbose=true</arg>
+                        <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
+                        <arg>-Amapstruct.defaultComponentModel=spring</arg>
+                        <arg>-Amapstruct.verbose=true</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <name>Central Portal Snapshots</name>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

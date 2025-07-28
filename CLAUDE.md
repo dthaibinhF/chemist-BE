@@ -45,10 +45,12 @@ Chemist-BE is a Spring Boot 3.4.7 REST API application for managing educational 
 
 ### Spring AI Integration
 **Anthropic Claude Integration** (version 1.0.0-M6):
-- Spring AI Anthropic starter for Claude API integration
-- AI agent functionality in `ai/` package
-- Function callback registry for agent interactions
-- WebSocket support for real-time AI interactions
+- **BOM Configuration**: Spring AI BOM 1.0.0-SNAPSHOT with Anthropic starter
+- **AI Agent Package**: Complete implementation in `src/main/java/.../ai/` package
+- **@Tool Integration**: Service methods annotated with `@Tool` for AI function calling
+- **ChatClient API**: Modern Spring AI API with conversation memory and streaming
+- **Endpoints**: `/api/v1/ai/chat`, `/api/v1/ai/chat/stream`, `/api/v1/ai/chat/simple`
+- **Features**: Conversation context, Server-Sent Events (SSE), educational assistant system prompt
 
 ### Database Setup
 - **Production**: AWS RDS PostgreSQL (database-chemist.cv6oo2im84e7.ap-southeast-2.rds.amazonaws.com:5432)
@@ -81,6 +83,7 @@ Follow this strict 6-layer pattern for all entities:
 - **Lombok** - Automatic getters/setters (ensure proper annotation processor setup)
 - **SpringDoc OpenAPI** - API documentation at `/swagger-ui.html`
 - **Caffeine Cache** - In-memory caching for static data (30-minute TTL, enabled for performance optimization)
+- **Spring AI 1.0.0-M6** - AI-powered educational assistant with Anthropic Claude 3.5 Sonnet integration
 
 ### Naming Conventions
 - **Database**: snake_case for tables/columns (e.g., `first_name`, `created_at`)
@@ -108,7 +111,9 @@ All entities must implement soft delete using `endAt` field:
 ### Configuration Files
 - `SecurityConfig.java` - JWT and role-based security setup with CORS configuration
 - `BlazePersistenceConfiguration.java` - Advanced query capabilities and entity views
+- `AIConfiguration.java` - Spring AI ChatClient setup with tool discovery and memory management
 - `application.properties` - Database and timezone settings (Asia/Ho_Chi_Minh)
+- `application.yaml` - Anthropic API configuration (`spring.ai.anthropic.api-key`)
 - `src/main/resources/db/migration/` - Flyway database migration scripts
 - **Entity Views**: GroupListView.java for performance optimization with Blaze Persistence
 
@@ -218,6 +223,49 @@ All entities must implement soft delete using `endAt` field:
 
 ### Next Session Priority
 Fix remaining Schedule API test issues to achieve 100% test success rate for both School and Schedule endpoints.
+
+## AI Agent Implementation
+
+### Current Status (2025-07-29)
+✅ **Implementation Complete and Functional**
+- **Files Created**: AIConfiguration, AIAgentService, AIController, ChatRequest/Response DTOs
+- **@Tool Annotations**: Added to StudentService, GroupService, FeeService methods
+- **Critical Fixes Applied**: System prompt added, SpEL syntax corrected, Spring AI dependencies resolved
+- **Application Status**: ✅ Successfully compiles and starts
+- **Documentation**: Complete guide available in `AI_AGENT_IMPLEMENTATION_GUIDE.md`
+
+### AI Architecture
+```
+User Query → AIController → AIAgentService → ChatClient → Claude API
+                                          ↓
+                          @Tool Methods (StudentService, GroupService, FeeService)
+```
+
+### AI Endpoints
+- `POST /api/v1/ai/chat` - Conversational chat with memory
+- `GET /api/v1/ai/chat/stream` - Real-time streaming responses (SSE)
+- `POST /api/v1/ai/chat/simple` - Stateless interactions
+- `GET /api/v1/ai/health` - Health check endpoint
+
+### @Tool Integration Pattern
+Service methods are annotated with `@Tool` for AI function calling:
+```java
+@Tool(description = "Get all active students in the system. Useful for queries like 'show me all students'")
+public List<StudentDTO> getAllStudents() { ... }
+```
+
+### AI Development Guidelines
+1. ✅ **Fixed Critical Issues**: System prompt added, SpEL syntax corrected (`#{conversationId}` → `conversationId("default")`), Spring AI dependencies resolved
+2. ✅ **Compilation Success**: Application compiles and starts successfully with all AI components
+3. **Testing Strategy**: Use incremental testing - health endpoint, simple queries, then tool integration
+4. **Error Handling**: Comprehensive try-catch blocks in AIAgentService with user-friendly error messages
+5. **Reference Documentation**: See `AI_AGENT_IMPLEMENTATION_GUIDE.md` for testing and frontend integration
+
+### Key Fixes Applied (2025-07-29)
+- **pom.xml**: Changed to `spring-ai-starter-model-anthropic` dependency and added snapshot repositories
+- **AIConfiguration**: Added comprehensive role-based system prompt and proper conversation memory setup
+- **application.yaml**: Fixed Spring AI configuration nesting under `spring:` root level
+- **MapStruct**: Corrected compiler args from `-MapStruct` to `-Amapstruct` format
 
 ## Code Cleanup Guidelines
 

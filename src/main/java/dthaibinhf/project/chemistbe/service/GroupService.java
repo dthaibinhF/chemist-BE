@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -32,13 +34,15 @@ public class GroupService {
     GroupMapper groupMapper;
     GroupScheduleService groupScheduleService;
 
+    @Tool(description = "Get all available groups/classes in the system. Useful for queries like 'show me all groups' or 'list all classes'")
     @Cacheable("groups")
     public List<GroupListDTO> getAllGroups() {
         return groupRepository.findAllActiveGroups().stream().map(groupMapper::toListDto).collect(Collectors.toList());
     }
 
+    @Tool(description = "Get detailed information about a specific group/class by ID. Useful for queries like 'show me group 5' or 'details of class ID 10'")
     @Cacheable(value = "groups", key = "#id")
-    public GroupDTO getGroupById(Integer id) {
+    public GroupDTO getGroupById(@ToolParam(description = "The unique ID of the group or class") Integer id) {
         Group group = groupRepository.findActiveById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + id)
         );
@@ -51,13 +55,15 @@ public class GroupService {
                 .stream().map(groupMapper::toListDto).collect(Collectors.toList());
     }
 
+    @Tool(description = "Get all groups/classes available for a specific grade level. Useful for queries like 'how many groups in Grade 10' or 'show classes for grade 9'")
     @Cacheable(value = "groups", key = "'grade_' + #gradeId")
-    public List<GroupListDTO> getGroupsByGradeId(Integer gradeId) {
+    public List<GroupListDTO> getGroupsByGradeId(@ToolParam(description = "The grade level (e.g., 9, 10, 11, 12)") Integer gradeId) {
         return groupRepository.findActiveByGradeId(gradeId).stream()
                 .map(groupMapper::toListDto)
                 .collect(Collectors.toList());
     }
 
+    @Tool(description = "Get detailed information about all groups/classes including schedules and teachers. Useful for comprehensive group information queries")
     @Cacheable(value = "groups", key = "'with_detail'")
     public List<GroupDTO> getAllGroupsWithDetail() {
         return groupRepository.findAllActiveGroups().stream().map(groupMapper::toDto).collect(Collectors.toList());

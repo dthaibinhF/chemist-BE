@@ -39,6 +39,16 @@ spring:
     clean-disabled: true
     schemas: public
 
+  # Spring AI Anthropic Configuration
+  ai:
+    anthropic:
+      api-key: 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
+      chat:
+        options:
+          model: claude-3-5-sonnet-20241022
+          temperature: 0.2
+          max-tokens: 5000
+
 # doc
 springdoc:
   api-docs:
