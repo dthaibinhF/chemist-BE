@@ -171,475 +171,207 @@ curl -X POST http://localhost:8080/api/v1/ai/chat/simple \
   -d '{"message": "'$(printf 'A%.0s' {1..6000})'"}'
 ```
 
-## 3. Frontend UI Integration Guide
+## 3. API Usage Guide
 
-### 3.1 Basic Chat Implementation
+### 3.1 Available Endpoints
 
-#### HTML Structure:
-```html
-<div id="chat-container">
-  <div id="chat-messages"></div>
-  <div id="chat-input-container">
-    <input type="text" id="chat-input" placeholder="Ask about students, groups, or fees...">
-    <button id="send-button">Send</button>
-    <button id="stream-button">Stream</button>
-  </div>
-</div>
+#### Base URL: `http://localhost:8080/api/v1/ai`
+
+1. **Health Check**: `GET /health`
+2. **Simple Chat**: `POST /chat/simple` 
+3. **Conversational Chat**: `POST /chat`
+4. **Streaming Chat**: `GET /chat/stream`
+
+### 3.2 Request/Response Examples
+
+#### 3.2.1 Authentication Usage:
+```bash
+# Without JWT Token (PUBLIC access)
+curl -X POST http://localhost:8080/api/v1/ai/chat/simple \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Học phí lớp 10 là bao nhiêu?"}'
+
+# With JWT Token (Full role-based access)
+curl -X POST http://localhost:8080/api/v1/ai/chat/simple \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN_HERE" \
+  -d '{"message": "Cho tôi xem danh sách học sinh lớp 10A"}'
 ```
 
-#### JavaScript Integration:
+#### 3.2.2 JavaScript Fetch Example:
 ```javascript
-class AIAgent {
-  constructor() {
-    this.baseUrl = 'http://localhost:8080/api/v1/ai';
-    this.conversationId = this.generateConversationId();
+// Example function to call AI API
+async function callAIAPI(message, conversationId = null) {
+  const token = localStorage.getItem('authToken');
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+  
+  // Add Authorization header if user is logged in
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
   }
 
-  // Standard chat
-  async sendMessage(message) {
-    try {
-      const response = await fetch(`${this.baseUrl}/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: message,
-          conversation_id: this.conversationId
-        })
-      });
+  const body = { message };
+  if (conversationId) {
+    body.conversation_id = conversationId;
+  }
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error sending message:', error);
-      return { success: false, error: error.message };
+  try {
+    const response = await fetch('http://localhost:8080/api/v1/ai/chat/simple', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(body)
+    });
+
+    const data = await response.json();
+    
+    if (data.success) {
+      return data.response; // Vietnamese AI response
+    } else {
+      throw new Error(data.error || 'Request failed');
     }
-  }
-
-  // Streaming chat
-  streamMessage(message, onChunk, onComplete, onError) {
-    const url = `${this.baseUrl}/chat/stream?message=${encodeURIComponent(message)}&conversation_id=${this.conversationId}`;
-    
-    const eventSource = new EventSource(url);
-    
-    eventSource.onmessage = function(event) {
-      if (event.data === '[END]') {
-        eventSource.close();
-        onComplete();
-      } else {
-        onChunk(event.data);
-      }
-    };
-    
-    eventSource.onerror = function(event) {
-      eventSource.close();
-      onError(event);
-    };
-    
-    return eventSource;
-  }
-
-  generateConversationId() {
-    return 'conv_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
+  } catch (error) {
+    console.error('AI API Error:', error);
+    throw error;
   }
 }
 
-// Usage
-const aiAgent = new AIAgent();
-
-document.getElementById('send-button').addEventListener('click', async () => {
-  const input = document.getElementById('chat-input');
-  const message = input.value.trim();
-  
-  if (!message) return;
-
-  // Add user message to chat
-  addMessageToChat('user', message);
-  input.value = '';
-
-  // Send to AI
-  const response = await aiAgent.sendMessage(message);
-  
-  if (response.success) {
-    addMessageToChat('ai', response.response);
-  } else {
-    addMessageToChat('error', response.error || 'Failed to get response');
-  }
-});
-
-document.getElementById('stream-button').addEventListener('click', () => {
-  const input = document.getElementById('chat-input');
-  const message = input.value.trim();
-  
-  if (!message) return;
-
-  addMessageToChat('user', message);
-  input.value = '';
-
-  const aiMessageElement = addMessageToChat('ai', '');
-  
-  aiAgent.streamMessage(
-    message,
-    (chunk) => {
-      // Add chunk to AI message
-      aiMessageElement.textContent += chunk;
-    },
-    () => {
-      // Streaming complete
-      console.log('Streaming complete');
-    },
-    (error) => {
-      console.error('Streaming error:', error);
-      aiMessageElement.textContent += '\n[Error occurred during streaming]';
-    }
-  );
-});
-
-function addMessageToChat(type, content) {
-  const messagesContainer = document.getElementById('chat-messages');
-  const messageElement = document.createElement('div');
-  messageElement.className = `message ${type}`;
-  messageElement.textContent = content;
-  messagesContainer.appendChild(messageElement);
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  return messageElement;
-}
+// Usage example
+callAIAPI("Học phí lớp 10 là bao nhiêu?")
+  .then(response => console.log(response))
+  .catch(error => console.error(error));
 ```
 
-### 3.2 React Integration Example:
-
-```jsx
-import React, { useState, useCallback } from 'react';
-
-const AIChat = () => {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [conversationId] = useState(() => 
-    'conv_' + Date.now().toString(36) + Math.random().toString(36).substr(2)
-  );
-
-  const sendMessage = useCallback(async (message) => {
-    setIsLoading(true);
-    
-    // Add user message
-    setMessages(prev => [...prev, { type: 'user', content: message }]);
-
-    try {
-      const response = await fetch('http://localhost:8080/api/v1/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message,
-          conversation_id: conversationId
-        })
-      });
-
-      const data = await response.json();
-      
-      if (data.success) {
-        setMessages(prev => [...prev, { type: 'ai', content: data.response }]);
-      } else {
-        setMessages(prev => [...prev, { type: 'error', content: data.error }]);
-      }
-    } catch (error) {
-      setMessages(prev => [...prev, { type: 'error', content: 'Failed to send message' }]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [conversationId]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (input.trim() && !isLoading) {
-      sendMessage(input.trim());
-      setInput('');
+#### 3.2.3 Streaming Usage:
+```javascript
+// Example function for streaming responses
+function streamAIResponse(message, onChunk, onComplete, onError) {
+  const token = localStorage.getItem('authToken');
+  const params = new URLSearchParams({ message });
+  
+  let url = `http://localhost:8080/api/v1/ai/chat/stream?${params}`;
+  
+  const eventSource = new EventSource(url);
+  
+  eventSource.onmessage = function(event) {
+    if (event.data === '[END]') {
+      eventSource.close();
+      onComplete();
+    } else {
+      onChunk(event.data);
     }
   };
-
-  return (
-    <div className="ai-chat">
-      <div className="messages">
-        {messages.map((msg, index) => (
-          <div key={index} className={`message ${msg.type}`}>
-            {msg.content}
-          </div>
-        ))}
-        {isLoading && <div className="message loading">AI is thinking...</div>}
-      </div>
-      
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask about students, groups, or fees..."
-          disabled={isLoading}
-        />
-        <button type="submit" disabled={isLoading || !input.trim()}>
-          Send
-        </button>
-      </form>
-    </div>
-  );
-};
-
-export default AIChat;
-```
-
-### 3.3 Advanced Features:
-
-#### Authentication Integration:
-```javascript
-// Add JWT token to requests for role-based access
-const token = localStorage.getItem('authToken');
-const headers = {
-  'Content-Type': 'application/json'
-};
-
-// Add Authorization header if user is logged in
-if (token) {
-  headers['Authorization'] = `Bearer ${token}`;
-}
-
-const response = await fetch(`${this.baseUrl}/chat`, {
-  method: 'POST',
-  headers: headers,
-  body: JSON.stringify({
-    message: message,
-    conversation_id: this.conversationId
-  })
-});
-
-// Handle role-based responses
-const data = await response.json();
-if (data.success) {
-  // AI will respond in Vietnamese with role-appropriate information
-  displayMessage('ai', data.response);
-} else if (response.status === 403) {
-  displayMessage('error', 'Bạn không có quyền truy cập thông tin này. Vui lòng đăng nhập.');
-}
-```
-
-#### Error Handling:
-```javascript
-const handleApiError = (response, data) => {
-  if (!response.ok) {
-    throw new Error(`API Error: ${response.status} - ${data.error || 'Unknown error'}`);
-  }
   
-  if (!data.success) {
-    throw new Error(data.error || 'Request failed');
-  }
+  eventSource.onerror = function(event) {
+    eventSource.close();
+    onError(event);
+  };
   
-  return data;
-};
+  return eventSource;
+}
+
+// Usage example
+streamAIResponse(
+  "Cho tôi biết về học phí của trường",
+  (chunk) => console.log('Chunk:', chunk),
+  () => console.log('Stream complete'),
+  (error) => console.error('Stream error:', error)
+);
 ```
 
-#### Conversation Management:
-```javascript
-class ConversationManager {
-  constructor() {
-    this.conversations = new Map();
-  }
-  
-  createConversation() {
-    const id = this.generateId();
-    this.conversations.set(id, {
-      id,
-      messages: [],
-      createdAt: new Date(),
-      lastActivity: new Date()
-    });
-    return id;
-  }
-  
-  addMessage(conversationId, type, content) {
-    const conversation = this.conversations.get(conversationId);
-    if (conversation) {
-      conversation.messages.push({ type, content, timestamp: new Date() });
-      conversation.lastActivity = new Date();
-    }
-  }
-  
-  getConversation(id) {
-    return this.conversations.get(id);
-  }
+### 3.3 Role-Based Access Control Testing:
+
+#### 3.3.1 PUBLIC User (No Authentication)
+**Query Examples:**
+```bash
+# Fee information queries
+"Học phí lớp 10 là bao nhiêu?"
+"Lịch học lớp 11 như thế nào?" 
+"Trường có những khối lớp nào?"
+"Tôi muốn biết về cách đóng học phí"
+```
+
+**Expected Response Format:**
+```json
+{
+  "response": "Học phí lớp 10 hiện tại là 1.500.000 đồng/tháng ạ. Bạn có thể đóng bằng tiền mặt hoặc chuyển khoản nhé.",
+  "success": true
 }
 ```
 
-### 3.4 CSS Styling Example:
-
-```css
-.ai-chat {
-  display: flex;
-  flex-direction: column;
-  height: 500px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-  background: #f9f9f9;
-}
-
-.message {
-  margin-bottom: 12px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  max-width: 80%;
-}
-
-.message.user {
-  background: #007bff;
-  color: white;
-  margin-left: auto;
-}
-
-.message.ai {
-  background: white;
-  border: 1px solid #ddd;
-}
-
-.message.error {
-  background: #dc3545;
-  color: white;
-}
-
-.message.loading {
-  background: #6c757d;
-  color: white;
-  font-style: italic;
-}
-
-form {
-  display: flex;
-  padding: 16px;
-  background: white;
-  border-top: 1px solid #ddd;
-}
-
-input {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-right: 8px;
-}
-
-button {
-  padding: 8px 16px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:disabled {
-  background: #6c757d;
-  cursor: not-allowed;
-}
+#### 3.3.2 STUDENT/PARENT Role
+**Query Examples:**
+```bash
+# Personal information queries
+"Điểm số của con em như thế nào?"
+"Lịch học của con tuần này"
+"Học phí tháng này đã đóng chưa?"
 ```
 
-### 3.5 Role-Based Access Control Testing:
-
-#### PUBLIC User (No Authentication) - Vietnamese Responses:
-```javascript
-// Basic queries that PUBLIC users can access
-const publicQueries = [
-  "Học phí lớp 10 là bao nhiêu?",                    // Fee information only
-  "Lịch học lớp 11 như thế nào?",                    // General schedule info
-  "Trường có những khối lớp nào?",                   // General school info
-  "Tôi muốn biết về cách đóng học phí",              // Payment methods
-];
-
-// Expected Vietnamese responses with limited information
+#### 3.3.3 TEACHER Role
+**Query Examples:**
+```bash
+# Class-specific queries
+"Danh sách học sinh lớp tôi dạy"
+"Điểm danh học sinh hôm nay"
+"Lịch dạy của tôi tuần này"
 ```
 
-#### STUDENT/PARENT Role:
-```javascript
-const studentQueries = [
-  "Điểm số của con em như thế nào?",                 // Own grades only
-  "Lịch học của con tuần này",                       // Own schedule
-  "Học phí tháng này đã đóng chưa?",                 // Own payment status
-];
-
-// AI responds with personal information only
+#### 3.3.4 ADMIN/MANAGER Role
+**Query Examples:**
+```bash
+# Full access queries
+"Tổng quan học sinh toàn trường"
+"Báo cáo học phí tháng này"
+"Danh sách giáo viên và lịch dạy"
 ```
 
-#### TEACHER Role:
-```javascript
-const teacherQueries = [
-  "Danh sách học sinh lớp tôi dạy",                  // Students in their classes
-  "Điểm danh học sinh hôm nay",                      // Attendance for their classes
-  "Lịch dạy của tôi tuần này",                       // Their teaching schedule
-];
-```
+### 3.4 Vietnamese Language Response Examples:
 
-#### ADMIN/MANAGER Role:
-```javascript
-const adminQueries = [
-  "Tổng quan học sinh toàn trường",                  // All student information
-  "Báo cáo học phí tháng này",                       // Complete financial reports
-  "Danh sách giáo viên và lịch dạy",                 // All teacher information
-];
-```
+**Role-based Response Variations:**
+- **PUBLIC**: "Học phí lớp 12 là 1.500.000 đồng ạ. Có thể đóng bằng tiền mặt hoặc chuyển khoản nhé."
+- **STUDENT**: "Điểm toán của con tuần này là 8.5 điểm ạ. Khá tốt rồi nhé!"
+- **TEACHER**: "Lớp 10A hôm nay có 23/25 học sinh có mặt. 2 em nghỉ có phép ạ."
+- **ADMIN**: "Tổng thu học phí tháng này là 450 triệu đồng. Còn 12 học sinh chưa đóng ạ."
 
-### 3.6 Vietnamese Language Examples:
+### 3.5 Common Query Examples:
 
-#### Natural Conversational Responses:
-```javascript
-// Examples of AI responses in Vietnamese
-const responseExamples = {
-  PUBLIC: "Học phí lớp 12 là 1.500.000 đồng ạ. Có thể đóng bằng tiền mặt hoặc chuyển khoản nhé.",
-  STUDENT: "Điểm toán của con tuần này là 8.5 điểm ạ. Khá tốt rồi nhé!",
-  TEACHER: "Lớp 10A hôm nay có 23/25 học sinh có mặt. 2 em nghỉ có phép ạ.",
-  ADMIN: "Tổng thu học phí tháng này là 450 triệu đồng. Còn 12 học sinh chưa đóng ạ."
-};
-```
-
-### 3.7 Example Queries for Testing:
-
-#### Vietnamese Student Queries:
+#### Student Information:
 - "Cho tôi xem danh sách học sinh"
 - "Tìm học sinh có ID là 5"
 - "Lớp 10A có bao nhiêu học sinh?"
 - "Tìm học sinh tên John"
 
-#### Vietnamese Group Queries:
+#### Group/Class Information:
 - "Khối 10 có những lớp nào?"
 - "Cho tôi xem tất cả các lớp"
 - "Thông tin chi tiết lớp 5 là gì?"
 
-#### Vietnamese Fee Queries:
+#### Fee Information:
 - "Học phí là bao nhiêu?"
 - "Cho tôi xem cơ cấu học phí"
 - "Thông tin về khoản phí ID 2"
 
-#### Complex Vietnamese Queries:
+#### Complex Queries:
 - "Tổng số học sinh khối 10 là bao nhiêu?"
 - "Học phí khối 9 như thế nào và có bao nhiêu lớp?"
 - "Hôm nay có bao nhiêu học sinh nghỉ học?"
 
-### 3.8 Role Permission Testing:
+### 3.6 Error Handling:
 
-#### Testing Unauthorized Access:
-```javascript
-// PUBLIC user trying to access private information
-const unauthorizedQuery = "Cho tôi số điện thoại của học sinh Nguyễn Văn A";
+#### Unauthorized Access Example:
+**Query**: "Cho tôi số điện thoại của học sinh Nguyễn Văn A"
 
-// Expected response:
-// "Xin lỗi, tôi không thể cung cấp thông tin cá nhân của học sinh. 
-//  Để xem thông tin chi tiết, bạn vui lòng đăng nhập vào hệ thống ạ."
+**Expected Response**:
+```json
+{
+  "response": "Xin lỗi, tôi không thể cung cấp thông tin cá nhân của học sinh. Để xem thông tin chi tiết, bạn vui lòng đăng nhập vào hệ thống ạ.",
+  "success": true
+}
 ```
 
-This comprehensive guide provides everything needed to test the backend implementation and integrate it with frontend applications, including the new role-based access control and Vietnamese language features.
+This guide provides the essential endpoint information and usage examples for integrating with the AI Agent API, focusing on role-based access control and Vietnamese language responses.
 
 ---
 
