@@ -161,6 +161,13 @@
             <artifactId>h2</artifactId>
         </dependency>
 
+        <!-- SendGrid for email services -->
+        <dependency>
+            <groupId>com.sendgrid</groupId>
+            <artifactId>sendgrid-java</artifactId>
+            <version>4.10.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>

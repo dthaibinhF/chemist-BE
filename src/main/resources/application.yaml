@@ -33,5 +33,12 @@ spring:
     caffeine:
       spec: maximumSize=1000,expireAfterWrite=30m
 
+# SendGrid Configuration
+sendgrid:
+  api-key: ${SENDGRID_API_KEY}
+  from:
+    email: noreply@chemist-app.com
+    name: Chemist App
+
 server:
   port: 8080
