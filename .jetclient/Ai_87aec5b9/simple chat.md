@@ -1,7 +1,7 @@
 ```toml
 name = 'simple chat'
 method = 'POST'
-url = '{{baseUrl}}/ai/chat/simple'
+url = '{{baseUrl}}/ai/chat'
 sortWeight = 2000000
 id = '74034956-c707-4875-9a7a-ad3164eb74fc'
 
@@ -13,7 +13,7 @@ value = '{{access_token}}'
 type = 'JSON'
 raw = '''
 {
-  "message": "yes i want to know about the fee",
-  "conversationId": '74034950'
+  "message": "Bạn Trần Huy Đạt đã đóng tiền học đủ chưa",
+  "conversationId": '14034950',
 }'''
 ```

@@ -3,6 +3,7 @@ package dthaibinhf.project.chemistbe.ai.controller;
 import dthaibinhf.project.chemistbe.ai.dto.ChatRequest;
 import dthaibinhf.project.chemistbe.ai.dto.ChatResponse;
 import dthaibinhf.project.chemistbe.ai.service.AIAgentService;
+import dthaibinhf.project.chemistbe.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.core.publisher.Flux;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.util.UUID;
@@ -30,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
 public class AIController {
 
     private final AIAgentService aiAgentService;
+    private final JwtService jwtService;
 
     @PostMapping("/chat")
     @Operation(summary = "Chat with AI assistant", 
@@ -39,10 +43,11 @@ public class AIController {
         @ApiResponse(responseCode = "400", description = "Invalid request"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<ChatResponse> chat(@Valid @RequestBody ChatRequest request) {
+    public ResponseEntity<ChatResponse> chat(@Valid @RequestBody ChatRequest request, HttpServletRequest httpRequest) {
         try {
-            log.info("Received chat request: conversationId={}, message length={}", 
-                    request.getConversationId(), request.getMessage().length());
+            String userRole = extractUserRole(httpRequest);
+            log.info("Received chat request: conversationId={}, message length={}, userRole={}", 
+                    request.getConversationId(), request.getMessage().length(), userRole);
 
             String conversationId = request.getConversationId() != null ? 
                     request.getConversationId() : generateConversationId();
@@ -52,10 +57,11 @@ public class AIController {
                 response = aiAgentService.processQueryWithContext(
                         request.getMessage(), 
                         request.getSystemMessage(), 
-                        conversationId
+                        conversationId,
+                        userRole
                 );
             } else {
-                response = aiAgentService.processQuery(request.getMessage(), conversationId);
+                response = aiAgentService.processQuery(request.getMessage(), conversationId, userRole);
             }
 
             ChatResponse chatResponse = ChatResponse.builder()
@@ -91,10 +97,13 @@ public class AIController {
             @RequestParam(value = "conversation_id", required = false) String conversationId,
             
             @Parameter(description = "Custom system message")
-            @RequestParam(value = "system_message", required = false) String systemMessage) {
+            @RequestParam(value = "system_message", required = false) String systemMessage,
+            
+            HttpServletRequest httpRequest) {
 
-        log.info("Received streaming chat request: conversationId={}, message length={}", 
-                conversationId, message.length());
+        String userRole = extractUserRole(httpRequest);
+        log.info("Received streaming chat request: conversationId={}, message length={}, userRole={}", 
+                conversationId, message.length(), userRole);
 
         SseEmitter emitter = new SseEmitter(30000L); // 30-second timeout
         String finalConversationId = conversationId != null ? conversationId : generateConversationId();
@@ -104,10 +113,10 @@ public class AIController {
                 Flux<String> responseStream;
                 if (systemMessage != null && !systemMessage.trim().isEmpty()) {
                     // For custom system message, we'll use the non-streaming method and send as a single event
-                    String response = aiAgentService.processQueryWithContext(message, systemMessage, finalConversationId);
+                    String response = aiAgentService.processQueryWithContext(message, systemMessage, finalConversationId, userRole);
                     emitter.send(SseEmitter.event().data(response));
                 } else {
-                    responseStream = aiAgentService.streamQuery(message, finalConversationId);
+                    responseStream = aiAgentService.streamQuery(message, finalConversationId, userRole);
                     responseStream
                             .timeout(Duration.ofSeconds(25))
                             .doOnNext(chunk -> {
@@ -155,11 +164,12 @@ public class AIController {
     @PostMapping("/chat/simple")
     @Operation(summary = "Simple chat without conversation context", 
                description = "Send a stateless message to the AI assistant")
-    public ResponseEntity<ChatResponse> simpleChat(@Valid @RequestBody ChatRequest request) {
+    public ResponseEntity<ChatResponse> simpleChat(@Valid @RequestBody ChatRequest request, HttpServletRequest httpRequest) {
         try {
-            log.info("Received simple chat request: message length={}", request.getMessage().length());
+            String userRole = extractUserRole(httpRequest);
+            log.info("Received simple chat request: message length={}, userRole={}", request.getMessage().length(), userRole);
 
-            String response = aiAgentService.processQuery(request.getMessage());
+            String response = aiAgentService.processQuery(request.getMessage(), userRole);
 
             ChatResponse chatResponse = ChatResponse.builder()
                     .response(response)
@@ -186,5 +196,23 @@ public class AIController {
 
     private String generateConversationId() {
         return "conv_" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+    }
+
+    private String extractUserRole(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            log.info("No JWT token found, treating user as PUBLIC");
+            return "PUBLIC";
+        }
+        
+        try {
+            String token = authHeader.substring(7);
+            String role = jwtService.extractRole(token);
+            log.info("Extracted user role: {}", role);
+            return role;
+        } catch (Exception e) {
+            log.warn("Failed to extract role from JWT, treating user as PUBLIC", e);
+            return "PUBLIC";
+        }
     }
 }
