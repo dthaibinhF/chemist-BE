@@ -485,7 +485,7 @@ public ChatClient chatClient(AnthropicChatModel chatModel,
 spring:
   ai:
     anthropic:
-      api-key: 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
+      api-key: ${ANTHROPIC_API_KEY}
       chat:
         options:
           model: claude-3-5-sonnet-20241022
