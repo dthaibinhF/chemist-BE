@@ -1,0 +1,54 @@
+services:
+  # Remove postgres service when using cloud database
+  # postgres:
+  #   image: postgres:17-alpine
+  #   ... (commented out for cloud database usage)
+
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: chemist-backend
+    ports:
+      - "8080:8080"
+    environment:
+      # Database Configuration
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      
+      # Spring Configuration
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      SPRING_FLYWAY_ENABLED: ${SPRING_FLYWAY_ENABLED}
+      
+      # Timezone Configuration
+      TZ: Asia/Ho_Chi_Minh
+      SPRING_JPA_PROPERTIES_HIBERNATE_JDBC_TIME_ZONE: Asia/Ho_Chi_Minh
+      
+      # JVM Options for container
+      JAVA_OPTS: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Duser.timezone=Asia/Ho_Chi_Minh"
+    # Remove postgres dependency when using cloud database
+    # depends_on:
+    #   postgres:
+    #     condition: service_healthy
+    networks:
+      - chemist-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+# Remove postgres volume when using cloud database
+# volumes:
+#   postgres_data:
+#     driver: local
+
+networks:
+  chemist-network:
+    driver: bridge
