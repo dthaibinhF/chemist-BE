@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Chemist-BE is a Spring Boot 3.4.7 REST API application for managing educational data including students, teachers, schedules, grades, and academic operations. It uses Java 21, PostgreSQL database, JWT authentication, and follows a layered architecture pattern.
+Chemist-BE is a Spring Boot 3.4.7 REST API application for managing educational data including students, teachers, schedules, grades, and academic operations. It uses Java 21, PostgresSQL database, JWT authentication, and follows a layered architecture pattern.
 
 ## Build and Development Commands
 
@@ -19,23 +19,48 @@ Chemist-BE is a Spring Boot 3.4.7 REST API application for managing educational 
 **Annotation Processor Setup** (Required for Lombok + MapStruct):
 ```xml
 <annotationProcessorPaths>
-  <path>org.mapstruct:mapstruct-processor:1.5.5.Final</path>
-  <path>org.projectlombok:lombok:1.18.34</path>
-  <path>org.projectlombok:lombok-mapstruct-binding:0.2.0</path>
+  <path>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.34</version>
+  </path>
+  <path>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok-mapstruct-binding</artifactId>
+    <version>0.2.0</version>
+  </path>
+  <path>
+    <groupId>org.mapstruct</groupId>
+    <artifactId>mapstruct-processor</artifactId>
+    <version>1.5.5.Final</version>
+  </path>
 </annotationProcessorPaths>
+<compilerArgs>
+  <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
+  <arg>-Amapstruct.defaultComponentModel=spring</arg>
+  <arg>-Amapstruct.verbose=true</arg>
+</compilerArgs>
 ```
-**Critical**: Processor order matters - MapStruct must come before Lombok for proper integration.
+**Critical**: Processor order matters—Lombok must come BEFORE MapStruct for proper integration. MapStruct needs the Lombok-generated getters/setters to work correctly.
+
+### Spring AI Integration
+**Anthropic Claude Integration** (version 1.0.0-M6):
+- Spring AI Anthropic starter for Claude API integration
+- AI agent functionality in `ai/` package
+- Function callback registry for agent interactions
+- WebSocket support for real-time AI interactions
 
 ### Database Setup
-- Requires PostgreSQL database named `chemist` running on localhost:5432
-- Default credentials: username=postgres, password=root (configurable via environment variables)
-- Uses environment variables: `DB_USERNAME` and `DB_PASSWORD`
-- **Flyway Migrations**: Located in `src/main/resources/db/migration/`
+- **Production**: AWS RDS PostgreSQL (database-chemist.cv6oo2im84e7.ap-southeast-2.rds.amazonaws.com:5432)
+- **Local Development**: PostgreSQL database named `chemist` on localhost:5432
+- Default local credentials: username=postgres, password=root (configurable via environment variables)
+- Uses environment variables: `DB_USERNAME`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`, `DB_NAME`
+- **Flyway Migrations**: Located in `src/main/resources/db/migration/` (V1-V6 currently implemented)
 - **Timezone**: All timestamps use `Asia/Ho_Chi_Minh` via `OffsetDateTime` fields
 
 ### Development Profiles
 - `dev` - Development profile (default)
-- `test` - Testing profile with H2 in-memory database
+- `test` - Testing profile with H2 an in-memory database
 - Configure via `spring.profiles.active` in application.properties
 
 ## Architecture and Code Patterns
@@ -50,8 +75,8 @@ Follow this strict 6-layer pattern for all entities:
 6. **Controller** (`controller/`) - REST endpoints with `/api/v1/` prefix
 
 ### Key Technologies
-- **Blaze Persistence** - Advanced JPA queries and entity views (configured in BlazePersistenceConfiguration)
-- **MapStruct** - Automatic DTO mapping with annotation processors
+- **Blaze Persistence—** Advanced JPA queries and entity views (configured in BlazePersistenceConfiguration)
+- **MapStruct—** Automatic DTO mapping with annotation processors
 - **Spring Security** - JWT-based authentication with custom UserDetailsService
 - **Lombok** - Automatic getters/setters (ensure proper annotation processor setup)
 - **SpringDoc OpenAPI** - API documentation at `/swagger-ui.html`
@@ -71,7 +96,7 @@ All entities must implement soft delete using `endAt` field:
 - Filter deleted records in all queries with `WHERE endAt IS NULL`
 
 ### Authentication and Security
-- JWT tokens required for most endpoints (Bearer token in Authorization header)
+- JWT tokens are required for most endpoints (Bearer token in Authorization header)
 - Role-based access control (ADMIN, TEACHER, MANAGER roles)
 - Custom JWT filter before UsernamePasswordAuthenticationFilter
 - **JWT Configuration**: 1-hour access tokens, 7-day refresh tokens
@@ -98,7 +123,7 @@ All entities must implement soft delete using `endAt` field:
 - Comprehensive API docs in `/docs/INSTRUCTION.md`
 - All endpoints follow `/api/v1/` prefix pattern
 - Supports pagination, filtering, and search operations
-- Swagger UI available at runtime for interactive testing
+- Swagger UI is available at runtime for interactive testing
 
 ## Development Guidelines
 
@@ -120,7 +145,7 @@ All entities must implement soft delete using `endAt` field:
 - Unit tests for service layer business logic
 - Integration tests for controller endpoints
 - Repository tests for custom query methods
-- Use H2 in-memory database for testing (already configured)
+- Use H2 as an in-memory database for testing (already configured)
 
 ## Performance Optimization
 
@@ -152,15 +177,15 @@ All entities must implement soft delete using `endAt` field:
 ### Completed Testing Work
 **Successfully implemented comprehensive endpoint integration tests for two major APIs:**
 
-#### ✅ School API Testing - COMPLETED
+#### ✅ School API Testing—COMPLETED
 - **File**: `src/test/java/dthaibinhf/project/chemistbe/controller/SchoolControllerTest.java`
-- **Status**: ✅ **16/16 tests passing** - All tests successful
+- **Status**: ✅ **16/16 tests passing—** All tests successful
 - **Coverage**: CRUD operations, validation, authorization (ADMIN/MANAGER/TESTER roles), soft delete behavior
 - **Approach**: Endpoint integration tests using MockMvc, H2 in-memory database, @SpringBootTest
 
 #### ⚠️ Schedule API Testing - IN PROGRESS  
 - **File**: `src/test/java/dthaibinhf/project/chemistbe/controller/ScheduleControllerTest.java`
-- **Status**: ⚠️ **15/20 tests passing** - Minor issues remaining
+- **Status**: ⚠️ **15/20 tests passing—** Minor issues remaining
 - **Coverage**: CRUD operations, search with LocalDate parameters, weekly generation, validation, timezone conversion
 - **Complex Setup**: Group-Room-AcademicYear-Grade-Fee entity relationships, LocalDate to OffsetDateTime conversion
 
@@ -174,17 +199,17 @@ All entities must implement soft delete using `endAt` field:
 
 ### Pending Tasks for Next Session
 ⚠️ **Schedule API Test Fixes Required:**
-1. **Fix 4 failing tests**: JSON property naming issues (snake_case vs camelCase in assertions)
+1. **Fix 4 failing tests**: JSON property naming issues (snake_case vs. camelCase in assertions)
    - Tests expect `delivery_mode`, `group_id`, `meeting_link` properties
    - Need to verify actual DTO @JsonProperty mappings
 2. **Fix 1 error test**: Fee entity constraint violation in search filter test
 3. **Verification**: Run `./mvnw test` to confirm all Schedule API tests pass
 
 ### Testing Guidelines Established
-1. **Focus on endpoint integration tests** - Not repository layer (per user preference)
-2. **Use proper Spring Boot testing annotations** - @SpringBootTest, @AutoConfigureMockMvc, @WithMockUser
-3. **Test comprehensive scenarios** - CRUD, validation, authorization, business logic, error cases
-4. **Maintain test isolation** - @DirtiesContext and @Transactional for clean test environment
+1. **Focus on endpoint integration tests—** Not repository layer (per user preference)
+2. **Use proper Spring Boot testing annotations—** @SpringBootTest, @AutoConfigureMockMvc, @WithMockUser
+3. **Test comprehensive scenarios—** CRUD, validation, authorization, business logic, error cases
+4. **Maintain test isolation—** @DirtiesContext and @Transactional for a clean test environment
 5. **Handle complex entity relationships** - Proper setup of dependent entities (Group→Fee, Room, etc.)
 
 ### Files Created/Modified
