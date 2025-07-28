@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .cors(corsConfig -> corsConfig.configurationSource(
                         request -> {
                             CorsConfiguration config = new CorsConfiguration();
-                            config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3005", "http://localhost:3000/", "https://chemist-center.netlify.app"));
+                            config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3005", "http://localhost:3000/", "https://chemist-fe.vercel.app"));
                             config.setAllowedMethods(Collections.singletonList("*"));
                             config.setAllowCredentials(true);
                             config.setAllowedHeaders(Collections.singletonList("*"));
