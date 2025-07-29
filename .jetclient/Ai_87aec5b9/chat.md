@@ -1,9 +1,9 @@
 ```toml
-name = 'simple chat'
-method = 'POST'
-url = '{{baseUrl}}/ai/chat/simple'
-sortWeight = 2000000
-id = '74034956-c707-4875-9a7a-ad3164eb74fc'
+name = 'chat'
+method = 'GET'
+url = '{{baseUrl}}/ai/chat'
+sortWeight = 5000000
+id = 'ce71339a-a29f-473d-a820-41f4c193f3f1'
 
 [[headers]]
 key = 'Authorization'

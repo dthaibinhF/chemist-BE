@@ -479,20 +479,6 @@ public ChatClient chatClient(AnthropicChatModel chatModel,
 
 #### ✅ Additional Critical Fixes Applied:
 
-**4.4 Application.yaml Configuration - FIXED**:
-```yaml
-# ✅ Correct nesting under spring: root
-spring:
-  ai:
-    anthropic:
-      api-key: ${ANTHROPIC_API_KEY}
-      chat:
-        options:
-          model: claude-3-5-sonnet-20241022
-          temperature: 0.2
-          max-tokens: 2000
-```
-
 **4.5 MapStruct Compiler Args - FIXED**:
 ```xml
 <!-- ✅ Corrected compiler arguments -->

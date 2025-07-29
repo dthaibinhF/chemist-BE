@@ -1,7 +1,7 @@
 ```toml
 name = 'Login'
 method = 'POST'
-url = '{{baseUrl/auth/login'
+url = '{{baseUrl}}/auth/login'
 sortWeight = 1000000
 id = '4a32f0dc-16a3-47a6-b804-5fad1b86566d'
 
