@@ -1,7 +1,8 @@
 package dthaibinhf.project.chemistbe.controller;
 
-import dthaibinhf.project.chemistbe.dto.ScheduleDTO;
+import dthaibinhf.project.chemistbe.dto.*;
 import dthaibinhf.project.chemistbe.service.ScheduleService;
+import dthaibinhf.project.chemistbe.service.ScheduledScheduleService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +22,7 @@ import java.util.Set;
 public class ScheduleController {
 
     ScheduleService scheduleService;
+    ScheduledScheduleService scheduledScheduleService;
 
     @GetMapping
     public ResponseEntity<List<ScheduleDTO>> getAllSchedules() {
@@ -67,5 +69,99 @@ public class ScheduleController {
             @RequestParam LocalDate endDate // date when the schedule ends
     ) {
         return ResponseEntity.ok(scheduleService.generateWeeklySchedule(groupId, startDate, endDate));
+    }
+
+    /* Bulk Schedule Generation Endpoints */
+    
+    /**
+     * Generate schedules for multiple groups at once
+     */
+    @PostMapping("/bulk/selected-groups")
+    public ResponseEntity<BulkScheduleGenerationResponse> generateBulkSchedules(
+            @RequestBody BulkScheduleGenerationRequest request) {
+        
+        List<Set<ScheduleDTO>> generatedSchedules = scheduleService.generateBulkWeeklySchedules(
+                request.getGroupIds(), request.getStartDate(), request.getEndDate());
+        
+        int totalSchedules = generatedSchedules.stream()
+                .mapToInt(Set::size)
+                .sum();
+        
+        return ResponseEntity.ok(BulkScheduleGenerationResponse.builder()
+                .success(true)
+                .message("Bulk schedule generation completed")
+                .totalGroupsProcessed(request.getGroupIds().size())
+                .successfulGroups(request.getGroupIds().size())
+                .failedGroups(0)
+                .totalSchedulesGenerated(totalSchedules)
+                .generatedSchedules(generatedSchedules)
+                .errors(List.of())
+                .build());
+    }
+
+    /**
+     * Generate schedules for all active groups
+     */
+    @PostMapping("/bulk/all-groups")
+    public ResponseEntity<BulkScheduleGenerationResponse> generateSchedulesForAllGroups(
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate) {
+        
+        List<Set<ScheduleDTO>> generatedSchedules = scheduleService.generateSchedulesForAllActiveGroups(
+                startDate, endDate);
+        
+        int totalSchedules = generatedSchedules.stream()
+                .mapToInt(Set::size)
+                .sum();
+        
+        return ResponseEntity.ok(BulkScheduleGenerationResponse.builder()
+                .success(true)
+                .message("All groups schedule generation completed")
+                .totalGroupsProcessed(generatedSchedules.size())
+                .successfulGroups(generatedSchedules.size())
+                .failedGroups(0)
+                .totalSchedulesGenerated(totalSchedules)
+                .generatedSchedules(generatedSchedules)
+                .errors(List.of())
+                .build());
+    }
+
+    /**
+     * Generate schedules for next week for all groups (same as automatic Monday job)
+     */
+    @PostMapping("/bulk/next-week")
+    public ResponseEntity<String> generateNextWeekSchedules() {
+        scheduledScheduleService.triggerWeeklyGeneration();
+        return ResponseEntity.ok("Next week schedule generation triggered successfully");
+    }
+
+    /**
+     * Manual trigger for automatic generation (testing purposes)
+     */
+    @PostMapping("/auto-generation/trigger")
+    public ResponseEntity<String> triggerAutoGeneration() {
+        scheduledScheduleService.triggerWeeklyGeneration();
+        return ResponseEntity.ok("Automatic schedule generation triggered successfully");
+    }
+
+    /* Future Schedule Update Endpoints */
+    
+    /**
+     * Update schedule with option for single or future occurrences
+     */
+    @PutMapping("/{id}/update-mode")
+    public ResponseEntity<ScheduleUpdateResponse> updateScheduleWithMode(
+            @PathVariable Integer id, 
+            @RequestBody ScheduleUpdateRequest request) {
+        return ResponseEntity.ok(scheduleService.updateScheduleWithMode(id, request));
+    }
+
+    /**
+     * Get count of future schedules that would be affected by update
+     */
+    @GetMapping("/{id}/future-count")
+    public ResponseEntity<Integer> getFutureSchedulesCount(@PathVariable Integer id) {
+        int count = scheduleService.getFutureSchedulesCount(id);
+        return ResponseEntity.ok(count);
     }
 }

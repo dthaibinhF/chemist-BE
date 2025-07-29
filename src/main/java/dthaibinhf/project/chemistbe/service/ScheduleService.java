@@ -1,6 +1,9 @@
 package dthaibinhf.project.chemistbe.service;
 
 import dthaibinhf.project.chemistbe.dto.ScheduleDTO;
+import dthaibinhf.project.chemistbe.dto.ScheduleUpdateRequest;
+import dthaibinhf.project.chemistbe.dto.ScheduleUpdateResponse;
+import dthaibinhf.project.chemistbe.dto.UpdateMode;
 import dthaibinhf.project.chemistbe.mapper.ScheduleMapper;
 import dthaibinhf.project.chemistbe.model.*;
 import dthaibinhf.project.chemistbe.repository.GroupRepository;
@@ -17,10 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.*;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.function.Supplier;
 
@@ -324,9 +324,6 @@ public class ScheduleService {
         if (startDate.isAfter(endDate)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be before end date");
         }
-        if (startDate.isBefore(LocalDate.now().minusDays(1))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date cannot be in the past");
-        }
     }
 
     private Group getActiveGroupById(Integer groupId) {
@@ -435,5 +432,235 @@ public class ScheduleService {
 
         schedule.setId(null);  // Ensure a new record
         return schedule;
+    }
+
+    /**
+     * Generate schedules for multiple groups in a single operation
+     */
+    @Transactional
+    public List<Set<ScheduleDTO>> generateBulkWeeklySchedules(List<Integer> groupIds, LocalDate startDate, LocalDate endDate) {
+        try {
+            log.info("Generating bulk weekly schedules for {} groups from {} to {}", groupIds.size(), startDate, endDate);
+            
+            return groupIds.stream()
+                    .map(groupId -> {
+                        try {
+                            return generateWeeklySchedule(groupId, startDate, endDate);
+                        } catch (Exception e) {
+                            log.error("Failed to generate schedules for group: {}", groupId, e);
+                            return new LinkedHashSet<ScheduleDTO>();
+                        }
+                    })
+                    .collect(Collectors.toList());
+                    
+        } catch (Exception e) {
+            log.error("Error in bulk weekly schedule generation", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to generate bulk schedules");
+        }
+    }
+
+    /**
+     * Generate schedules for all active groups
+     */
+    @Transactional
+    public List<Set<ScheduleDTO>> generateSchedulesForAllActiveGroups(LocalDate startDate, LocalDate endDate) {
+        try {
+            log.info("Generating schedules for all active groups from {} to {}", startDate, endDate);
+            
+            List<Group> activeGroups = groupRepository.findAllActiveGroups();
+            List<Integer> groupIds = activeGroups.stream()
+                    .map(Group::getId)
+                    .collect(Collectors.toList());
+                    
+            return generateBulkWeeklySchedules(groupIds, startDate, endDate);
+            
+        } catch (Exception e) {
+            log.error("Error generating schedules for all active groups", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to generate schedules for all groups");
+        }
+    }
+
+    /**
+     * Update schedule with option for single occurrence or all future occurrences
+     */
+    @Transactional
+    public ScheduleUpdateResponse updateScheduleWithMode(Integer scheduleId, ScheduleUpdateRequest request) {
+        try {
+            log.info("Updating schedule {} with mode: {}", scheduleId, request.getUpdateMode());
+            
+            Schedule currentSchedule = findScheduleOrThrow(scheduleId);
+            
+            if (request.getUpdateMode() == UpdateMode.SINGLE_OCCURRENCE) {
+                return updateSingleScheduleOccurrence(currentSchedule, request);
+            } else {
+                return updateScheduleAndFutureOccurrences(currentSchedule, request);
+            }
+            
+        } catch (ResponseStatusException e) {
+            log.error("Validation error updating schedule {}: {}", scheduleId, e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("Error updating schedule {} with mode", scheduleId, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update schedule");
+        }
+    }
+
+    /**
+     * Update only the single schedule occurrence
+     */
+    private ScheduleUpdateResponse updateSingleScheduleOccurrence(Schedule schedule, ScheduleUpdateRequest request) {
+        try {
+            applyScheduleUpdates(schedule, request);
+            Schedule updatedSchedule = scheduleRepository.save(schedule);
+            
+            return ScheduleUpdateResponse.builder()
+                    .success(true)
+                    .message("Schedule updated successfully")
+                    .updatedSchedulesCount(1)
+                    .updatedSchedules(List.of(scheduleMapper.toDto(updatedSchedule)))
+                    .errors(new ArrayList<>())
+                    .build();
+                    
+        } catch (Exception e) {
+            log.error("Error updating single schedule occurrence", e);
+            return ScheduleUpdateResponse.builder()
+                    .success(false)
+                    .message("Failed to update schedule")
+                    .updatedSchedulesCount(0)
+                    .updatedSchedules(new ArrayList<>())
+                    .errors(List.of(e.getMessage()))
+                    .build();
+        }
+    }
+
+    /**
+     * Update current schedule and all future schedules with the same pattern
+     */
+    private ScheduleUpdateResponse updateScheduleAndFutureOccurrences(Schedule currentSchedule, ScheduleUpdateRequest request) {
+        try {
+            List<Schedule> futureSchedules = findFutureSchedulesWithSamePattern(currentSchedule);
+            List<Schedule> allSchedulesToUpdate = new ArrayList<>();
+            allSchedulesToUpdate.add(currentSchedule);
+            allSchedulesToUpdate.addAll(futureSchedules);
+            
+            List<ScheduleDTO> updatedScheduleDTOs = new ArrayList<>();
+            List<String> errors = new ArrayList<>();
+            int successCount = 0;
+            
+            for (Schedule schedule : allSchedulesToUpdate) {
+                try {
+                    applyScheduleUpdates(schedule, request);
+                    Schedule updatedSchedule = scheduleRepository.save(schedule);
+                    updatedScheduleDTOs.add(scheduleMapper.toDto(updatedSchedule));
+                    successCount++;
+                } catch (Exception e) {
+                    log.error("Failed to update schedule {}", schedule.getId(), e);
+                    errors.add("Failed to update schedule " + schedule.getId() + ": " + e.getMessage());
+                }
+            }
+            
+            boolean allSuccessful = errors.isEmpty();
+            String message = allSuccessful ? 
+                    "All schedules updated successfully" : 
+                    "Some schedules failed to update";
+            
+            return ScheduleUpdateResponse.builder()
+                    .success(allSuccessful)
+                    .message(message)
+                    .updatedSchedulesCount(successCount)
+                    .updatedSchedules(updatedScheduleDTOs)
+                    .errors(errors)
+                    .build();
+                    
+        } catch (Exception e) {
+            log.error("Error updating schedule and future occurrences", e);
+            return ScheduleUpdateResponse.builder()
+                    .success(false)
+                    .message("Failed to update schedules")
+                    .updatedSchedulesCount(0)
+                    .updatedSchedules(new ArrayList<>())
+                    .errors(List.of(e.getMessage()))
+                    .build();
+        }
+    }
+
+    /**
+     * Find all future schedules with the same pattern (same group, day of week, time)
+     */
+    private List<Schedule> findFutureSchedulesWithSamePattern(Schedule referenceSchedule) {
+        LocalDate referenceDate = referenceSchedule.getStartTime().toLocalDate();
+        DayOfWeek dayOfWeek = referenceDate.getDayOfWeek();
+        
+        // Find all schedules for the same group after the reference date
+        List<Schedule> allGroupSchedules = scheduleRepository.findActiveSchedulesByGroupIdAfterDate(
+                referenceSchedule.getGroup().getId(), 
+                referenceSchedule.getStartTime()
+        );
+        
+        // Filter schedules that match the same day of week pattern
+        return allGroupSchedules.stream()
+                .filter(schedule -> schedule.getStartTime().toLocalDate().getDayOfWeek().equals(dayOfWeek))
+                .filter(schedule -> !schedule.getId().equals(referenceSchedule.getId())) // Exclude current schedule
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Apply updates from request to schedule entity
+     */
+    private void applyScheduleUpdates(Schedule schedule, ScheduleUpdateRequest request) {
+        if (request.getStartTime() != null) {
+            schedule.setStartTime(request.getStartTime());
+        }
+        
+        if (request.getEndTime() != null) {
+            schedule.setEndTime(request.getEndTime());
+        }
+        
+        if (request.getDeliveryMode() != null) {
+            validateDeliveryModeString(request.getDeliveryMode());
+            schedule.setDeliveryMode(request.getDeliveryMode());
+        }
+        
+        if (request.getTeacherId() != null) {
+            if (request.getTeacherId() > 0) {
+                Teacher teacher = teacherRepository.findActiveById(request.getTeacherId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
+                                "Teacher not found: " + request.getTeacherId()));
+                schedule.setTeacher(teacher);
+            } else {
+                schedule.setTeacher(null);
+            }
+        }
+        
+        if (request.getRoomId() != null) {
+            Room room = roomRepository.findActiveById(request.getRoomId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
+                            "Room not found: " + request.getRoomId()));
+            schedule.setRoom(room);
+        }
+        
+        if (request.getMeetingLink() != null) {
+            schedule.setMeetingLink(request.getMeetingLink());
+        }
+    }
+
+    /**
+     * Get count of future schedules that the update would affect
+     */
+    public int getFutureSchedulesCount(Integer scheduleId) {
+        try {
+            Schedule schedule = findScheduleOrThrow(scheduleId);
+            List<Schedule> futureSchedules = findFutureSchedulesWithSamePattern(schedule);
+            return futureSchedules.size();
+        } catch (Exception e) {
+            log.error("Error getting future schedules count for schedule {}", scheduleId, e);
+            return 0;
+        }
+    }
+
+    private void validateDeliveryModeString(String deliveryMode) {
+        if (!VALID_DELIVERY_MODES.contains(deliveryMode)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid delivery mode: " + deliveryMode);
+        }
     }
 }
