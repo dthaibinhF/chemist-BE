@@ -46,15 +46,9 @@ spring:
       chat:
         options:
           model: claude-3-haiku-20240307       # More stable model
-          temperature: 0.7                    # Higher temperature = less processing load
-          max-tokens: 2000                    # Reduced to avoid rate limits
-          timeout: 30s                       # Add timeout to prevent hanging
-        retry:
-          max-attempts: 3                     # Add retry mechanism
-          backoff:
-            initial-interval: 1s
-            multiplier: 2
-            max-interval: 10s
+          temperature: 0.7                    # Higher for more creative, comprehensive responses
+          max-tokens: 4000                    # Increased for detailed responses with multiple tools
+
 
 # doc
 springdoc:
