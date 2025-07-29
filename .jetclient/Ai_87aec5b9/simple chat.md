@@ -13,7 +13,7 @@ value = '{{access_token}}'
 type = 'JSON'
 raw = '''
 {
-  "message": "Bạn Trần Huy Đạt đã đóng tiền học đủ chưa",
-  "conversationId": '14034950',
+  "message": "hiện tại lớp 12 có bao nhiêu nhóm vậy",
+  "conversationId": '34034950',
 }'''
 ```

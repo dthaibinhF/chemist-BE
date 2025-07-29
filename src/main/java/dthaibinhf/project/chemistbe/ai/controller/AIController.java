@@ -44,8 +44,8 @@ public class AIController {
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<ChatResponse> chat(@Valid @RequestBody ChatRequest request, HttpServletRequest httpRequest) {
+        String userRole = extractUserRole(httpRequest);
         try {
-            String userRole = extractUserRole(httpRequest);
             log.info("Received chat request: conversationId={}, message length={}, userRole={}", 
                     request.getConversationId(), request.getMessage().length(), userRole);
 
@@ -73,9 +73,9 @@ public class AIController {
             return ResponseEntity.ok(chatResponse);
 
         } catch (Exception e) {
-            log.error("Error processing chat request", e);
+            log.error("Error processing chat request for role {}: {}", userRole, e.getMessage(), e);
             ChatResponse errorResponse = ChatResponse.builder()
-                    .error("Failed to process your request: " + e.getMessage())
+                    .error(getErrorMessage(e, userRole))
                     .success(false)
                     .build();
             return ResponseEntity.internalServerError().body(errorResponse);
@@ -140,7 +140,7 @@ public class AIController {
                                 log.error("Error in streaming response", error);
                                 try {
                                     emitter.send(SseEmitter.event().name("error")
-                                            .data("Error occurred while processing your request"));
+                                            .data(getErrorMessage(error, userRole)));
                                 } catch (IOException e) {
                                     log.error("Error sending error event", e);
                                 }
@@ -149,7 +149,12 @@ public class AIController {
                             .subscribe();
                 }
             } catch (Exception e) {
-                log.error("Error in streaming chat", e);
+                log.error("Error in streaming chat for role {}: {}", userRole, e.getMessage(), e);
+                try {
+                    emitter.send(SseEmitter.event().name("error").data(getErrorMessage(e, userRole)));
+                } catch (IOException ioE) {
+                    log.error("Error sending error message to stream", ioE);
+                }
                 emitter.completeWithError(e);
             }
         });
@@ -165,8 +170,8 @@ public class AIController {
     @Operation(summary = "Simple chat without conversation context", 
                description = "Send a stateless message to the AI assistant")
     public ResponseEntity<ChatResponse> simpleChat(@Valid @RequestBody ChatRequest request, HttpServletRequest httpRequest) {
+        String userRole = extractUserRole(httpRequest);
         try {
-            String userRole = extractUserRole(httpRequest);
             log.info("Received simple chat request: message length={}, userRole={}", request.getMessage().length(), userRole);
 
             String response = aiAgentService.processQuery(request.getMessage(), userRole);
@@ -179,9 +184,9 @@ public class AIController {
             return ResponseEntity.ok(chatResponse);
 
         } catch (Exception e) {
-            log.error("Error processing simple chat request", e);
+            log.error("Error processing simple chat request for role {}: {}", userRole, e.getMessage(), e);
             ChatResponse errorResponse = ChatResponse.builder()
-                    .error("Failed to process your request: " + e.getMessage())
+                    .error(getErrorMessage(e, userRole))
                     .success(false)
                     .build();
             return ResponseEntity.internalServerError().body(errorResponse);
@@ -213,6 +218,30 @@ public class AIController {
         } catch (Exception e) {
             log.warn("Failed to extract role from JWT, treating user as PUBLIC", e);
             return "PUBLIC";
+        }
+    }
+
+    /**
+     * Get appropriate error message based on exception type and user role
+     */
+    private String getErrorMessage(Throwable e, String userRole) {
+        String errorMessage = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+        
+        if (errorMessage.contains("overloaded") || errorMessage.contains("rate limit")) {
+            log.warn("API rate limit hit for role: {}", userRole);
+            return "Xin lỗi, hệ thống AI hiện đang quá tải. Vui lòng thử lại sau vài phút ạ.";
+        } else if (errorMessage.contains("timeout")) {
+            log.warn("API timeout for role: {}", userRole);
+            return "Xin lỗi, yêu cầu của bạn mất quá nhiều thời gian. Vui lòng thử lại với câu hỏi ngắn gọn hơn ạ.";
+        } else if (errorMessage.contains("unauthorized") || errorMessage.contains("forbidden")) {
+            log.error("API authentication error for role: {}", userRole);
+            return "Xin lỗi, có lỗi xác thực hệ thống. Vui lòng liên hệ quản trị viên ạ.";
+        } else if (errorMessage.contains("nullpointerexception") || errorMessage.contains("messageaggregator")) {
+            log.error("Spring AI MessageAggregator error for role {}: {}", userRole, e.getMessage());
+            return "Xin lỗi, có lỗi kỹ thuật trong hệ thống AI. Đang sử dụng chế độ dự phòng ạ.";
+        } else {
+            log.error("Unexpected error for role {}: {}", userRole, e.getMessage(), e);
+            return "Xin lỗi, tôi gặp lỗi khi xử lý yêu cầu của bạn. Vui lòng thử lại ạ.";
         }
     }
 }

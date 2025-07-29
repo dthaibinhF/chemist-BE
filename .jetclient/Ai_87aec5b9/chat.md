@@ -1,6 +1,6 @@
 ```toml
 name = 'chat'
-method = 'GET'
+method = 'POST'
 url = '{{baseUrl}}/ai/chat'
 sortWeight = 5000000
 id = 'ce71339a-a29f-473d-a820-41f4c193f3f1'
@@ -13,7 +13,7 @@ value = '{{access_token}}'
 type = 'JSON'
 raw = '''
 {
-  "message": "Bạn Trần Huy Đạt đã đóng tiền học đủ chưa",
-  "conversationId": '14034950',
+  "message": "hiện tại lớp 12 có bao nhiêu nhóm vậy",
+  "conversationId": '14034900',
 }'''
 ```
