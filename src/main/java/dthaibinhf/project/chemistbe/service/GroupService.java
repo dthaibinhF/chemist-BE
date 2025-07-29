@@ -65,7 +65,7 @@ public class GroupService {
                 .collect(Collectors.toList());
     }
 
-    @Tool(description = "Get detailed information about all groups/classes including schedules and teachers. Useful for comprehensive group information queries")
+    @Tool(description = "Get detailed information about all groups/classes including schedules and teachers, and student in group. Useful for comprehensive group information queries like 'show all groups with details' or 'list classes with schedules' 'how many student in group'")
     @Cacheable(value = "groups", key = "'with_detail'")
     public List<GroupDTO> getAllGroupsWithDetail() {
         return groupRepository.findAllActiveGroups().stream().map(groupMapper::toDto).collect(Collectors.toList());

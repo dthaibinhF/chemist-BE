@@ -10,6 +10,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -147,7 +149,8 @@ public class PaymentDetailService {
         paymentDetailRepository.save(paymentDetail);
     }
 
-    public List<PaymentDetailDTO> getPaymentDetailsByStudentId(Integer studentId) {
+    @Tool(description = "Get payment history and details for a specific student. Useful for queries like 'payment history for student 5', 'show all payments by student John', or 'detailed payment records for student ID 10'")
+    public List<PaymentDetailDTO> getPaymentDetailsByStudentId(@ToolParam(description = "The unique ID of the student") Integer studentId) {
         return paymentDetailRepository.findActiveByStudentId(studentId)
                 .stream()
                 .map(paymentDetailMapper::toDto)
@@ -174,8 +177,9 @@ public class PaymentDetailService {
      * @param status The payment status
      * @return List of payment details with the specified status
      */
+    @Tool(description = "Find all payment details by status (PENDING, PAID, OVERDUE, PARTIAL). Useful for queries like 'show unpaid students', 'find overdue payments', or 'list students with pending payments'")
     @Transactional(readOnly = true)
-    public List<PaymentDetailDTO> getPaymentDetailsByStatus(PaymentStatus status) {
+    public List<PaymentDetailDTO> getPaymentDetailsByStatus(@ToolParam(description = "Payment status: PENDING, PAID, OVERDUE, or PARTIAL") PaymentStatus status) {
         return paymentDetailRepository.findActiveByPaymentStatus(status)
                 .stream()
                 .map(paymentDetailMapper::toDto)
@@ -189,8 +193,10 @@ public class PaymentDetailService {
      * @param feeId The fee ID
      * @return Total amount paid
      */
+    @Tool(description = "Calculate total amount paid by a specific student for a specific fee. Useful for queries like 'how much has student 5 paid for tuition?', 'total payments by student John for fee ID 2'")
     @Transactional(readOnly = true)
-    public BigDecimal getTotalAmountPaidByStudentAndFee(Integer studentId, Integer feeId) {
+    public BigDecimal getTotalAmountPaidByStudentAndFee(@ToolParam(description = "The unique ID of the student") Integer studentId, 
+                                                       @ToolParam(description = "The unique ID of the fee") Integer feeId) {
         return paymentDetailRepository.getTotalAmountPaidByStudentAndFee(studentId, feeId);
     }
 
