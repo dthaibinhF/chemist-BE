@@ -1,15 +1,19 @@
 package dthaibinhf.project.chemistbe.service;
 
+import dthaibinhf.project.chemistbe.dto.GroupDTO;
 import dthaibinhf.project.chemistbe.dto.ScheduleDTO;
+import dthaibinhf.project.chemistbe.mapper.GroupMapper;
 import dthaibinhf.project.chemistbe.mapper.ScheduleMapper;
 import dthaibinhf.project.chemistbe.model.*;
 import dthaibinhf.project.chemistbe.repository.GroupRepository;
+import dthaibinhf.project.chemistbe.repository.GroupScheduleRepository;
 import dthaibinhf.project.chemistbe.repository.RoomRepository;
 import dthaibinhf.project.chemistbe.repository.ScheduleRepository;
 import dthaibinhf.project.chemistbe.repository.TeacherRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,6 +39,8 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final ScheduleMapper scheduleMapper;
     private final GroupRepository groupRepository;
+    private final GroupScheduleRepository groupScheduleRepository;
+    private final GroupMapper groupMapper;
     private final TeacherRepository teacherRepository;
     private final RoomRepository roomRepository;
 
@@ -58,6 +64,7 @@ public class ScheduleService {
     }
 
 
+    @Tool(description = "Get all active schedules in the system. Useful for queries about overall schedule information.")
     @Transactional()
     public List<ScheduleDTO> getAllSchedules() {
         try {
@@ -72,6 +79,7 @@ public class ScheduleService {
         }
     }
 
+    @Tool(description = "Search schedules with filters: groupId, startDate, endDate. Useful for finding schedules by specific criteria.")
     @Transactional
     public List<ScheduleDTO> getAllSchedulesPageable(Pageable pageable, Integer groupId,
                                                      LocalDate startDate, LocalDate endDate) {
@@ -95,6 +103,7 @@ public class ScheduleService {
         }
     }
 
+    @Tool(description = "Get detailed information about a specific schedule by ID.")
     public ScheduleDTO getScheduleById(Integer id) {
         log.info("Fetching schedule by id: {}", id);
         return executeWithErrorHandling(
@@ -435,5 +444,92 @@ public class ScheduleService {
 
         schedule.setId(null);  // Ensure a new record
         return schedule;
+    }
+
+    @Tool(description = "Find groups that have classes matching specific day pattern and time range. Use this for queries like 'groups studying on Tuesday-Thursday-Saturday from 17:20-19:00'. Days should be in English (MONDAY, TUESDAY, etc.), times in HH:mm format.")
+    @Transactional(readOnly = true)
+    public List<GroupDTO> findGroupsBySchedulePattern(List<String> dayNames, String startTime, String endTime) {
+        try {
+            log.info("Searching for groups with schedule pattern - days: {}, time: {}-{}", dayNames, startTime, endTime);
+            
+            if (dayNames == null || dayNames.isEmpty()) {
+                return List.of();
+            }
+            
+            // Convert string times to LocalTime
+            LocalTime startTimeLocal = LocalTime.parse(startTime);
+            LocalTime endTimeLocal = LocalTime.parse(endTime);
+            
+            // Convert day names to DayOfWeek enum
+            Set<DayOfWeek> targetDays = dayNames.stream()
+                    .map(String::toUpperCase)
+                    .map(DayOfWeek::valueOf)
+                    .collect(Collectors.toSet());
+            
+            // Get all active groups
+            List<Group> allGroups = groupRepository.findAllActiveGroups();
+            
+            // Filter groups that match the schedule pattern
+            List<Group> matchingGroups = allGroups.stream()
+                    .filter(group -> hasMatchingSchedulePattern(group, targetDays, startTimeLocal, endTimeLocal))
+                    .toList();
+            
+            log.info("Found {} groups matching the pattern", matchingGroups.size());
+            return matchingGroups.stream()
+                    .map(groupMapper::toDto)
+                    .collect(Collectors.toList());
+                    
+        } catch (Exception e) {
+            log.error("Error searching for groups by schedule pattern", e);
+            return List.of();
+        }
+    }
+    
+    @Tool(description = "Get schedules for a specific date range. Useful for queries about schedules in a particular week or month.")
+    @Transactional(readOnly = true) 
+    public List<ScheduleDTO> getSchedulesByDateRange(LocalDate startDate, LocalDate endDate) {
+        try {
+            log.info("Getting schedules from {} to {}", startDate, endDate);
+            
+            OffsetDateTime offsetStartDate = startDate.atStartOfDay().atOffset(ZoneOffset.ofHours(7));
+            OffsetDateTime offsetEndDate = endDate.atTime(23, 59).atOffset(ZoneOffset.ofHours(7));
+            
+            List<Schedule> schedules = scheduleRepository.findAllActivePageable(
+                null, offsetStartDate, offsetEndDate, Pageable.unpaged()).getContent();
+                
+            return schedules.stream()
+                    .map(scheduleMapper::toDto)
+                    .collect(Collectors.toList());
+                    
+        } catch (Exception e) {
+            log.error("Error getting schedules by date range", e);
+            return List.of();
+        }
+    }
+    
+    private boolean hasMatchingSchedulePattern(Group group, Set<DayOfWeek> targetDays, 
+                                               LocalTime startTime, LocalTime endTime) {
+        Set<GroupSchedule> groupSchedules = group.getGroupSchedules();
+        
+        if (groupSchedules.isEmpty()) {
+            return false;
+        }
+        
+        // Get the days this group has classes
+        Set<DayOfWeek> groupDays = groupSchedules.stream()
+                .map(GroupSchedule::getDayOfWeekEnum)
+                .collect(Collectors.toSet());
+        
+        // Check if group days match target days (must be exactly the same or subset)
+        if (!targetDays.equals(groupDays)) {
+            return false;
+        }
+        
+        // Check if any schedule has a matching time range
+        return groupSchedules.stream()
+                .anyMatch(schedule -> 
+                    schedule.getStartTime().equals(startTime) && 
+                    schedule.getEndTime().equals(endTime)
+                );
     }
 }
