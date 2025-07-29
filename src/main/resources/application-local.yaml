@@ -45,9 +45,9 @@ spring:
       api-key: ${ANTHROPIC_API_KEY}
       chat:
         options:
-          model: claude-3-5-sonnet-20241022
+          model: claude-3-5-haiku-20241022
           temperature: 0.2
-          max-tokens: 2000
+          max-tokens: 5000
 
 # doc
 springdoc:
