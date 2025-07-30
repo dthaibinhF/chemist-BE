@@ -3,7 +3,9 @@ package dthaibinhf.project.chemistbe.mapper;
 import dthaibinhf.project.chemistbe.dto.GroupScheduleDTO;
 import dthaibinhf.project.chemistbe.model.Group;
 import dthaibinhf.project.chemistbe.model.GroupSchedule;
+import dthaibinhf.project.chemistbe.model.Room;
 import dthaibinhf.project.chemistbe.repository.GroupRepository;
+import dthaibinhf.project.chemistbe.repository.RoomRepository;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -16,6 +18,9 @@ public abstract class GroupScheduleMapper {
 
     @Autowired
     GroupRepository groupRepository;
+
+    @Autowired
+    RoomRepository roomRepository;
 
     @Mapping(source = "roomName", target = "room.name")
     @Mapping(source = "roomId", target = "room.id")
@@ -40,5 +45,24 @@ public abstract class GroupScheduleMapper {
     abstract public GroupScheduleDTO toDto(GroupSchedule groupSchedule);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "room", ignore = true) // Ignore room mapping, handle manually
     abstract public GroupSchedule partialUpdate(GroupScheduleDTO groupScheduleDTO, @MappingTarget GroupSchedule groupSchedule);
+
+
+    @AfterMapping
+    protected void linkRoom(@MappingTarget GroupSchedule groupSchedule, GroupScheduleDTO groupScheduleDTO) {
+        // Handle room update manually
+        if (groupScheduleDTO.getRoomId() != null) {
+            Room room = roomRepository.findById(groupScheduleDTO.getRoomId()).orElseThrow(
+                    () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found: " + groupScheduleDTO.getRoomId())
+            );
+            groupSchedule.setRoom(room);
+        } else {
+            // If roomId is explicitly null, set room to null
+            groupSchedule.setRoom(null);
+        }
+        // If roomId is not provided in DTO (undefined), leave existing room unchanged
+    }
+
+
 }

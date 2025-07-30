@@ -361,33 +361,37 @@ public class ScheduleService {
         List<GroupSchedule> templates = getSortedGroupScheduleTemplates(group);
 
         for (GroupSchedule template : templates) {
-            LocalDate nextMatchingDate = findFirstMatchingDayOfWeek(startDate, endDate, template.getDayOfWeekEnum());
+            // Get ALL matching dates for this day of week in the range (not just the first one)
+            List<LocalDate> matchingDates = findAllMatchingDaysOfWeek(startDate, endDate, template.getDayOfWeekEnum());
+            
+            log.debug("Processing {} template for {} - found {} matching dates", 
+                    template.getDayOfWeekEnum(), group.getName(), matchingDates.size());
 
-            if (nextMatchingDate != null) {
+            // Create schedules for ALL matching dates
+            for (LocalDate matchingDate : matchingDates) {
                 // Skip if this date already has a schedule for this group
-                if (existingScheduleDates.contains(nextMatchingDate)) {
+                if (existingScheduleDates.contains(matchingDate)) {
                     log.debug("Skipping schedule creation for {} on {} - schedule already exists", 
-                            template.getDayOfWeekEnum(), nextMatchingDate);
+                            template.getDayOfWeekEnum(), matchingDate);
                     continue;
                 }
 
-                //TODO: this method should use for create a list of schedules from start date to end date, not just one
-                // Create a new schedule based on the template
-                //then add it to the newSchedules set
-                log.debug("Creating new schedule for {} on {}", template.getDayOfWeekEnum(), nextMatchingDate);
-                Schedule newSchedule = createScheduleFromTemplate(group, template, nextMatchingDate);
+                log.debug("Creating new schedule for {} on {}", template.getDayOfWeekEnum(), matchingDate);
+                Schedule newSchedule = createScheduleFromTemplate(group, template, matchingDate);
 
                 if (isScheduleValid(newSchedule)) {
                     newSchedules.add(newSchedule);
                     log.debug("Created new schedule for {} on {}", 
-                            template.getDayOfWeekEnum(), nextMatchingDate);
+                            template.getDayOfWeekEnum(), matchingDate);
                 } else {
                     log.warn("Skipping schedule for {} on {} due to conflicts",
-                            template.getDayOfWeekEnum(), nextMatchingDate);
+                            template.getDayOfWeekEnum(), matchingDate);
                 }
             }
         }
 
+        log.info("Created {} new schedules for group {} from {} templates", 
+                newSchedules.size(), group.getName(), templates.size());
         return newSchedules;
     }
 
@@ -403,19 +407,26 @@ public class ScheduleService {
                 .toList();
     }
 
-    private LocalDate findFirstMatchingDayOfWeek(LocalDate startDate,
-                                                      LocalDate endDate,
-                                                      DayOfWeek targetDayOfWeek) {
+    /**
+     * Find all dates in the range that match the target day of week (inclusive of end date)
+     */
+    private List<LocalDate> findAllMatchingDaysOfWeek(LocalDate startDate,
+                                                       LocalDate endDate,
+                                                       DayOfWeek targetDayOfWeek) {
+        List<LocalDate> matchingDates = new ArrayList<>();
         LocalDate current = startDate;
 
-        while (current.isBefore(endDate)) {
+        // Include end date by using !current.isAfter(endDate)
+        while (!current.isAfter(endDate)) {
             if (current.getDayOfWeek().equals(targetDayOfWeek)) {
-                return current;
+                matchingDates.add(current);
             }
             current = current.plusDays(1);
         }
 
-        return null; // No matching day found in range
+        log.debug("Found {} matching {} dates between {} and {}: {}", 
+                matchingDates.size(), targetDayOfWeek, startDate, endDate, matchingDates);
+        return matchingDates;
     }
 
     private boolean isScheduleValid(Schedule schedule) {

@@ -15,10 +15,11 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
            "LEFT JOIN FETCH g.fee " +
            "LEFT JOIN FETCH g.academicYear " +
            "LEFT JOIN FETCH g.grade " +
-           "LEFT JOIN FETCH g.groupSchedules sc " +
-           "LEFT JOIN FETCH sc.room " +
+           "LEFT JOIN FETCH g.groupSchedules gs " +
+           "LEFT JOIN FETCH gs.room " +
            "WHERE g.id = :id AND (g.endAt IS NULL OR g.endAt > CURRENT_TIMESTAMP)")
     Optional<Group> findActiveById(@Param("id") Integer id);
+
 
     @Query("SELECT g FROM Group g " +
            "LEFT JOIN FETCH g.fee " +

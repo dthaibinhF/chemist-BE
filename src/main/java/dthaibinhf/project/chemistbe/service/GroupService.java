@@ -87,7 +87,7 @@ public class GroupService {
     @Transactional
     @CacheEvict(value = "groups", allEntries = true)
     public GroupDTO updateGroup(Integer id, @Valid GroupDTO groupDTO, boolean syncFutureSchedules) {
-        Group group = groupRepository.findById(id)
+        Group group = groupRepository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + id));
 
         // Store original group schedules for comparison - create deep copies to preserve original values
@@ -194,7 +194,7 @@ public class GroupService {
     private void updateGroupSchedulesManually(Group group, Set<GroupScheduleDTO> groupScheduleDTOs) {
         log.info("Manually updating GroupSchedules for Group ID: {} with {} DTOs", 
                 group.getId(), groupScheduleDTOs.size());
-        
+
         // Create a map of existing GroupSchedules by ID for quick lookup
         Map<Integer, GroupSchedule> existingSchedulesById = group.getGroupSchedules().stream()
                 .collect(Collectors.toMap(GroupSchedule::getId, gs -> gs));
@@ -203,7 +203,7 @@ public class GroupService {
         
         for (GroupScheduleDTO dto : groupScheduleDTOs) {
             if (dto.getId() != null && existingSchedulesById.containsKey(dto.getId())) {
-                // Update existing GroupSchedule
+                // Update the existing GroupSchedule
                 GroupSchedule existingSchedule = existingSchedulesById.get(dto.getId());
                 log.debug("Updating existing GroupSchedule ID: {}", dto.getId());
                 
