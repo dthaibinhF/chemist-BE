@@ -195,6 +195,7 @@ public class StudentService {
      *
      * @param parentPhone search by parent phone (contains)
      * @param pageable    pagination and sorting parameters
+     * @param pageable    pagination and sorting parameters
      * @param studentName search by student name (contains, case-insensitive)
      * @param groupName   search by group name (contains, case-insensitive)
      * @param schoolName  search by school name (contains, case-insensitive)
