@@ -20,28 +20,32 @@ public class SchoolController {
 
     SchoolService schoolService;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TESTER')")
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<SchoolDTO> createSchool(@Valid @RequestBody SchoolDTO schoolDTO) {
         return ResponseEntity.ok(schoolService.createSchool(schoolDTO));
     }
+
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TEACHER')")
     public ResponseEntity<SchoolDTO> getSchool(@PathVariable Integer id) {
         return ResponseEntity.ok(schoolService.getSchoolById(id));
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TEACHER')")
     public ResponseEntity<List<SchoolDTO>> getAllSchools() {
         return ResponseEntity.ok(schoolService.getAllSchools());
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<SchoolDTO> updateSchool(@PathVariable Integer id, @Valid @RequestBody SchoolDTO schoolDTO) {
         return ResponseEntity.ok(schoolService.updateSchool(id, schoolDTO));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'TESTER')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> deleteSchool(@PathVariable Integer id) {
         schoolService.deleteSchool(id);
         return ResponseEntity.noContent().build();

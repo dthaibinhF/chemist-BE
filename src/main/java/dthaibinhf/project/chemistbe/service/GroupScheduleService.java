@@ -98,7 +98,7 @@ public class GroupScheduleService {
         log.info("Starting cascade for GroupSchedule ID: {} in Group: {} - {} → {}", 
                 groupSchedule.getId(), groupId, originalDayOfWeek, groupSchedule.getDayOfWeekEnum());
 
-        // Get current date/time
+        // Get the current date /time
         OffsetDateTime now = OffsetDateTime.now();
         log.info("Current time for future schedule filtering: {}", now);
 
@@ -114,7 +114,7 @@ public class GroupScheduleService {
                     schedule.getStartTime().toLocalDate(),
                     schedule.getStartTime()));
 
-        // Filter schedules that match the original day of week
+        // Filter schedules that match the original day of the week
         List<Schedule> matchingSchedules = futureSchedules.stream()
                 .filter(schedule -> schedule.getStartTime().getDayOfWeek().equals(originalDayOfWeek))
                 .collect(Collectors.toList());

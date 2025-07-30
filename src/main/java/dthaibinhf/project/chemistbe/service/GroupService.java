@@ -12,8 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
-import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.ai.tool.annotation.ToolParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -94,6 +92,14 @@ public class GroupService {
                 .collect(Collectors.toSet());
 
         // Update the group
+        //TODO: investigate why groupMapper.partialUpdate working weird
+        /*! if the Group have changed the GroupSchedule, the partialUpdate will create 3 new GroupSchedule and save to this Group (and delete the old one)
+        * But if that go like that the synchronizeSchedulesWithGroupSchedules will not work correctly
+        * because it will not find the original schedules to compare the id with the updated ones. --> at line 139, the originalGroupSchedules will be empty.
+        * So we need to find the other way to compare the original schedules with the updated ones.
+        * The solution is to use the originalGroupSchedules that we created before the partialUpdate.
+        * */
+
         groupMapper.partialUpdate(groupDTO, group);
         Group updatedGroup = groupRepository.save(group);
 
@@ -121,7 +127,7 @@ public class GroupService {
 
         // For each updated group schedule, find the corresponding original schedule and update related schedules
         for (GroupSchedule updatedSchedule : updatedSchedules) {
-            log.debug("Processing updated GroupSchedule ID: {} - {} {} {}-{}",
+            log.info("Processing updated GroupSchedule ID: {} - {} {} {}-{}",
                     updatedSchedule.getId(),
                     updatedSchedule.getDayOfWeek(),
                     updatedSchedule.getRoom() != null ? updatedSchedule.getRoom().getId() : "no-room",
@@ -135,7 +141,7 @@ public class GroupService {
 
             if (originalScheduleOpt.isPresent()) {
                 GroupSchedule originalSchedule = originalScheduleOpt.get();
-                log.debug("Found original GroupSchedule ID: {} - {} {} {}-{}",
+                log.info("Found original GroupSchedule ID: {} - {} {} {}-{}",
                         originalSchedule.getId(),
                         originalSchedule.getDayOfWeek(),
                         originalSchedule.getRoom() != null ? originalSchedule.getRoom().getId() : "no-room",

@@ -20,32 +20,32 @@ public class AcademicYearController {
 
     AcademicYearService academicYearService;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'MANAGER', 'TESTER')")
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<AcademicYearDTO> createAcademicYear(@Valid @RequestBody AcademicYearDTO academicYearDTO) {
         return ResponseEntity.ok(academicYearService.createAcademicYear(academicYearDTO));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'MANAGER', 'TESTER')")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TEACHER')")
     public ResponseEntity<AcademicYearDTO> getAcademicYear(@PathVariable Integer id) {
         return ResponseEntity.ok(academicYearService.getAcademicYearById(id));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'MANAGER', 'TESTER')")
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TEACHER')")
     public ResponseEntity<List<AcademicYearDTO>> getAllAcademicYears() {
         return ResponseEntity.ok(academicYearService.getAllAcademicYears());
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'MANAGER', 'TESTER')")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<AcademicYearDTO> updateAcademicYear(@PathVariable Integer id, @Valid @RequestBody AcademicYearDTO academicYearDTO) {
         return ResponseEntity.ok(academicYearService.updateAcademicYear(id, academicYearDTO));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'MANAGER', 'TESTER')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> deleteAcademicYear(@PathVariable Integer id) {
         academicYearService.deleteAcademicYear(id);
         return ResponseEntity.noContent().build();
