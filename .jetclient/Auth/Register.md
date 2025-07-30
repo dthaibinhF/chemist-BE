@@ -1,7 +1,7 @@
 ```toml
 name = 'Register'
-method = 'POST'
-url = 'http://localhost:8080/api/v1/auth/register'
+method = 'GET'
+url = 'http://localhost:8080/actuator/health'
 sortWeight = 2000000
 id = '05ac463d-de4f-4ff0-8e8b-b2ea151832b5'
 

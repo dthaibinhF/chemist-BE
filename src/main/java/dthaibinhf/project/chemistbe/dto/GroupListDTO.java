@@ -52,4 +52,7 @@ public class GroupListDTO extends BaseDTO implements Serializable {
     @NotBlank
     @JsonProperty("grade_name")
     String gradeName;
+
+    @JsonProperty("group_schedule")
+    GroupScheduleDTO groupSchedule;
 }

@@ -57,8 +57,11 @@ public class GroupController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GroupDTO> updateGroup(@PathVariable Integer id, @Valid @RequestBody GroupDTO groupDTO) {
-        return ResponseEntity.ok(groupService.updateGroup(id, groupDTO));
+    public ResponseEntity<GroupDTO> updateGroup(
+            @PathVariable Integer id, 
+            @Valid @RequestBody GroupDTO groupDTO,
+            @RequestParam(defaultValue = "true") boolean syncFutureSchedules) {
+        return ResponseEntity.ok(groupService.updateGroup(id, groupDTO, syncFutureSchedules));
     }
 
     @DeleteMapping("/{id}")

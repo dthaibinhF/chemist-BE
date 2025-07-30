@@ -50,10 +50,25 @@ public class StudentPaymentService {
      */
     public StudentPaymentSummaryDTO generatePaymentForStudentInGroup(Integer studentId, Integer groupId) {
         log.info("Generating payment obligation for student {} in group {}", studentId, groupId);
-        
+        BigDecimal totalPaid;
+        BigDecimal totalDiscount = BigDecimal.ZERO; // Initialize the total discount if needed
+
         // Validate and fetch entities
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new EntityNotFoundException("Student not found with ID: " + studentId));
+
+        List<PaymentDetail> existingDetails = paymentDetailRepository.findByStudentIdAndGroupId(studentId, groupId);
+
+        if (existingDetails.isEmpty()) {
+            log.info("Payment details already exist for student {} in group {}", studentId, groupId);
+            totalPaid = new BigDecimal(0);
+        } else {
+            totalPaid  = existingDetails.stream().map(PaymentDetail::getAmount).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+            totalDiscount = existingDetails.stream().map(PaymentDetail::getHaveDiscount).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+            log.info("Total amount already paid by student {} in group {}: {}", studentId, groupId, totalPaid);
+            log.info("Total discount for student {} in group {}: {}", studentId, groupId, totalDiscount);
+
+        }
         
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new EntityNotFoundException("Group not found with ID: " + groupId));
@@ -69,9 +84,10 @@ public class StudentPaymentService {
         }
         
         // Calculate the payment amount (with pro rata if needed)
-        BigDecimal amountDue = calculateAmountDue(fee, academicYear);
         OffsetDateTime dueDate = calculateDueDate();
-        
+        BigDecimal amountDue = fee.getAmount();
+        BigDecimal outStandingPaid = amountDue.subtract(totalPaid).subtract(totalDiscount);
+
         // Create a payment summary
         StudentPaymentSummary summary = StudentPaymentSummary.builder()
                 .student(student)
@@ -79,9 +95,9 @@ public class StudentPaymentService {
                 .academicYear(academicYear)
                 .group(group)
                 .totalAmountDue(amountDue)
-                .totalAmountPaid(BigDecimal.ZERO)
-                .outstandingAmount(amountDue)
-                .paymentStatus(PaymentStatus.PENDING)
+                .totalAmountPaid(totalPaid)
+                .outstandingAmount(outStandingPaid)
+                .paymentStatus(outStandingPaid.compareTo(BigDecimal.ZERO) > 0 ? PaymentStatus.PENDING : PaymentStatus.PAID)
                 .dueDate(dueDate)
                 .enrollmentDate(OffsetDateTime.now())
                 .build();

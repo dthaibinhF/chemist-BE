@@ -51,13 +51,21 @@ public class StudentService {
     public StudentDTO createStudent(StudentDTO studentDTO) {
         Student student = studentMapper.toEntity(studentDTO);
         student.setId(null);
+        if (student.getStudentDetails() != null) {
+            student.getStudentDetails().forEach(detail -> {
+                detail.setStudent(student);
+                if (detail.getGroup() != null && detail.getGroup().getId() != null) {
+                    detail.setGroup(groupRepository.getReferenceById(detail.getGroup().getId()));
+                }
+            });
+        }
         Student saved = studentRepository.save(student);
         return studentMapper.toDto(saved);
     }
 
     @Transactional
     public StudentDTO updateStudent(Integer id, StudentDTO studentDTO) {
-        // find current active student by ID
+        // find a current active student by ID
         Student student = studentRepository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found: " + id));
         // handle new changes of studentDTO
@@ -180,7 +188,6 @@ public class StudentService {
      * Search students with pagination and sorting
      * Search by student ID, phone, name, group name, school name, or class name
      *
-     * @param studentId   search by student ID (exact match)
      * @param parentPhone search by parent phone (contains)
      * @param studentName search by student name (contains, case-insensitive)
      * @param groupName   search by group name (contains, case-insensitive)
