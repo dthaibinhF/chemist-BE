@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.*;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.function.Supplier;
 
@@ -324,9 +321,6 @@ public class ScheduleService {
         if (startDate.isAfter(endDate)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be before end date");
         }
-        if (startDate.isBefore(LocalDate.now().minusDays(1))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date cannot be in the past");
-        }
     }
 
     private Group getActiveGroupById(Integer groupId) {
@@ -435,5 +429,108 @@ public class ScheduleService {
 
         schedule.setId(null);  // Ensure a new record
         return schedule;
+    }
+
+    /**
+     * Generate schedules for multiple groups in a single operation
+     */
+    @Transactional
+    public List<Set<ScheduleDTO>> generateBulkWeeklySchedules(List<Integer> groupIds, LocalDate startDate, LocalDate endDate) {
+        try {
+            log.info("Generating bulk weekly schedules for {} groups from {} to {}", groupIds.size(), startDate, endDate);
+            
+            return groupIds.stream()
+                    .map(groupId -> {
+                        try {
+                            return generateWeeklySchedule(groupId, startDate, endDate);
+                        } catch (Exception e) {
+                            log.error("Failed to generate schedules for group: {}", groupId, e);
+                            return new LinkedHashSet<ScheduleDTO>();
+                        }
+                    })
+                    .collect(Collectors.toList());
+                    
+        } catch (Exception e) {
+            log.error("Error in bulk weekly schedule generation", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to generate bulk schedules");
+        }
+    }
+
+    /**
+     * Generate schedules for all active groups
+     */
+    @Transactional
+    public List<Set<ScheduleDTO>> generateSchedulesForAllActiveGroups(LocalDate startDate, LocalDate endDate) {
+        try {
+            log.info("Generating schedules for all active groups from {} to {}", startDate, endDate);
+            
+            List<Group> activeGroups = groupRepository.findAllActiveGroups();
+            List<Integer> groupIds = activeGroups.stream()
+                    .map(Group::getId)
+                    .collect(Collectors.toList());
+                    
+            return generateBulkWeeklySchedules(groupIds, startDate, endDate);
+            
+        } catch (Exception e) {
+            log.error("Error generating schedules for all active groups", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to generate schedules for all groups");
+        }
+    }
+
+    /*
+     * TODO: Temporarily commented out - missing ScheduleUpdateRequest/Response and UpdateMode DTOs
+     * 
+     * Update schedule with option for single occurrence or all future occurrences
+     *
+    @Transactional
+    public ScheduleUpdateResponse updateScheduleWithMode(Integer scheduleId, ScheduleUpdateRequest request) {
+        // Implementation commented out due to missing DTOs
+    }
+
+    private ScheduleUpdateResponse updateSingleScheduleOccurrence(Schedule schedule, ScheduleUpdateRequest request) {
+        // Implementation commented out due to missing DTOs
+    }
+
+    private ScheduleUpdateResponse updateScheduleAndFutureOccurrences(Schedule currentSchedule, ScheduleUpdateRequest request) {
+        // Implementation commented out due to missing DTOs
+    }
+
+    private List<Schedule> findFutureSchedulesWithSamePattern(Schedule referenceSchedule) {
+        // Implementation commented out due to missing DTOs
+    }
+
+    private void applyScheduleUpdates(Schedule schedule, ScheduleUpdateRequest request) {
+        // Implementation commented out due to missing DTOs
+    }
+     */
+
+    /**
+     * Get count of future schedules that the update would affect
+     */
+    public int getFutureSchedulesCount(Integer scheduleId) {
+        try {
+            Schedule schedule = findScheduleOrThrow(scheduleId);
+            // Simple implementation using existing repository method
+            List<Schedule> futureSchedules = scheduleRepository.findActiveSchedulesByGroupIdAfterDate(
+                    schedule.getGroup().getId(), 
+                    schedule.getStartTime()
+            );
+            
+            // Filter by same day of week
+            DayOfWeek dayOfWeek = schedule.getStartTime().getDayOfWeek();
+            return (int) futureSchedules.stream()
+                    .filter(s -> s.getStartTime().getDayOfWeek().equals(dayOfWeek))
+                    .filter(s -> !s.getId().equals(scheduleId)) // Exclude current schedule
+                    .count();
+        } catch (Exception e) {
+            log.error("Error getting future schedules count for schedule {}", scheduleId, e);
+            return 0;
+        }
+    }
+
+    private void validateDeliveryModeString(String deliveryMode) {
+        if (!VALID_DELIVERY_MODES.contains(deliveryMode)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid delivery mode: " + deliveryMode);
+        }
     }
 }

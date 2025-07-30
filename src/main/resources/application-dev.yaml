@@ -5,14 +5,14 @@ spring:
   application:
     name: chemist-BE
   datasource:
-    url: jdbc:postgresql://db.zbxgzvwcfufjyqznkawn.supabase.co:5432/postgres?sslmode=require
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:18112003_Supabase}
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:none}
     open-in-view: true
     properties:
       hibernate:

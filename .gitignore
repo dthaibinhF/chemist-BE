@@ -5,6 +5,12 @@ target/
 !**/src/test/**/target/
 !.history
 .vscode
+.env
+.env.dev
+.env.prod
+.env.local
+.env.development.local
+.env.**
 
 ### STS ###
 .apt_generated

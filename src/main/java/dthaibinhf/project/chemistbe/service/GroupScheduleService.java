@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class GroupScheduleService {
 
     GroupScheduleRepository groupScheduleRepository;
@@ -93,42 +95,133 @@ public class GroupScheduleService {
     public void updateRelatedSchedules(GroupSchedule groupSchedule, DayOfWeek originalDayOfWeek) {
         // Get the group ID
         Integer groupId = groupSchedule.getGroup().getId();
+        log.info("Starting cascade for GroupSchedule ID: {} in Group: {} - {} → {}", 
+                groupSchedule.getId(), groupId, originalDayOfWeek, groupSchedule.getDayOfWeekEnum());
 
         // Get current date/time
         OffsetDateTime now = OffsetDateTime.now();
+        log.info("Current time for future schedule filtering: {}", now);
 
-        // Find all active schedules for this group that are in the future
-        List<Schedule> schedules = scheduleRepository.findAllActivePageable(
-                groupId, now, null, Pageable.unpaged()).getContent();
+        // Find all active future schedules for this group using the dedicated method
+        List<Schedule> futureSchedules = scheduleRepository.findActiveSchedulesByGroupIdAfterDate(groupId, now);
+        log.info("Found {} future schedules for Group {}", futureSchedules.size(), groupId);
+        
+        // Log all future schedules for debugging
+        futureSchedules.forEach(schedule -> 
+            log.debug("Future schedule ID: {} - {} {} to {}", 
+                    schedule.getId(), 
+                    schedule.getStartTime().getDayOfWeek(),
+                    schedule.getStartTime().toLocalDate(),
+                    schedule.getStartTime()));
 
         // Filter schedules that match the original day of week
-        List<Schedule> matchingSchedules = schedules.stream()
+        List<Schedule> matchingSchedules = futureSchedules.stream()
                 .filter(schedule -> schedule.getStartTime().getDayOfWeek().equals(originalDayOfWeek))
                 .collect(Collectors.toList());
+        
+        log.info("Found {} schedules matching original day {} for cascade", 
+                matchingSchedules.size(), originalDayOfWeek);
+        
+        // Log matching schedules
+        matchingSchedules.forEach(schedule -> 
+            log.info("Matching schedule ID: {} - {} {} {}-{}", 
+                    schedule.getId(),
+                    schedule.getStartTime().getDayOfWeek(),
+                    schedule.getStartTime().toLocalDate(),
+                    schedule.getStartTime().toLocalTime(),
+                    schedule.getEndTime().toLocalTime()));
+
+        // Check if day of week changed
+        DayOfWeek newDayOfWeek = groupSchedule.getDayOfWeekEnum();
+        boolean dayChanged = !originalDayOfWeek.equals(newDayOfWeek);
+        log.info("Day changed: {} ({} → {})", dayChanged, originalDayOfWeek, newDayOfWeek);
 
         // Update each matching schedule
+        int updatedCount = 0;
         for (Schedule schedule : matchingSchedules) {
-            // Update the start time while preserving the date
             LocalDate scheduleDate = schedule.getStartTime().toLocalDate();
-            OffsetDateTime newStartTime = combineDateTime(scheduleDate, groupSchedule.getStartTime());
-
-            // Update the end time while preserving the date
-            OffsetDateTime newEndTime = combineDateTime(scheduleDate, groupSchedule.getEndTime());
-
-            // Set the new times
-            schedule.setStartTime(newStartTime);
-            schedule.setEndTime(newEndTime);
-
-            // If the room has changed in the group schedule, update it in the schedule too
-            if (groupSchedule.getRoom() != null) {
-                schedule.setRoom(groupSchedule.getRoom());
+            log.info("Processing schedule ID: {} on {}", schedule.getId(), scheduleDate);
+            
+            if (dayChanged) {
+                // Calculate new date for the new day of week
+                LocalDate newDate = calculateNewDateForDayChange(scheduleDate, originalDayOfWeek, newDayOfWeek);
+                log.info("Day change: {} {} → {} {}", 
+                        originalDayOfWeek, scheduleDate, newDayOfWeek, newDate);
+                
+                if (newDate != null) {
+                    // Update to new day with new times
+                    OffsetDateTime newStartTime = combineDateTime(newDate, groupSchedule.getStartTime());
+                    OffsetDateTime newEndTime = combineDateTime(newDate, groupSchedule.getEndTime());
+                    
+                    log.info("Schedule ID: {} updated - {} to {} | {}-{} to {}-{}", 
+                            schedule.getId(),
+                            schedule.getStartTime().toLocalDate(), newDate,
+                            schedule.getStartTime().toLocalTime(), schedule.getEndTime().toLocalTime(),
+                            groupSchedule.getStartTime(), groupSchedule.getEndTime());
+                    
+                    schedule.setStartTime(newStartTime);
+                    schedule.setEndTime(newEndTime);
+                    updatedCount++;
+                } else {
+                    log.warn("Could not calculate new date for schedule ID: {}, skipping", schedule.getId());
+                    continue;
+                }
+            } else {
+                // Same day, just update times
+                OffsetDateTime newStartTime = combineDateTime(scheduleDate, groupSchedule.getStartTime());
+                OffsetDateTime newEndTime = combineDateTime(scheduleDate, groupSchedule.getEndTime());
+                
+                log.info("Schedule ID: {} time updated - {}-{} → {}-{}", 
+                        schedule.getId(),
+                        schedule.getStartTime().toLocalTime(), schedule.getEndTime().toLocalTime(),
+                        groupSchedule.getStartTime(), groupSchedule.getEndTime());
+                
+                schedule.setStartTime(newStartTime);
+                schedule.setEndTime(newEndTime);
+                updatedCount++;
             }
+
+            // Update room if changed
+            if (groupSchedule.getRoom() != null) {
+                String oldRoomName = schedule.getRoom() != null ? schedule.getRoom().getName() : "null";
+                schedule.setRoom(groupSchedule.getRoom());
+                log.info("Schedule ID: {} room updated - {} → {}", 
+                        schedule.getId(), oldRoomName, groupSchedule.getRoom().getName());
+            }
+
+            // Note: GroupSchedule doesn't have teacher field, teacher updates handled separately
         }
 
         // Save all updated schedules
         if (!matchingSchedules.isEmpty()) {
-            scheduleRepository.saveAll(matchingSchedules);
+            log.info("Saving {} updated schedules to database", matchingSchedules.size());
+            try {
+                scheduleRepository.saveAll(matchingSchedules);
+                log.info("Successfully saved {} schedules. Cascade complete for GroupSchedule ID: {}", 
+                        updatedCount, groupSchedule.getId());
+            } catch (Exception e) {
+                log.error("Error saving updated schedules for GroupSchedule ID: {}", groupSchedule.getId(), e);
+                throw e;
+            }
+        } else {
+            log.warn("No matching schedules found to update for GroupSchedule ID: {}", groupSchedule.getId());
         }
+    }
+
+    /**
+     * Calculate new date when day of week changes.
+     * For example: Monday July 29 → Tuesday should become Tuesday July 30
+     */
+    private LocalDate calculateNewDateForDayChange(LocalDate originalDate, DayOfWeek originalDay, DayOfWeek newDay) {
+        // Calculate the difference in days
+        int dayDifference = newDay.getValue() - originalDay.getValue();
+        
+        // Handle week wrap-around (e.g., Friday → Monday = +3 days, not -4)
+        if (dayDifference < 0) {
+            dayDifference += 7;
+        }
+        
+        return originalDate.plusDays(dayDifference);
     }
 
     @Transactional

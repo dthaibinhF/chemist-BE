@@ -84,4 +84,19 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
         List<Schedule> findByTeacherIdAndDateRange(@Param("teacherId") Integer teacherId,
                                                   @Param("startDateTime") OffsetDateTime startDateTime,
                                                   @Param("endDateTime") OffsetDateTime endDateTime);
+
+        /**
+         * Find all active schedules for a specific group after a given date.
+         * Used for finding future schedules with the same pattern for bulk updates.
+         * 
+         * @param groupId The ID of the group
+         * @param afterDateTime Find schedules after this date/time
+         * @return List of schedules for the group after the specified date
+         */
+        @Query("SELECT s FROM Schedule s WHERE s.group.id = :groupId " +
+               "AND (s.endAt IS NULL OR s.endAt > CURRENT_TIMESTAMP) " +
+               "AND s.startTime > :afterDateTime " +
+               "ORDER BY s.startTime")
+        List<Schedule> findActiveSchedulesByGroupIdAfterDate(@Param("groupId") Integer groupId,
+                                                           @Param("afterDateTime") OffsetDateTime afterDateTime);
 }

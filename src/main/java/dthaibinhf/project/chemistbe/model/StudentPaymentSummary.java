@@ -68,8 +68,6 @@ public class StudentPaymentSummary extends BaseEntity {
     
     /**
      * Total amount the student is supposed to pay for this fee.
-     * This may be different from the fee's base amount due to pro-rata calculations,
-     * late enrollments, or other adjustments.
      */
     @Column(name = "total_amount_due", nullable = false, precision = 10, scale = 2)
     @Builder.Default
