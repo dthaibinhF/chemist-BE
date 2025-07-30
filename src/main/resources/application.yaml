@@ -1,19 +1,32 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: chemist-BE
   datasource:
-    url: jdbc:postgresql://${DB_HOST:database-chemist.cv6oo2im84e7.ap-southeast-2.rds.amazonaws.com}:${DB_PORT:5432}/${DB_NAME:chemist}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:chemist}
     username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:7AKD8DVuD2zExa1Vx28o}
+    password: ${DB_PASSWORD:1232}
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:none}
     open-in-view: true
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         cache:
           use_second_level_cache: false
+
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=30m
 
   # Flyway Database Migration Configuration
   flyway:
@@ -26,12 +39,20 @@ spring:
     clean-disabled: true
     schemas: public
 
-  jackson:
-    time-zone: Asia/Ho_Chi_Minh
-  cache:
-    type: caffeine
-    caffeine:
-      spec: maximumSize=1000,expireAfterWrite=30m
-
-server:
-  port: 8080
+# doc
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+    yaml:
+      enabled: true
+      path: /api-docs.yaml
+  swagger-ui:
+    path: /swagger-ui-custom.html
+    enabled: true
+    persist-authorization: true
+    display-request-duration: true
+    supportedSubmitMethods: get,put,post,delete,options,head,patch,trace
+    operationsSorter: alpha
+    tagsSorter: alpha
+    doc-expansion: none

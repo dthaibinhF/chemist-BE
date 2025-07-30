@@ -1,9 +1,6 @@
 package dthaibinhf.project.chemistbe.service;
 
 import dthaibinhf.project.chemistbe.dto.ScheduleDTO;
-import dthaibinhf.project.chemistbe.dto.ScheduleUpdateRequest;
-import dthaibinhf.project.chemistbe.dto.ScheduleUpdateResponse;
-import dthaibinhf.project.chemistbe.dto.UpdateMode;
 import dthaibinhf.project.chemistbe.mapper.ScheduleMapper;
 import dthaibinhf.project.chemistbe.model.*;
 import dthaibinhf.project.chemistbe.repository.GroupRepository;
@@ -480,169 +477,32 @@ public class ScheduleService {
         }
     }
 
-    /**
+    /*
+     * TODO: Temporarily commented out - missing ScheduleUpdateRequest/Response and UpdateMode DTOs
+     * 
      * Update schedule with option for single occurrence or all future occurrences
-     */
+     *
     @Transactional
     public ScheduleUpdateResponse updateScheduleWithMode(Integer scheduleId, ScheduleUpdateRequest request) {
-        try {
-            log.info("Updating schedule {} with mode: {}", scheduleId, request.getUpdateMode());
-            
-            Schedule currentSchedule = findScheduleOrThrow(scheduleId);
-            
-            if (request.getUpdateMode() == UpdateMode.SINGLE_OCCURRENCE) {
-                return updateSingleScheduleOccurrence(currentSchedule, request);
-            } else {
-                return updateScheduleAndFutureOccurrences(currentSchedule, request);
-            }
-            
-        } catch (ResponseStatusException e) {
-            log.error("Validation error updating schedule {}: {}", scheduleId, e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            log.error("Error updating schedule {} with mode", scheduleId, e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update schedule");
-        }
+        // Implementation commented out due to missing DTOs
     }
 
-    /**
-     * Update only the single schedule occurrence
-     */
     private ScheduleUpdateResponse updateSingleScheduleOccurrence(Schedule schedule, ScheduleUpdateRequest request) {
-        try {
-            applyScheduleUpdates(schedule, request);
-            Schedule updatedSchedule = scheduleRepository.save(schedule);
-            
-            return ScheduleUpdateResponse.builder()
-                    .success(true)
-                    .message("Schedule updated successfully")
-                    .updatedSchedulesCount(1)
-                    .updatedSchedules(List.of(scheduleMapper.toDto(updatedSchedule)))
-                    .errors(new ArrayList<>())
-                    .build();
-                    
-        } catch (Exception e) {
-            log.error("Error updating single schedule occurrence", e);
-            return ScheduleUpdateResponse.builder()
-                    .success(false)
-                    .message("Failed to update schedule")
-                    .updatedSchedulesCount(0)
-                    .updatedSchedules(new ArrayList<>())
-                    .errors(List.of(e.getMessage()))
-                    .build();
-        }
+        // Implementation commented out due to missing DTOs
     }
 
-    /**
-     * Update current schedule and all future schedules with the same pattern
-     */
     private ScheduleUpdateResponse updateScheduleAndFutureOccurrences(Schedule currentSchedule, ScheduleUpdateRequest request) {
-        try {
-            List<Schedule> futureSchedules = findFutureSchedulesWithSamePattern(currentSchedule);
-            List<Schedule> allSchedulesToUpdate = new ArrayList<>();
-            allSchedulesToUpdate.add(currentSchedule);
-            allSchedulesToUpdate.addAll(futureSchedules);
-            
-            List<ScheduleDTO> updatedScheduleDTOs = new ArrayList<>();
-            List<String> errors = new ArrayList<>();
-            int successCount = 0;
-            
-            for (Schedule schedule : allSchedulesToUpdate) {
-                try {
-                    applyScheduleUpdates(schedule, request);
-                    Schedule updatedSchedule = scheduleRepository.save(schedule);
-                    updatedScheduleDTOs.add(scheduleMapper.toDto(updatedSchedule));
-                    successCount++;
-                } catch (Exception e) {
-                    log.error("Failed to update schedule {}", schedule.getId(), e);
-                    errors.add("Failed to update schedule " + schedule.getId() + ": " + e.getMessage());
-                }
-            }
-            
-            boolean allSuccessful = errors.isEmpty();
-            String message = allSuccessful ? 
-                    "All schedules updated successfully" : 
-                    "Some schedules failed to update";
-            
-            return ScheduleUpdateResponse.builder()
-                    .success(allSuccessful)
-                    .message(message)
-                    .updatedSchedulesCount(successCount)
-                    .updatedSchedules(updatedScheduleDTOs)
-                    .errors(errors)
-                    .build();
-                    
-        } catch (Exception e) {
-            log.error("Error updating schedule and future occurrences", e);
-            return ScheduleUpdateResponse.builder()
-                    .success(false)
-                    .message("Failed to update schedules")
-                    .updatedSchedulesCount(0)
-                    .updatedSchedules(new ArrayList<>())
-                    .errors(List.of(e.getMessage()))
-                    .build();
-        }
+        // Implementation commented out due to missing DTOs
     }
 
-    /**
-     * Find all future schedules with the same pattern (same group, day of week, time)
-     */
     private List<Schedule> findFutureSchedulesWithSamePattern(Schedule referenceSchedule) {
-        LocalDate referenceDate = referenceSchedule.getStartTime().toLocalDate();
-        DayOfWeek dayOfWeek = referenceDate.getDayOfWeek();
-        
-        // Find all schedules for the same group after the reference date
-        List<Schedule> allGroupSchedules = scheduleRepository.findActiveSchedulesByGroupIdAfterDate(
-                referenceSchedule.getGroup().getId(), 
-                referenceSchedule.getStartTime()
-        );
-        
-        // Filter schedules that match the same day of week pattern
-        return allGroupSchedules.stream()
-                .filter(schedule -> schedule.getStartTime().toLocalDate().getDayOfWeek().equals(dayOfWeek))
-                .filter(schedule -> !schedule.getId().equals(referenceSchedule.getId())) // Exclude current schedule
-                .collect(Collectors.toList());
+        // Implementation commented out due to missing DTOs
     }
 
-    /**
-     * Apply updates from request to schedule entity
-     */
     private void applyScheduleUpdates(Schedule schedule, ScheduleUpdateRequest request) {
-        if (request.getStartTime() != null) {
-            schedule.setStartTime(request.getStartTime());
-        }
-        
-        if (request.getEndTime() != null) {
-            schedule.setEndTime(request.getEndTime());
-        }
-        
-        if (request.getDeliveryMode() != null) {
-            validateDeliveryModeString(request.getDeliveryMode());
-            schedule.setDeliveryMode(request.getDeliveryMode());
-        }
-        
-        if (request.getTeacherId() != null) {
-            if (request.getTeacherId() > 0) {
-                Teacher teacher = teacherRepository.findActiveById(request.getTeacherId())
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
-                                "Teacher not found: " + request.getTeacherId()));
-                schedule.setTeacher(teacher);
-            } else {
-                schedule.setTeacher(null);
-            }
-        }
-        
-        if (request.getRoomId() != null) {
-            Room room = roomRepository.findActiveById(request.getRoomId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
-                            "Room not found: " + request.getRoomId()));
-            schedule.setRoom(room);
-        }
-        
-        if (request.getMeetingLink() != null) {
-            schedule.setMeetingLink(request.getMeetingLink());
-        }
+        // Implementation commented out due to missing DTOs
     }
+     */
 
     /**
      * Get count of future schedules that the update would affect
@@ -650,8 +510,18 @@ public class ScheduleService {
     public int getFutureSchedulesCount(Integer scheduleId) {
         try {
             Schedule schedule = findScheduleOrThrow(scheduleId);
-            List<Schedule> futureSchedules = findFutureSchedulesWithSamePattern(schedule);
-            return futureSchedules.size();
+            // Simple implementation using existing repository method
+            List<Schedule> futureSchedules = scheduleRepository.findActiveSchedulesByGroupIdAfterDate(
+                    schedule.getGroup().getId(), 
+                    schedule.getStartTime()
+            );
+            
+            // Filter by same day of week
+            DayOfWeek dayOfWeek = schedule.getStartTime().getDayOfWeek();
+            return (int) futureSchedules.stream()
+                    .filter(s -> s.getStartTime().getDayOfWeek().equals(dayOfWeek))
+                    .filter(s -> !s.getId().equals(scheduleId)) // Exclude current schedule
+                    .count();
         } catch (Exception e) {
             log.error("Error getting future schedules count for schedule {}", scheduleId, e);
             return 0;

@@ -77,4 +77,14 @@ public interface PaymentDetailRepository extends JpaRepository<PaymentDetail, In
     @Query("SELECT COALESCE(SUM(p.amount), 0) FROM PaymentDetail p WHERE " +
            "p.createdAt BETWEEN :startDate AND :endDate AND (p.endAt IS NULL OR p.endAt > CURRENT_TIMESTAMP)")
     java.math.BigDecimal getTotalRevenueByDateRange(@Param("startDate") OffsetDateTime startDate, @Param("endDate") OffsetDateTime endDate);
+
+    /**
+     * Find payment details by student ID and group ID.
+     * @param studentId the student ID
+     * @param groupId the group ID
+     * @return list of payment details for the specified student and group
+     */
+    @Query("SELECT p FROM PaymentDetail p JOIN FETCH Group g ON g.fee = p.fee  WHERE p.student.id = :studentId AND g.id = :groupId AND (p.endAt IS NULL OR p.endAt > CURRENT_TIMESTAMP)")
+    List<PaymentDetail> findByStudentIdAndGroupId(Integer studentId, Integer groupId);
+
 }

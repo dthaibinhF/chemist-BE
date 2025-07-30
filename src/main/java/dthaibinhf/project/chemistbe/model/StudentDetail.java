@@ -24,8 +24,8 @@ public class StudentDetail extends BaseEntity {
     @JoinColumn(name = "school_class_id")
     private SchoolClass schoolClass;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "academic_year_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "academic_year_id")
     private AcademicYear academicYear;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
