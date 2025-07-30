@@ -111,5 +111,6 @@ public abstract class GroupMapper {
     @Mapping(target = "fee", ignore = true)
     @Mapping(target = "academicYear", ignore = true)
     @Mapping(target = "grade", ignore = true)
+    @Mapping(target = "groupSchedules", ignore = true)
     abstract public Group partialUpdate(GroupDTO groupDTO, @MappingTarget Group group);
 }

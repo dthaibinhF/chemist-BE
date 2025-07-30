@@ -371,6 +371,10 @@ public class ScheduleService {
                     continue;
                 }
 
+                //TODO: this method should use for create a list of schedules from start date to end date, not just one
+                // Create a new schedule based on the template
+                //then add it to the newSchedules set
+                log.debug("Creating new schedule for {} on {}", template.getDayOfWeekEnum(), nextMatchingDate);
                 Schedule newSchedule = createScheduleFromTemplate(group, template, nextMatchingDate);
 
                 if (isScheduleValid(newSchedule)) {

@@ -2,7 +2,9 @@ package dthaibinhf.project.chemistbe.service;
 
 import dthaibinhf.project.chemistbe.dto.GroupDTO;
 import dthaibinhf.project.chemistbe.dto.GroupListDTO;
+import dthaibinhf.project.chemistbe.dto.GroupScheduleDTO;
 import dthaibinhf.project.chemistbe.mapper.GroupMapper;
+import dthaibinhf.project.chemistbe.mapper.GroupScheduleMapper;
 import dthaibinhf.project.chemistbe.model.Group;
 import dthaibinhf.project.chemistbe.model.GroupSchedule;
 import dthaibinhf.project.chemistbe.repository.GroupRepository;
@@ -22,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +38,7 @@ public class GroupService {
     GroupRepository groupRepository;
     GroupMapper groupMapper;
     GroupScheduleService groupScheduleService;
+    GroupScheduleMapper groupScheduleMapper;
 
     @Tool(description = "Get all available groups/classes in the system. Useful for queries like 'show me all groups' or 'list all classes'")
     @Cacheable("groups")
@@ -91,16 +95,14 @@ public class GroupService {
                 .map(this::createGroupScheduleCopy)
                 .collect(Collectors.toSet());
 
-        // Update the group
-        //TODO: investigate why groupMapper.partialUpdate working weird
-        /*! if the Group have changed the GroupSchedule, the partialUpdate will create 3 new GroupSchedule and save to this Group (and delete the old one)
-        * But if that go like that the synchronizeSchedulesWithGroupSchedules will not work correctly
-        * because it will not find the original schedules to compare the id with the updated ones. --> at line 139, the originalGroupSchedules will be empty.
-        * So we need to find the other way to compare the original schedules with the updated ones.
-        * The solution is to use the originalGroupSchedules that we created before the partialUpdate.
-        * */
-
+        // Update the group (GroupSchedules are handled separately to preserve IDs)
         groupMapper.partialUpdate(groupDTO, group);
+        
+        // Handle GroupSchedule updates manually to preserve entity IDs
+        if (groupDTO.getGroupSchedules() != null) {
+            updateGroupSchedulesManually(group, groupDTO.getGroupSchedules());
+        }
+        
         Group updatedGroup = groupRepository.save(group);
 
         // If group schedules were updated and sync is enabled, synchronize with schedules
@@ -184,6 +186,44 @@ public class GroupService {
             }
         }
         log.info("GroupSchedule synchronization completed");
+    }
+
+    /**
+     * Manually update GroupSchedules to preserve existing entity IDs for proper cascade sync
+     */
+    private void updateGroupSchedulesManually(Group group, Set<GroupScheduleDTO> groupScheduleDTOs) {
+        log.info("Manually updating GroupSchedules for Group ID: {} with {} DTOs", 
+                group.getId(), groupScheduleDTOs.size());
+        
+        // Create a map of existing GroupSchedules by ID for quick lookup
+        Map<Integer, GroupSchedule> existingSchedulesById = group.getGroupSchedules().stream()
+                .collect(Collectors.toMap(GroupSchedule::getId, gs -> gs));
+        
+        Set<GroupSchedule> updatedSchedules = new HashSet<>();
+        
+        for (GroupScheduleDTO dto : groupScheduleDTOs) {
+            if (dto.getId() != null && existingSchedulesById.containsKey(dto.getId())) {
+                // Update existing GroupSchedule
+                GroupSchedule existingSchedule = existingSchedulesById.get(dto.getId());
+                log.debug("Updating existing GroupSchedule ID: {}", dto.getId());
+                
+                // Use mapper to update the existing entity (preserving ID)
+                groupScheduleMapper.partialUpdate(dto, existingSchedule);
+                updatedSchedules.add(existingSchedule);
+            } else {
+                // Create new GroupSchedule
+                log.debug("Creating new GroupSchedule from DTO");
+                GroupSchedule newSchedule = groupScheduleMapper.toEntity(dto);
+                newSchedule.setGroup(group);
+                updatedSchedules.add(newSchedule);
+            }
+        }
+        
+        // Replace the collection with updated schedules
+        group.getGroupSchedules().clear();
+        group.getGroupSchedules().addAll(updatedSchedules);
+        
+        log.info("Completed manual GroupSchedule update - {} schedules processed", updatedSchedules.size());
     }
 
     /**
