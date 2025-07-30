@@ -51,7 +51,7 @@ public class SecurityConfig {
                         }))
                 .authorizeHttpRequests(request ->
                         request
-                                .requestMatchers("/api/v1/auth/**", "/api-docs", "/api-docs.yaml", "/swagger-ui-custom.html", "/swagger-ui/**", "/api-docs/**").permitAll()
+                                .requestMatchers("/api/v1/auth/**", "/api-docs", "/api-docs.yaml", "/swagger-ui-custom.html", "/swagger-ui/**", "/api-docs/**","/api/v1/ai/**").permitAll()
                                 .requestMatchers("/api/v1/fee/**").hasAnyRole("ADMIN", "MANAGER", "TEACHER")
                                 .requestMatchers(
                                         "/api/v1/account/**",
@@ -77,6 +77,7 @@ public class SecurityConfig {
                                         "/api/v1/statistics/**",
                                         "/api/v1/notification/**",
                                         "/api/v1/financial/**"
+
                                 ).authenticated()
                 )
 

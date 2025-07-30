@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,13 +27,15 @@ public class FeeService {
     FeeRepository feeRepository;
     FeeMapper feeMapper;
 
+    @Tool(description = "Get all available fee structures and pricing information. Useful for queries like 'what are the fees' or 'show me all fee structures'")
     public List<FeeDTO> getAllFees() {
         return feeRepository.findAllActiveFees().stream()
                 .map(feeMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public FeeDTO getFeeById(Integer id) {
+    @Tool(description = "Get detailed fee information for a specific fee by ID. Useful for queries like 'show me fee details for ID 5' or 'what is fee 10'")
+    public FeeDTO getFeeById(@ToolParam(description = "The unique ID of the fee") Integer id) {
         Fee fee = feeRepository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fee not found: " + id));
         return feeMapper.toDto(fee);

@@ -1,32 +1,23 @@
-server:
-  port: 8080
-
 spring:
   application:
     name: chemist-BE
+  profiles:
+    active: local
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:chemist}
+    url: jdbc:postgresql://${DB_HOST:database-chemist.cv6oo2im84e7.ap-southeast-2.rds.amazonaws.com}:${DB_PORT:5432}/${DB_NAME:chemist}
     username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:1232}
+    password: ${DB_PASSWORD:7AKD8DVuD2zExa1Vx28o}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:none}
+      ddl-auto: none
     open-in-view: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         cache:
           use_second_level_cache: false
-
-  jackson:
-    time-zone: Asia/Ho_Chi_Minh
-
-  cache:
-    type: caffeine
-    caffeine:
-      spec: maximumSize=1000,expireAfterWrite=30m
 
   # Flyway Database Migration Configuration
   flyway:
@@ -39,6 +30,25 @@ spring:
     clean-disabled: true
     schemas: public
 
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=30m
+
+  # Spring AI Anthropic Configuration
+  ai:
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY}
+      chat:
+        options:
+          model: claude-3-5-sonnet-20241022
+          temperature: 0.2
+          max-tokens: 2000
+
+server:
+  port: 8080
 # doc
 springdoc:
   api-docs:

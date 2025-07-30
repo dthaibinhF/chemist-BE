@@ -7,6 +7,8 @@ import dthaibinhf.project.chemistbe.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -242,8 +244,9 @@ public class StudentPaymentService {
      * @param studentId The student ID
      * @return List of payment summary DTOs
      */
+    @Tool(description = "Get payment summary and status for a specific student. Useful for queries like 'has student John paid?', 'payment status for student ID 5', or 'how much does student 10 owe?'")
     @Transactional(readOnly = true)
-    public List<StudentPaymentSummaryDTO> getStudentPaymentSummaries(Integer studentId) {
+    public List<StudentPaymentSummaryDTO> getStudentPaymentSummaries(@ToolParam(description = "The unique ID of the student") Integer studentId) {
         return summaryRepository.findActiveByStudentId(studentId)
                 .stream()
                 .map(summaryMapper::toDto)
@@ -256,8 +259,9 @@ public class StudentPaymentService {
      * @param groupId The group ID
      * @return List of payment summary DTOs
      */
+    @Tool(description = "Get payment summaries for all students in a specific group/class. Useful for queries like 'payment status for group 5', 'who hasn't paid in class 10', or 'show payment overview for group ID 3'")
     @Transactional(readOnly = true)
-    public List<StudentPaymentSummaryDTO> getGroupPaymentSummaries(Integer groupId) {
+    public List<StudentPaymentSummaryDTO> getGroupPaymentSummaries(@ToolParam(description = "The unique ID of the group or class") Integer groupId) {
         return summaryRepository.findActiveByGroupId(groupId)
                 .stream()
                 .map(summaryMapper::toDto)
