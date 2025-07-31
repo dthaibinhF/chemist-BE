@@ -14,6 +14,6 @@ type = 'JSON'
 raw = '''
 {
   "message": "hiện tại lớp 12 có bao nhiêu nhóm vậy",
-  "conversationId": '34034950',
+  "conversationId": '36034950',
 }'''
 ```

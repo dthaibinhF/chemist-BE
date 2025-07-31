@@ -40,7 +40,8 @@ public class GroupService {
     GroupScheduleService groupScheduleService;
     GroupScheduleMapper groupScheduleMapper;
 
-    @Tool(description = "Get all available groups/classes in the system. Useful for queries like 'show me all groups' or 'list all classes'")
+    @Tool(description = "Get all available groups/classes in the system with all details so the data maybe very large, capable for system or asking deep about group. " +
+                        "Useful for queries like 'show me all groups' or 'list all classes'")
     @Cacheable("groups")
     public List<GroupListDTO> getAllGroups() {
         return groupRepository.findAllActiveGroups().stream().map(groupMapper::toListDto).collect(Collectors.toList());

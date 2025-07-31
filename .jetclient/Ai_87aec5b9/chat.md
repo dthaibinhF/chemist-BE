@@ -13,7 +13,7 @@ value = '{{access_token}}'
 type = 'JSON'
 raw = '''
 {
-  "message": "có nhóm nào học vào thứ 3-5-7 từ 17h20 đến 19h không`",
-  "conversationId": '14034900',
+  "message": "Hello, how are you?",
+  "conversationId": '1403490771',
 }'''
 ```

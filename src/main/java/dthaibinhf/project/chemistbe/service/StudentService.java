@@ -37,14 +37,22 @@ public class StudentService {
     StudentDetailMapper studentDetailMapper;
     GroupRepository groupRepository;
 
-    @Tool(description = "Get all active students in the system. Useful for queries like 'show me all students' or 'list all students'")
+    @Tool(
+            name = "Get all active students",
+            description = "Get all active students in the system with detaik. " +
+                        "Student can have a lot of detail but just the one with have end_at null is right other end_at with date have been soft_delete" +
+                        "Useful for queries like 'show me all students' or 'list all students'")
     public List<StudentDTO> getAllStudents() {
         return studentRepository.findAllActive().stream()
                 .map(studentMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    @Tool(description = "Get detailed information about a specific student by their ID. Useful for queries like 'show me student with ID 123' or 'get details for student 456'")
+    @Tool(
+            name = "Get student by ID",
+            description = "Get detailed information about a specific student by their ID. " +
+                        "Student can have a lot of detail but just the one with have end_at null is right other end_at with date have been soft_delete" +
+                        "Useful for queries like 'show me student with ID 123' or 'get details for student 456'")
     public StudentDTO getStudentById(@ToolParam(description = "The unique ID of the student") Integer id) {
         Student student = studentRepository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found: " + id));
@@ -145,7 +153,7 @@ public class StudentService {
      *
      * @param groupId the ID of the group
      * @return list of students with their newest non-deleted student detail for the
-     *         specified group
+     * specified group
      */
     @Tool(description = "Get all students in a specific group or class. Useful for queries like 'show me students in group 5' or 'list students in class ID 10'")
     public List<StudentDTO> getStudentsByGroupId(@ToolParam(description = "The unique ID of the group or class") Integer groupId) {
@@ -168,7 +176,7 @@ public class StudentService {
      *
      * @param studentId the ID of the student
      * @return list of all student details for the student, ordered by creation date
-     *         (newest first)
+     * (newest first)
      */
     public List<StudentDetailDTO> getStudentDetailHistory(Integer studentId) {
         if (studentId == null) {
@@ -205,11 +213,11 @@ public class StudentService {
      */
     @Tool(description = "Search for students by name, group, school, class, or parent phone. Useful for queries like 'find students named John', 'students in Grade 10', or 'students with parent phone 090'")
     public Page<StudentDTO> search(Pageable pageable,
-            @ToolParam(description = "Student name (partial match allowed)") String studentName,
-            @ToolParam(description = "Group or class name") String groupName,
-            @ToolParam(description = "School name") String schoolName,
-            @ToolParam(description = "Class name") String className,
-            @ToolParam(description = "Parent phone number") String parentPhone) {
+                                   @ToolParam(description = "Student name (partial match allowed)") String studentName,
+                                   @ToolParam(description = "Group or class name") String groupName,
+                                   @ToolParam(description = "School name") String schoolName,
+                                   @ToolParam(description = "Class name") String className,
+                                   @ToolParam(description = "Parent phone number") String parentPhone) {
         try {
             log.info("Searching students - page: {}, size: {}, sort: {}",
                     pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
