@@ -3,6 +3,7 @@ package dthaibinhf.project.chemistbe.service;
 import dthaibinhf.project.chemistbe.dto.FeeDTO;
 import dthaibinhf.project.chemistbe.mapper.FeeMapper;
 import dthaibinhf.project.chemistbe.model.Fee;
+import dthaibinhf.project.chemistbe.dto.FeeBasicDto;
 import dthaibinhf.project.chemistbe.repository.FeeRepository;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -27,14 +28,43 @@ public class FeeService {
     FeeRepository feeRepository;
     FeeMapper feeMapper;
 
-    @Tool(description = "Get all available fee structures and pricing information. Useful for queries like 'what are the fees' or 'show me all fee structures'")
+    @Tool(
+            name = "Get_all_fees",
+            description = "Get all available fee not including payment. " +
+                          "Useful for queries like 'what is the free of grade 12' or 'show me all fee structures'")
+    @Transactional
+    public List<FeeBasicDto> getAllFeesBasic() {
+        return feeRepository.findAllActiveFees().stream()
+                .map(feeMapper::toBasicDto)
+                .collect(Collectors.toList());
+    }
+
+    @Tool(
+            name = "Get_current_fee_of_group",
+            description = "Get the current fee structure for a specific group. " +
+                          "Useful for queries like 'what is the current fee for group 1' or 'show me the current fee of group 2'")
+    @Transactional
+    public FeeBasicDto getCurrentFeeBasicOfGroup(Integer groupId) {
+        return feeMapper.toBasicDto(feeRepository.findCurrentFeeOfGroup().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No current fee found")));
+    }
+
+    @Tool(
+            name = "Get_all_fees_with_details",
+            description = "Get all available fee structures and pricing information. " +
+                          "Useful for queries like 'what are the fees' or 'show me all fee structures'")
+    @Transactional
     public List<FeeDTO> getAllFees() {
         return feeRepository.findAllActiveFees().stream()
                 .map(feeMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    @Tool(description = "Get detailed fee information for a specific fee by ID. Useful for queries like 'show me fee details for ID 5' or 'what is fee 10'")
+    @Tool(
+            name = "Get_fee_by_id",
+            description = "Get detailed fee information for a specific fee by ID. " +
+                          "Useful for queries like 'show me fee details for ID 5' or 'what is fee 10'"
+    )
+    @Transactional
     public FeeDTO getFeeById(@ToolParam(description = "The unique ID of the fee") Integer id) {
         Fee fee = feeRepository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fee not found: " + id));

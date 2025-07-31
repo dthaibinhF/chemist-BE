@@ -38,10 +38,11 @@ public class StudentService {
     GroupRepository groupRepository;
 
     @Tool(
-            name = "Get all active students",
-            description = "Get all active students in the system with detaik. " +
+            name = "get_all_active_students",
+            description = "Get all active students in the system with details. " +
                         "Student can have a lot of detail but just the one with have end_at null is right other end_at with date have been soft_delete" +
                         "Useful for queries like 'show me all students' or 'list all students'")
+    @Transactional
     public List<StudentDTO> getAllStudents() {
         return studentRepository.findAllActive().stream()
                 .map(studentMapper::toDto)
@@ -49,10 +50,11 @@ public class StudentService {
     }
 
     @Tool(
-            name = "Get student by ID",
+            name = "get_student_by_id",
             description = "Get detailed information about a specific student by their ID. " +
                         "Student can have a lot of detail but just the one with have end_at null is right other end_at with date have been soft_delete" +
                         "Useful for queries like 'show me student with ID 123' or 'get details for student 456'")
+    @Transactional
     public StudentDTO getStudentById(@ToolParam(description = "The unique ID of the student") Integer id) {
         Student student = studentRepository.findActiveById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found: " + id));

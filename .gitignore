@@ -11,6 +11,8 @@ target/
 .env.local
 .env.development.local
 .env.**
+backup_*.sql
+dump*.sql
 
 ### STS ###
 .apt_generated
@@ -26,6 +28,8 @@ target/
 *.iws
 *.iml
 *.ipr
+app.log
+spring_boot.log
 
 ### NetBeans ###
 /nbproject/private/

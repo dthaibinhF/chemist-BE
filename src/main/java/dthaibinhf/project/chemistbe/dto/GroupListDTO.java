@@ -2,6 +2,7 @@ package dthaibinhf.project.chemistbe.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import dthaibinhf.project.chemistbe.model.AcademicYear;
 import dthaibinhf.project.chemistbe.model.Fee;
 import dthaibinhf.project.chemistbe.model.Grade;
@@ -13,6 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
 * {@link Group}DTO for fetching {@link Fee}, {@link Grade}, {@link AcademicYear}.
@@ -21,6 +23,7 @@ import java.io.Serializable;
 @Value
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL) // Skip null fields
+@JsonPropertyOrder({"id", "name", "level", "fee_id", "fee_name", "academic_year_id", "academic_year", "grade_id", "grade_name", "group_schedules"})
 public class GroupListDTO extends BaseDTO implements Serializable {
 
     @NotBlank @Size(max = 50)
@@ -53,6 +56,6 @@ public class GroupListDTO extends BaseDTO implements Serializable {
     @JsonProperty("grade_name")
     String gradeName;
 
-    @JsonProperty("group_schedule")
-    GroupScheduleDTO groupSchedule;
+    @JsonProperty("group_schedules")
+    Set<GroupScheduleDTO> groupSchedules;
 }

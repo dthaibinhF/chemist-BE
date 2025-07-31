@@ -1,14 +1,6 @@
 package dthaibinhf.project.chemistbe.mapper;
 
-import org.mapstruct.AfterMapping;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.BeforeMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import dthaibinhf.project.chemistbe.dto.GroupDTO;
@@ -24,7 +16,6 @@ import dthaibinhf.project.chemistbe.repository.GradeRepository;
 /**
  * The Mapper have already added all item like {@link Fee} {@link AcademicYear} and {@link Grade} by their ID,
  * by using @AfterMapping. Which is, when mapping, the mapper will search each item ID, and the Group object will set item
- *
  */
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING,
         uses = {FeeMapper.class, AcademicYearMapper.class, GradeMapper.class,
@@ -105,6 +96,7 @@ public abstract class GroupMapper {
     @Mapping(source = "academicYear.year", target = "academicYear")
     @Mapping(source = "grade.id", target = "gradeId")
     @Mapping(source = "grade.name", target = "gradeName")
+    @Mapping(source = "groupSchedules", target = "groupSchedules")  // Add this mapping
     abstract public GroupListDTO toListDto(Group group);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -113,4 +105,29 @@ public abstract class GroupMapper {
     @Mapping(target = "grade", ignore = true)
     @Mapping(target = "groupSchedules", ignore = true)
     abstract public Group partialUpdate(GroupDTO groupDTO, @MappingTarget Group group);
+
+    @Mapping(source = "level", target = "level")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "endAt", target = "endAt")
+    @Mapping(source = "updatedAt", target = "updatedAt")
+    @Mapping(source = "createdAt", target = "createdAt")
+    @Mapping(source = "id", target = "id")
+    @Mapping(target = "academicYear", ignore = true)
+    @Mapping(target = "fee", ignore = true)
+    @Mapping(target = "grade", ignore = true)
+    @Mapping(target = "schedules", ignore = true)
+    @Mapping(target = "studentDetails", ignore = true)
+    @Mapping(target = "groupSessions", ignore = true)
+    @Mapping(target = "groupSchedules", ignore = true)
+    abstract Group toEntity(GroupListDTO groupListDTO);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "academicYear", ignore = true)
+    @Mapping(target = "fee", ignore = true)
+    @Mapping(target = "grade", ignore = true)
+    @Mapping(target = "schedules", ignore = true)
+    @Mapping(target = "studentDetails", ignore = true)
+    @Mapping(target = "groupSessions", ignore = true)
+    @Mapping(target = "groupSchedules", ignore = true)
+    abstract Group partialUpdate(GroupListDTO groupDto, @MappingTarget Group group);
 }

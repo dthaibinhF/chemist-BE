@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.nio.channels.FileChannel;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,4 +17,8 @@ public interface FeeRepository extends JpaRepository<Fee, Integer> {
 
     @Query("SELECT f FROM Fee f WHERE f.endAt IS NULL OR f.endAt > CURRENT_TIMESTAMP")
     List<Fee> findAllActiveFees();
+
+    @Query("SELECT f FROM Fee f JOIN f.groups g WHERE g.id = :groupId AND (f.endTime IS NULL OR f.endAt > CURRENT_TIMESTAMP)")
+    Optional<Fee> findCurrentFeeOfGroup();
+
 }

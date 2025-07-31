@@ -40,14 +40,21 @@ public class GroupService {
     GroupScheduleService groupScheduleService;
     GroupScheduleMapper groupScheduleMapper;
 
-    @Tool(description = "Get all available groups/classes in the system with all details so the data maybe very large, capable for system or asking deep about group. " +
+    @Tool(
+            name = "Get_all_groups",
+            description = "Get all available groups/classes in the system with small and enough information for Fee, group Schedule. " +
                         "Useful for queries like 'show me all groups' or 'list all classes'")
+    @Transactional
     @Cacheable("groups")
+    @CacheEvict(value = "groups", allEntries = true) // Add this annotation
     public List<GroupListDTO> getAllGroups() {
         return groupRepository.findAllActiveGroups().stream().map(groupMapper::toListDto).collect(Collectors.toList());
     }
 
-    @Tool(description = "Get detailed information about a specific group/class by ID. Useful for queries like 'show me group 5' or 'details of class ID 10'")
+    @Tool(
+            name = "Get_group_by_id",
+            description = "Get detailed information about a specific group/class by ID. Useful for queries like 'show me group 5' or 'details of class ID 10'")
+    @Transactional
     @Cacheable(value = "groups", key = "#id")
     public GroupDTO getGroupById(@ToolParam(description = "The unique ID of the group or class") Integer id) {
         Group group = groupRepository.findActiveById(id).orElseThrow(
@@ -62,7 +69,11 @@ public class GroupService {
                 .stream().map(groupMapper::toListDto).collect(Collectors.toList());
     }
 
-    @Tool(description = "Get all groups/classes available for a specific grade level. Useful for queries like 'how many groups in Grade 10' or 'show classes for grade 9'")
+    @Tool(
+            name = "Get_groups_by_grade",
+            description = "Get all groups/classes available for a specific grade level. Useful for queries like 'how many groups in Grade 10' or 'show classes for grade 9'"
+    )
+    @Transactional
     @Cacheable(value = "groups", key = "'grade_' + #gradeId")
     public List<GroupListDTO> getGroupsByGradeId(@ToolParam(description = "The grade level (e.g., 9, 10, 11, 12)") Integer gradeId) {
         return groupRepository.findActiveByGradeId(gradeId).stream()
@@ -70,7 +81,11 @@ public class GroupService {
                 .collect(Collectors.toList());
     }
 
-    @Tool(description = "Get detailed information about all groups/classes including schedules and teachers, and student in group. Useful for comprehensive group information queries like 'show all groups with details' or 'list classes with schedules' 'how many student in group'")
+    @Tool(
+            name = "Get_all_groups_with_detail",
+            description = "Get detailed information about all groups/classes including schedules and teachers, and student in group. available groups/classes in the system with all details so the data maybe very large, capable for system or asking deep about group " +
+                          "Useful for ADMIN, MANAGER, TEACHER for comprehensive group information queries like 'show all groups with details' or 'list classes with schedules' 'how many student in group'")
+    @Transactional
     @Cacheable(value = "groups", key = "'with_detail'")
     public List<GroupDTO> getAllGroupsWithDetail() {
         return groupRepository.findAllActiveGroups().stream().map(groupMapper::toDto).collect(Collectors.toList());

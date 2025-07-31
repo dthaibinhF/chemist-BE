@@ -61,7 +61,9 @@ public class ScheduleService {
     }
 
 
-    @Tool(description = "Get all active schedules in the system. Useful for queries about overall schedule information.")
+    @Tool(
+            name = "Get_all_schedules",
+            description = "Get all active schedules in the system. Useful for queries about overall schedule information.")
     @Transactional()
     public List<ScheduleDTO> getAllSchedules() {
         try {
@@ -76,7 +78,11 @@ public class ScheduleService {
         }
     }
 
-    @Tool(description = "Search schedules with filters: groupId, startDate, endDate. Useful for finding schedules by specific criteria.")
+    @Tool(
+            name = "Get_all_schedules_pageable",
+            description = "Search schedules with filters: groupId, startDate, endDate. " +
+                          "Useful for finding schedules by specific criteria."
+    )
     @Transactional
     public List<ScheduleDTO> getAllSchedulesPageable(Pageable pageable, Integer groupId,
                                                      LocalDate startDate, LocalDate endDate) {
@@ -100,7 +106,10 @@ public class ScheduleService {
         }
     }
 
-    @Tool(description = "Get detailed information about a specific schedule by ID.")
+    @Tool(
+            name = "Get_schedule_by_id",
+            description = "Get detailed information about a specific schedule by ID."
+    )
     public ScheduleDTO getScheduleById(Integer id) {
         log.info("Fetching schedule by id: {}", id);
         return executeWithErrorHandling(
