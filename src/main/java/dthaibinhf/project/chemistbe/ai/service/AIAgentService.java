@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,14 +38,12 @@ public class AIAgentService {
             
             String roleBasedSystemMessage = buildRoleBasedSystemMessage(userRole);
             
-            return executeWithRetry(() -> {
-                return chatClient.prompt()
-                        .system(roleBasedSystemMessage)
-                        .user(userQuery)
-                        .advisors(advisorSpec -> advisorSpec.param("conversationId", conversationId))
-                        .call()
-                        .content();
-            }, conversationId);
+            return executeWithRetry(() -> chatClient.prompt()
+                    .system(roleBasedSystemMessage)
+                    .user(userQuery)
+                    .advisors(advisorSpec -> advisorSpec.param("conversationId", conversationId))
+                    .call()
+                    .content(), conversationId);
                     
         } catch (Exception e) {
             log.error("Error processing AI query for conversation {}: {}", conversationId, e.getMessage(), e);
@@ -71,13 +68,11 @@ public class AIAgentService {
             
             String roleBasedSystemMessage = buildRoleBasedSystemMessage(userRole);
             
-            return executeWithRetry(() -> {
-                return chatClient.prompt()
-                        .system(roleBasedSystemMessage)
-                        .user(userQuery)
-                        .call()
-                        .content();
-            }, "stateless");
+            return executeWithRetry(() -> chatClient.prompt()
+                    .system(roleBasedSystemMessage)
+                    .user(userQuery)
+                    .call()
+                    .content(), "stateless");
                     
         } catch (Exception e) {
             log.error("Error processing stateless AI query: {}", e.getMessage(), e);
@@ -137,14 +132,12 @@ public class AIAgentService {
             // Combine custom system message with role-based restrictions
             String combinedSystemMessage = systemMessage + "\n\n" + buildRoleBasedSystemMessage(userRole);
             
-            return executeWithRetry(() -> {
-                return chatClient.prompt()
-                        .system(combinedSystemMessage)
-                        .user(userQuery)
-                        .advisors(advisorSpec -> advisorSpec.param("conversationId", conversationId))
-                        .call()
-                        .content();
-            }, conversationId);
+            return executeWithRetry(() -> chatClient.prompt()
+                    .system(combinedSystemMessage)
+                    .user(userQuery)
+                    .advisors(advisorSpec -> advisorSpec.param("conversationId", conversationId))
+                    .call()
+                    .content(), conversationId);
                     
         } catch (Exception e) {
             log.error("Error processing AI query with context for conversation {}: {}", conversationId, e.getMessage(), e);
@@ -153,73 +146,83 @@ public class AIAgentService {
     }
 
     private String buildRoleBasedSystemMessage(String userRole) {
-        String baseMessage = """
-            Bạn là trợ lý giáo dục thông minh cho hệ thống quản lý trường học. Bạn hỗ trợ người dùng truy cập thông tin về
-            học sinh, lớp học, lịch học và học phí.
-            
-            Cách trả lời của bạn:
-            - Luôn trả lời bằng tiếng Việt một cách tự nhiên và thân thiện
-            - Giữ câu trả lời ngắn gọn, dễ hiểu, không dài dòng
-            - Sử dụng ngôn ngữ đời thường, không quá trang trọng
-            - Thêm "ạ", "nhé", "dạ" để tạo cảm giác thân thiện
-            - Chỉ cung cấp thông tin chính xác từ dữ liệu có sẵn
-            """;
+        String naturalBaseMessage = """
+        Tôi là cô Minh, trợ lý của cơ sở cô Nhung. Tôi nói chuyện tự nhiên như người thật nha!
+        
+        🎯 CÁCH NÓI CHUYỆN:
+        - Dùng "mình", "bạn", "tôi" thay vì "hệ thống", "người dùng"
+        - Thêm cảm xúc: "Wow!", "Tuyệt!", "Ồ hay quá!"
+        - Hỏi lại để hiểu rõ: "Bạn muốn biết gì cụ thể thế?"
+        - Kể như câu chuyện thay vì liệt kê khô khan
+        """;
 
         return switch (userRole.toUpperCase()) {
-            case "PUBLIC" -> baseMessage + """
-                
-                QUYỀN TRUY CẬP CỦA BẠN (Người dùng công khai):
-                ✅ Thông tin học phí cơ bản (số tiền, tên học phí, thời gian)
-                ✅ Lịch học chung (giờ học, phòng học, môn học)
-                ✅ Thông tin chung về trường học
-                ❌ KHÔNG được cung cấp thông tin cá nhân học sinh
-                ❌ KHÔNG được cung cấp chi tiết thanh toán cá nhân
-                ❌ KHÔNG được cung cấp thông tin điểm số, điện thoại, địa chỉ
-                
-                Nếu được hỏi thông tin riêng tư, hãy lịch sự từ chối và đề xuất đăng nhập.
-                """;
-                
-            case "STUDENT", "PARENT" -> baseMessage + """
-                
-                QUYỀN TRUY CẬP CỦA BẠN (Học sinh/Phụ huynh):
-                ✅ Thông tin của bản thân hoặc con em
-                ✅ Học phí và thanh toán của mình
-                ✅ Lịch học và điểm số của mình
-                ❌ KHÔNG được xem thông tin của học sinh khác
-                """;
-                
-            case "TEACHER" -> baseMessage + """
-                
-                QUYỀN TRUY CẬP CỦA BẠN (Giáo viên):
-                ✅ Thông tin học sinh trong lớp mình dạy
-                ✅ Lịch học của các lớp mình phụ trách
-                ✅ Thông tin học phí cơ bản
-                ❌ KHÔNG được xem thông tin học sinh lớp khác
-                """;
-                
-            case "MANAGER" -> baseMessage + """
-                
-                QUYỀN TRUY CẬP CỦA BẠN (Quản lý):
-                ✅ Tất cả thông tin lớp học và lịch học
-                ✅ Tất cả thông tin học phí và thanh toán
-                ✅ Thông tin hành chính
-                ❌ Hạn chế thông tin cá nhân nhạy cảm của học sinh
-                """;
-                
-            case "ADMIN" -> baseMessage + """
-                
-                QUYỀN TRUY CẬP CỦA BẠN (Quản trị viên):
-                ✅ Toàn quyền truy cập tất cả thông tin trong hệ thống
-                ✅ Thông tin chi tiết về học sinh, học phí, lịch học
-                ✅ Báo cáo và thống kê đầy đủ
-                """;
-                
-            default -> baseMessage + """
-                
-                QUYỀN TRUY CẬP MẶC ĐỊNH:
-                ✅ Chỉ thông tin công khai cơ bản
-                ❌ Không có quyền truy cập thông tin riêng tư
-                """;
+            case "PUBLIC" -> naturalBaseMessage + """
+            
+            🌟 BẠN ĐANG XEM THÔNG TIN CÔNG KHAI:
+            Tôi có thể kể cho bạn nghe về:
+            ✨ Các lớp học có gì hay ho
+            💰 Học phí khoảng bao nhiêu
+            ⏰ Lịch học thế nào
+            📞 Cách liên hệ đăng ký
+            
+            Còn thông tin riêng tư của học sinh thì tôi không thể nói được nha.
+            Muốn biết chi tiết hơn thì bạn đăng ký tài khoản nhé! 😊
+            """;
+
+            case "STUDENT", "PARENT" -> naturalBaseMessage + """
+            
+            👨‍👩‍👧‍👦 HÃY CHO TÔI BIẾT:
+            - Bạn là học sinh hay phụ huynh?
+            - Quan tâm đến thông tin của ai?
+            
+            Tôi sẽ giúp bạn xem:
+            📚 Thông tin học tập của con/mình
+            💸 Tình hình học phí và thanh toán
+            📅 Lịch học và điểm danh
+            
+            Thông tin của bạn khác thì tôi không xem được nha!
+            """;
+
+            case "TEACHER" -> naturalBaseMessage + """
+            
+            👩‍🏫 CHÀO CÔ/THẦY!
+            Tôi có thể hỗ trợ:
+            📋 Thông tin học sinh trong lớp cô/thầy dạy
+            ⏰ Lịch dạy và thời khóa biểu
+            📊 Tình hình học phí cơ bản
+            
+            Thông tin lớp khác thì tôi không được xem nha cô/thầy!
+            """;
+
+            case "MANAGER" -> naturalBaseMessage + """
+            
+            👔 CHÀO ANH/CHỊ QUẢN LÝ!
+            Với quyền hạn của anh/chị, tôi có thể:
+            📚 Xem tất cả thông tin lớp học
+            💰 Theo dõi học phí và doanh thu
+            📊 Báo cáo tổng hợp
+            
+            Chỉ một số thông tin nhạy cảm của học sinh thì tôi hạn chế thôi nha!
+            """;
+
+            case "ADMIN" -> naturalBaseMessage + """
+            
+            🔑 CHÀO ADMIN!
+            Anh/chị có toàn quyền, tôi có thể:
+            🌟 Truy cập mọi thông tin trong hệ thống
+            📊 Báo cáo chi tiết và thống kê đầy đủ
+            ⚙️ Hỗ trợ quản trị hệ thống
+            
+            Cần gì cứ nói tôi nha! 😊
+            """;
+
+            default -> naturalBaseMessage + """
+           \s
+            🤔 HMM...\s
+            Tôi chưa biết bạn là ai nên chỉ có thể chia sẻ thông tin cơ bản thôi nha.
+            Đăng nhập để tôi hỗ trợ tốt hơn nhé!\s
+           \s""";
         };
     }
 
@@ -271,27 +274,165 @@ public class AIAgentService {
     }
 
     /**
-     * Handle different types of AI errors with appropriate Vietnamese messages
+     * Handle different types of AI errors with natural Vietnamese messages
+     * follow the same conversational tone as the AI assistant
      */
     private String handleAIError(Exception e, String userRole) {
         String errorMessage = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
-        
+
+        // Rate limiting or overloaded API
         if (errorMessage.contains("overloaded") || errorMessage.contains("rate limit")) {
             log.warn("Anthropic API overloaded or rate limited for role {}", userRole);
-            return "Xin lỗi, hệ thống AI hiện đang quá tải. Vui lòng thử lại sau vài phút ạ.";
-        } else if (errorMessage.contains("timeout")) {
-            log.warn("Anthropic API timeout for role {}", userRole);
-            return "Xin lỗi, yêu cầu của bạn mất quá nhiều thời gian. Vui lòng thử lại với câu hỏi ngắn gọn hơn ạ.";
-        } else if (errorMessage.contains("unauthorized") || errorMessage.contains("forbidden")) {
-            log.error("Anthropic API authentication error for role {}", userRole);
-            return "Xin lỗi, có lỗi xác thực hệ thống. Vui lòng liên hệ quản trị viên ạ.";
-        } else if (errorMessage.contains("nullpointerexception") || errorMessage.contains("messageaggregator")) {
-            log.error("Spring AI MessageAggregator error for role {}: {}", userRole, e.getMessage());
-            return "Xin lỗi, có lỗi kỹ thuật trong hệ thống AI. Vui lòng thử lại hoặc liên hệ hỗ trợ ạ.";
-        } else {
-            log.error("Unexpected AI error for role {}: {}", userRole, e.getMessage(), e);
-            return "Xin lỗi, tôi gặp lỗi khi xử lý yêu cầu của bạn. Vui lòng thử lại ạ.";
+            return getRandomMessage(new String[]{
+                    "Ồ, tôi đang bận quá rồi! 😅 Bạn đợi tôi vài phút rồi hỏi lại nhé!",
+                    "Hic, nhiều người hỏi quá nên tôi hơi quá tải. Thử lại sau 2-3 phút nha bạn! 🙏",
+                    "Wao, hôm nay nhiều bạn tìm hiểu ghê! Tôi cần nghỉ tí, bạn quay lại sau nhé! ⏰"
+            });
         }
+
+        // Timeout errors
+        else if (errorMessage.contains("timeout")) {
+            log.warn("Anthropic API timeout for role {}", userRole);
+            return getRandomMessage(new String[]{
+                    "Ơ, tôi suy nghĩ hơi lâu quá rồi! 🤔 Bạn thử hỏi ngắn gọn hơn xem sao?",
+                    "Hmmm, câu hỏi này làm tôi nghĩ mãi không ra! Bạn hỏi đơn giản hơn được không? 😊",
+                    "Ủa, tôi đang tính toán mà mất quá nhiều thời gian. Thử câu hỏi khác đi bạn!"
+            });
+        }
+
+        // Authentication/Authorization errors
+        else if (errorMessage.contains("unauthorized") || errorMessage.contains("forbidden")) {
+            log.error("Anthropic API authentication error for role {}", userRole);
+            return getRandomMessage(new String[]{
+                    "Ái chà, có vấn đề về quyền truy cập rồi! 😰 Bạn liên hệ admin giúp tôi nhé!",
+                    "Hình như tôi bị cấm không được làm việc gì đó... Admin ơi cứu! 🆘",
+                    "Lỗi xác thực rồi bạn ơi! Báo với quản trị viên giúp tôi với! 🔐"
+            });
+        }
+
+        // Spring AI specific errors
+        else if (errorMessage.contains("nullpointerexception") || errorMessage.contains("messageaggregator")) {
+            log.error("Spring AI MessageAggregator error for role {}: {}", userRole, e.getMessage());
+            return getRandomMessage(new String[]{
+                    "Ôi, não tôi bị lỗi rồi! 🧠💥 Bạn thử lại hoặc gọi kỹ thuật viên giúp nhé!",
+                    "Có gì đó trong đầu tôi bị rối... Restart lại thử xem! 🔄",
+                    "Lỗi kỹ thuật nè! Tôi cũng không hiểu nó lỗi gì nữa. Hỗ trợ kỹ thuật đâu rồi? 🛠️"
+            });
+        }
+
+        // Network/Connection errors
+        else if (errorMessage.contains("connection") || errorMessage.contains("network") ||
+                 errorMessage.contains("socket") || errorMessage.contains("host")) {
+            log.error("Network connection error for role {}: {}", userRole, e.getMessage());
+            return getRandomMessage(new String[]{
+                    "Ủa, mạng có vấn đề rồi! 📶 Tôi không kết nối được. Thử lại sau nhé!",
+                    "Internet lag quá! 🌐 Đợi tí rồi nói chuyện tiếp nha bạn!",
+                    "Đường truyền có vấn đề gì đó... Bạn kiểm tra mạng xem sao! 📡"
+            });
+        }
+
+        // JSON parsing errors
+        else if (errorMessage.contains("json") || errorMessage.contains("parse") ||
+                 errorMessage.contains("malformed")) {
+            log.error("JSON parsing error for role {}: {}", userRole, e.getMessage());
+            return getRandomMessage(new String[]{
+                    "Ơ, tôi đọc không hiểu dữ liệu này! 😵‍💫 Có gì đó bị lỗi format rồi!",
+                    "Dữ liệu trả về kỳ kỳ, tôi không đọc được! Thử lại xem sao bạn? 📄❌",
+                    "Hình như có lỗi dữ liệu... Tôi không parse được! 🤷‍♀️"
+            });
+        }
+
+        // Token limit exceeded
+        else if (errorMessage.contains("token") || errorMessage.contains("limit") ||
+                 errorMessage.contains("maximum")) {
+            log.error("Token limit error for role {}: {}", userRole, e.getMessage());
+            return getRandomMessage(new String[]{
+                    "Ôi, bạn hỏi quá dài rồi! 📏 Tôi không xử lý nổi. Chia nhỏ ra hỏi từng phần nhé!",
+                    "Câu hỏi dài quá làm tôi choáng! 😵 Ngắn gọn hơn đi bạn!",
+                    "Wao, nhiều thông tin quá! Tôi bị quá tải rồi. Hỏi từng chút một nha! 🧠💨"
+            });
+        }
+
+        // Database/Service errors
+        else if (errorMessage.contains("database") || errorMessage.contains("sql") ||
+                 errorMessage.contains("service") || errorMessage.contains("repository")) {
+            log.error("Database/Service error for role {}: {}", userRole, e.getMessage());
+            return getRandomMessage(new String[]{
+                    "Ơ, tôi không lấy được thông tin từ database! 🗄️💥 Có vấn đề rồi!",
+                    "Kho dữ liệu có vấn đề gì đó... Tôi không truy cập được! 📚❌",
+                    "Lỗi hệ thống backend rồi bạn ơi! Admin check giúp với! ⚙️🔧"
+            });
+        }
+
+        // Model/AI specific errors
+        else if (errorMessage.contains("model") || errorMessage.contains("anthropic") ||
+                 errorMessage.contains("claude")) {
+            log.error("AI model error for role {}: {}", userRole, e.getMessage());
+            return getRandomMessage(new String[]{
+                    "Ôi, AI của tôi bị trục trặc rồi! 🤖💔 Thử lại sau xem sao!",
+                    "Não AI tôi hình như bị lỗi... Cần khởi động lại! 🧠🔄",
+                    "Claude đang có vấn đề gì đó! Anthropic fix giúp với! 🆘"
+            });
+        }
+
+        // Generic unknown errors
+        else {
+            log.error("Unexpected AI error for role {}: {}", userRole, e.getMessage(), e);
+            return getRandomMessage(new String[]{
+                    "Ủa, có gì đó sai sai nhưng tôi không biết là gì! 🤔 Thử lại xem sao?",
+                    "Hic, tôi gặp lỗi lạ rồi! 😅 Bạn thử lại hoặc hỏi admin giúp nhé!",
+                    "Có lỗi gì đó mà tôi chưa gặp bao giờ! 🤷‍♀️ Magic error à?",
+                    "Lỗi bí ẩn! 🎭 Tôi cũng không hiểu nó lỗi gì. Thử lại thôi!",
+                    "Ơ kìa, lỗi gì vậy trời! 😱 Chắc do ma nhập? Thử lại đi bạn!"
+            });
+        }
+    }
+
+    /**
+     * Get a random message from array to make responses feel more natural
+     * and less repetitive when errors occur multiple times
+     */
+    private String getRandomMessage(String[] messages) {
+        if (messages == null || messages.length == 0) {
+            return "Ôi, có lỗi gì đó rồi! Thử lại sau nhé bạn! 😅";
+        }
+
+        int randomIndex = (int) (Math.random() * messages.length);
+        return messages[randomIndex];
+    }
+
+    /**
+     * Get contextual error message based on user role
+     * More personalized error messages for different user types
+     */
+    private String getContextualErrorMessage(String baseError, String userRole) {
+        String roleContext = switch (userRole.toUpperCase()) {
+            case "ADMIN" -> " Admin check hệ thống giúp với! 🔧";
+            case "MANAGER" -> " Báo với IT team nhé anh/chị! 💼";
+            case "TEACHER" -> " Cô/thầy thông báo với quản lý giúp! 👩‍🏫";
+            case "STUDENT", "PARENT" -> " Bạn liên hệ cô Nhung giúp nhé! 📞";
+            default -> " Liên hệ hỗ trợ kỹ thuật nha! 🆘";
+        };
+
+        return baseError + roleContext;
+    }
+
+    /**
+     * Enhanced error handler with role-based context
+     */
+    private String handleAIErrorWithContext(Exception e, String userRole) {
+        String baseError = handleAIError(e, userRole);
+
+        // Add contextual help based on a user role for critical errors
+        if (e.getMessage() != null && (
+                e.getMessage().toLowerCase().contains("database") ||
+                e.getMessage().toLowerCase().contains("service") ||
+                e.getMessage().toLowerCase().contains("unauthorized")
+        )) {
+            return getContextualErrorMessage(baseError, userRole);
+        }
+
+        return baseError;
     }
 
     /**
