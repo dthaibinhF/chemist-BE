@@ -12,7 +12,8 @@ import org.springframework.security.core.userdetails.User;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -29,7 +30,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         Account account = repository.findActiveByEmail(username).orElseThrow(
                 () -> new UsernameNotFoundException(username)
         );
-        GrantedAuthority authority = new SimpleGrantedAuthority(account.getRole().getName());
-            return new  User(account.getEmail(), account.getPassword(), Collections.singleton(authority));
+        Collection<GrantedAuthority> authorities = account.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
+        return new User(account.getEmail(), account.getPassword(), authorities);
     }
 }

@@ -13,6 +13,7 @@ target/
 .env.**
 backup_*.sql
 dump*.sql
+docs
 
 ### STS ###
 .apt_generated

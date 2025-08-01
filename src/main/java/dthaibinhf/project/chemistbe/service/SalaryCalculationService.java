@@ -35,7 +35,7 @@ public class SalaryCalculationService {
     private final TeacherRepository teacherRepository;
     private final ScheduleRepository scheduleRepository;
     private final TeacherMonthlySummaryRepository monthlySummaryRepository;
-    
+
     // Performance bonus thresholds
     private static final BigDecimal EXCELLENT_PERFORMANCE_THRESHOLD = new BigDecimal("0.95"); // 95%
     private static final BigDecimal GOOD_PERFORMANCE_THRESHOLD = new BigDecimal("0.85"); // 85%
@@ -68,7 +68,7 @@ public class SalaryCalculationService {
         // Calculate salary based on teacher's salary type
         SalaryCalculation calculation = calculateSalaryAmount(teacher, metrics);
         
-        // Create and save monthly summary
+        // Create and save a monthly summary
         TeacherMonthlySummary summary = TeacherMonthlySummary.builder()
                 .teacher(teacher)
                 .month(month)
