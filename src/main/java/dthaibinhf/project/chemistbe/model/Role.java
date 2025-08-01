@@ -1,10 +1,11 @@
 package dthaibinhf.project.chemistbe.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -13,5 +14,8 @@ import lombok.Setter;
 public class Role extends BaseEntity {
     @Column(name = "name", nullable = false, length = 20)
     private String name;
+
+    @ManyToMany(mappedBy = "roles")
+    private Set<Account> accounts = new HashSet<>();
 
 }

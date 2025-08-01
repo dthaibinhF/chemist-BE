@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,10 +47,19 @@ public class AccountService {
     public AccountDTO updateAccount(Integer id, @Valid AccountDTO accountDTO) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found: " + id));
-        Role role = roleRepository.findById(accountDTO.getRoleId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + accountDTO.getRoleId()));
+        
+        // Handle multiple roles
+        if (accountDTO.getRoleIds() != null && !accountDTO.getRoleIds().isEmpty()) {
+            Set<Role> roles = new HashSet<>();
+            for (Integer roleId : accountDTO.getRoleIds()) {
+                Role role = roleRepository.findById(roleId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + roleId));
+                roles.add(role);
+            }
+            account.setRoles(roles);
+        }
+        
         accountMapper.partialUpdate(accountDTO, account);
-        account.setRole(role);
         if (accountDTO.getPassword() != null && !accountDTO.getPassword().isEmpty()) {
             account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
         }
@@ -62,5 +73,47 @@ public class AccountService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found: " + id));
         account.softDelete();
         accountRepository.save(account);
+    }
+
+    // Role management methods
+    @Transactional
+    public AccountDTO addRoleToAccount(Integer accountId, Integer roleId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found: " + accountId));
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + roleId));
+        
+        account.addRole(role);
+        Account updatedAccount = accountRepository.save(account);
+        return accountMapper.toDto(updatedAccount);
+    }
+
+    @Transactional
+    public AccountDTO removeRoleFromAccount(Integer accountId, Integer roleId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found: " + accountId));
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + roleId));
+        
+        account.removeRole(role);
+        Account updatedAccount = accountRepository.save(account);
+        return accountMapper.toDto(updatedAccount);
+    }
+
+    @Transactional
+    public AccountDTO setAccountRoles(Integer accountId, List<Integer> roleIds) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found: " + accountId));
+        
+        Set<Role> roles = new HashSet<>();
+        for (Integer roleId : roleIds) {
+            Role role = roleRepository.findById(roleId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found: " + roleId));
+            roles.add(role);
+        }
+        
+        account.setRoles(roles);
+        Account updatedAccount = accountRepository.save(account);
+        return accountMapper.toDto(updatedAccount);
     }
 }

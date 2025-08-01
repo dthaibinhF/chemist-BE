@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +49,12 @@ public class AuthenticationService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Role not found"));
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         Account account = accountMapper.toAccount(request);
-        account.setRole(accountRole);
+        
+        // Set roles using many-to-many relationship
+        Set<Role> roles = new HashSet<>();
+        roles.add(accountRole);
+        account.setRoles(roles);
+        
         return accountMapper.toDto(accountRepository.save(account));
     }
 

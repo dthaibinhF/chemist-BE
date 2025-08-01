@@ -12,10 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static dthaibinhf.project.chemistbe.constants.ApplicationEnvironment.*;
@@ -90,23 +87,55 @@ public class JwtService {
     }
 
     public String extractRole(String jwt) {
+        List<String> roles = extractRoles(jwt);
+        return roles.isEmpty() ? "PUBLIC" : roles.get(0); // Return primary role (first role)
+    }
+
+    public List<String> extractRoles(String jwt) {
         try {
             Claims claims = extractClaims(jwt);
-            // Role is typically stored in authorities or roles claim
             Object authorities = claims.get("authorities");
-            if (authorities != null) {
+            if (authorities instanceof List) {
+                @SuppressWarnings("unchecked")
+                List<String> authList = (List<String>) authorities;
+                return authList.stream()
+                        .map(this::extractRoleFromAuthority)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+            } else if (authorities != null) {
                 String authStr = authorities.toString();
-                // Extract role name from authority string like "[ROLE_ADMIN]" or "ADMIN"
-                if (authStr.contains("ROLE_")) {
-                    return authStr.replaceAll(".*ROLE_([A-Z]+).*", "$1");
-                } else if (authStr.matches(".*[A-Z]+.*")) {
-                    return authStr.replaceAll(".*([A-Z]+).*", "$1");
+                List<String> roles = new ArrayList<>();
+                String role = extractRoleFromAuthority(authStr);
+                if (role != null) {
+                    roles.add(role);
                 }
+                return roles;
             }
-            return "PUBLIC"; // Default if no role found
+            return Collections.emptyList();
         } catch (Exception e) {
-            return "PUBLIC"; // Default if token is invalid
+            return Collections.emptyList();
         }
+    }
+
+    public String extractPrimaryRole(String jwt) {
+        return extractRole(jwt); // Same as extractRole - returns first role
+    }
+
+    public boolean hasRole(String jwt, String targetRole) {
+        return extractRoles(jwt).contains(targetRole);
+    }
+
+    private String extractRoleFromAuthority(String authority) {
+        if (authority == null) return null;
+        
+        // Handle authority strings like "ROLE_ADMIN", "ADMIN", "[ROLE_ADMIN]", etc.
+        String cleanAuth = authority.replaceAll("[\\[\\],\\s]", "");
+        if (cleanAuth.startsWith("ROLE_")) {
+            return cleanAuth.substring(5); // Remove "ROLE_" prefix
+        } else if (cleanAuth.matches("[A-Z_]+")) {
+            return cleanAuth;
+        }
+        return null;
     }
 
     private SecretKey getSecretKey() {

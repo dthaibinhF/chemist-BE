@@ -44,4 +44,23 @@ public class AccountController {
         accountService.deleteAccount(id);
         return ResponseEntity.noContent().build();
     }
+
+    // Role management endpoints
+    @PostMapping("/{accountId}/roles/{roleId}")
+    @PreAuthorize("hasRole('ADMIN')")  // Only ADMIN can manage roles
+    public ResponseEntity<AccountDTO> addRoleToAccount(@PathVariable Integer accountId, @PathVariable Integer roleId) {
+        return ResponseEntity.ok(accountService.addRoleToAccount(accountId, roleId));
+    }
+
+    @DeleteMapping("/{accountId}/roles/{roleId}")
+    @PreAuthorize("hasRole('ADMIN')")  // Only ADMIN can manage roles
+    public ResponseEntity<AccountDTO> removeRoleFromAccount(@PathVariable Integer accountId, @PathVariable Integer roleId) {
+        return ResponseEntity.ok(accountService.removeRoleFromAccount(accountId, roleId));
+    }
+
+    @PutMapping("/{accountId}/roles")
+    @PreAuthorize("hasRole('ADMIN')")  // Only ADMIN can manage roles
+    public ResponseEntity<AccountDTO> setAccountRoles(@PathVariable Integer accountId, @RequestBody List<Integer> roleIds) {
+        return ResponseEntity.ok(accountService.setAccountRoles(accountId, roleIds));
+    }
 }
