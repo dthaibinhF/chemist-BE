@@ -36,6 +36,11 @@ public class GroupController {
         return ResponseEntity.ok(groupService.getGroupByGroupName(groupName));
     }
 
+    @GetMapping("/{id}/basic-info")
+    public ResponseEntity<GroupListDTO> getGroupBasicInfo(@PathVariable Integer id) {
+        return ResponseEntity.ok(groupService.getGroupBasicInfo(id));
+    }
+
     @GetMapping
     public ResponseEntity<List<GroupListDTO>> getAllGroups() {
         return ResponseEntity.ok(groupService.getAllGroups());

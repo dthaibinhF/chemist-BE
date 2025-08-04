@@ -82,6 +82,29 @@ public class StudentPaymentController {
 
     // ===================== PAYMENT SUMMARY RETRIEVAL ENDPOINTS =====================
 
+    //get student payment summaries with fee id
+    /**
+     * Get payment summaries for a specific fee and student.
+     *
+     * @param feeId The fee ID
+     * @param studentId The student ID
+     * @return payment summaries for the fee and student
+     */
+    @Operation(summary = "Get payment summaries by fee and student",
+               description = "Retrieve payment obligations for a specific fee and student")
+    @ApiResponse(responseCode = "200", description = "Payment summaries retrieved successfully")
+    @ApiResponse(responseCode = "404", description = "Fee or student not found")
+    @GetMapping("/student/{studentId}/fee/{feeId}")
+    public ResponseEntity<StudentPaymentSummaryDTO> getPaymentSummariesByFeeAndStudent(
+            @Parameter(description = "Fee ID", example = "1")
+            @PathVariable Integer feeId,
+            @Parameter(description = "Student ID", example = "1")
+            @PathVariable Integer studentId) {
+        log.info("Retrieving payment summaries for fee {} and student {}", feeId, studentId);
+        StudentPaymentSummaryDTO summaries = studentPaymentService.getPaymentSummariesByFeeAndStudent(feeId, studentId);
+        return ResponseEntity.ok(summaries);
+    }
+
     /**
      * Get all payment summaries for a specific student.
      * 

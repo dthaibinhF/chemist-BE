@@ -7,7 +7,7 @@ id = '3f34c898-a0fa-4af0-806b-bc7ba510e9c9'
 
 [[pathVariables]]
 key = 'groupId'
-value = '11'
+value = '13'
 
 [[headers]]
 key = 'Authorization'

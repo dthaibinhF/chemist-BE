@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.math.BigDecimal;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -56,7 +57,7 @@ public interface PaymentDetailRepository extends JpaRepository<PaymentDetail, In
      */
     @Query("SELECT COALESCE(SUM(p.amount), 0) FROM PaymentDetail p WHERE " +
            "p.student.id = :studentId AND p.fee.id = :feeId AND (p.endAt IS NULL OR p.endAt > CURRENT_TIMESTAMP)")
-    java.math.BigDecimal getTotalAmountPaidByStudentAndFee(@Param("studentId") Integer studentId, @Param("feeId") Integer feeId);
+    BigDecimal getTotalAmountPaidByStudentAndFee(@Param("studentId") Integer studentId, @Param("feeId") Integer feeId);
 
     /**
      * Find all active payment details within a date range.

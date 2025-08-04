@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,6 +16,6 @@ public class RegisterRequest {
     String phone;
     String email;
     String password;
-    @JsonProperty("role_name")
-    String roleName;
+    @JsonProperty("role_ids")
+    List<Integer> roleIds;
 }
