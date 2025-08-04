@@ -152,8 +152,7 @@ public class GroupScheduleService {
                     // Update to new day with new times
                     OffsetDateTime newStartTime = combineDateTime(newDate, groupSchedule.getStartTime());
                     OffsetDateTime newEndTime = combineDateTime(newDate, groupSchedule.getEndTime());
-                    
-                    log.info("Schedule ID: {} updated - {} to {} | {}-{} to {}-{}", 
+                    log.info("Schedule ID: {} updated - {} to {} | {}-{} to {}-{}",
                             schedule.getId(),
                             schedule.getStartTime().toLocalDate(), newDate,
                             schedule.getStartTime().toLocalTime(), schedule.getEndTime().toLocalTime(),
@@ -215,10 +214,13 @@ public class GroupScheduleService {
     private LocalDate calculateNewDateForDayChange(LocalDate originalDate, DayOfWeek originalDay, DayOfWeek newDay) {
         // Calculate the difference in days
         int dayDifference = newDay.getValue() - originalDay.getValue();
-        
+        LocalDate currentDate = LocalDate.now();
         // Handle week wrap-around (e.g., Friday → Monday = +3 days, not -4)
         if (dayDifference < 0) {
-            dayDifference += 7;
+            LocalDate newDate = originalDate.plusDays(dayDifference);
+            if (newDate.isAfter(currentDate))
+                return newDate;
+            else dayDifference += 7;
         }
         
         return originalDate.plusDays(dayDifference);
