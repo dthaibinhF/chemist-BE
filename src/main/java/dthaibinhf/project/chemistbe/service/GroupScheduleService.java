@@ -143,8 +143,9 @@ public class GroupScheduleService {
             log.info("Processing schedule ID: {} on {}", schedule.getId(), scheduleDate);
             
             if (dayChanged) {
-                // Calculate new date for the new day of week
-                LocalDate newDate = calculateNewDateForDayChange(scheduleDate, originalDayOfWeek, newDayOfWeek);
+                // Calculate new date for the new day of week with conflict resolution
+                LocalDate newDate = calculateNewDateForDayChangeWithConflictResolution(
+                        scheduleDate, originalDayOfWeek, newDayOfWeek, futureSchedules);
                 log.info("Day change: {} {} → {} {}", 
                         originalDayOfWeek, scheduleDate, newDayOfWeek, newDate);
                 
@@ -205,6 +206,63 @@ public class GroupScheduleService {
         } else {
             log.warn("No matching schedules found to update for GroupSchedule ID: {}", groupSchedule.getId());
         }
+    }
+
+    /**
+     * Calculate new date when day of week changes with conflict resolution.
+     * Prevents multiple schedules from being mapped to the same week.
+     * 
+     * @param originalDate The original date of the schedule
+     * @param originalDay The original day of week
+     * @param newDay The new day of week 
+     * @param allFutureSchedules All future schedules for conflict detection
+     * @return The new date that avoids conflicts
+     */
+    private LocalDate calculateNewDateForDayChangeWithConflictResolution(
+            LocalDate originalDate, DayOfWeek originalDay, DayOfWeek newDay, List<Schedule> allFutureSchedules) {
+        
+        // Calculate the basic new date using the original logic
+        LocalDate candidateDate = calculateNewDateForDayChange(originalDate, originalDay, newDay);
+        LocalDate currentDate = LocalDate.now();
+        
+        log.info("Conflict resolution for {} {} → {} {}: checking candidate {}", 
+                originalDay, originalDate, newDay, candidateDate, candidateDate);
+        
+        // Get the start and end of the week for the candidate date
+        LocalDate weekStart = candidateDate.minusDays(candidateDate.getDayOfWeek().getValue() - 1); // Monday
+        LocalDate weekEnd = weekStart.plusDays(6); // Sunday
+        
+        log.info("Candidate date {} falls in week {} to {}", candidateDate, weekStart, weekEnd);
+        
+        // Check if any existing schedule in that week already has the new day of week
+        boolean hasConflict = allFutureSchedules.stream()
+                .anyMatch(schedule -> {
+                    LocalDate scheduleDate = schedule.getStartTime().toLocalDate();
+                    // Check if schedule is in the same week and has the same day as new day
+                    return !scheduleDate.isBefore(weekStart) && !scheduleDate.isAfter(weekEnd) 
+                           && schedule.getStartTime().getDayOfWeek().equals(newDay)
+                           && !scheduleDate.equals(originalDate); // Exclude the schedule being updated
+                });
+        
+        if (hasConflict) {
+            log.warn("Conflict detected: Week {} to {} already has a {} schedule. Moving to next week.", 
+                    weekStart, weekEnd, newDay);
+            
+            // Move to the next week's occurrence of the new day
+            candidateDate = candidateDate.plusWeeks(1);
+            log.info("Resolved conflict: moved to {} (next week)", candidateDate);
+        } else {
+            log.info("No conflict detected for {} in week {} to {}", newDay, weekStart, weekEnd);
+        }
+        
+        // Ensure the final date is still in the future
+        if (!candidateDate.isAfter(currentDate)) {
+            log.warn("Calculated date {} is not in future. Moving to next week.", candidateDate);
+            candidateDate = candidateDate.plusWeeks(1);
+        }
+        
+        log.info("Final resolved date: {} {} → {} {}", originalDay, originalDate, newDay, candidateDate);
+        return candidateDate;
     }
 
     /**
