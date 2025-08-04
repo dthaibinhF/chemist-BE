@@ -12,12 +12,15 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,9 +56,6 @@ public class PaymentDetailService {
         if (paymentDetail.getPaymentStatus() == null) {
             paymentDetail.setPaymentStatus(PaymentStatus.PENDING);
         }
-        if (paymentDetail.getGeneratedAmount() == null) {
-            paymentDetail.setGeneratedAmount(paymentDetail.getAmount());
-        }
         if (paymentDetail.getDueDate() == null) {
             // Set the default due date to 30 days from now
             paymentDetail.setDueDate(OffsetDateTime.now().plusDays(30));
@@ -74,7 +74,7 @@ public class PaymentDetailService {
                     .findFirst()
                     .map(detail -> detail.getAcademicYear().getId())
                     .orElse(null);
-            
+
             Integer groupId = savedPaymentDetail.getStudent()
                     .getStudentDetails().stream()
                     .filter(detail -> detail.getEndAt() == null)
@@ -120,7 +120,7 @@ public class PaymentDetailService {
                     .findFirst()
                     .map(detail -> detail.getAcademicYear().getId())
                     .orElse(null);
-            
+
             Integer groupId = savedPaymentDetail.getStudent()
                     .getStudentDetails().stream()
                     .filter(detail -> detail.getEndAt() == null)
@@ -195,7 +195,7 @@ public class PaymentDetailService {
      */
     @Tool(description = "Calculate total amount paid by a specific student for a specific fee. Useful for queries like 'how much has student 5 paid for tuition?', 'total payments by student John for fee ID 2'")
     @Transactional(readOnly = true)
-    public BigDecimal getTotalAmountPaidByStudentAndFee(@ToolParam(description = "The unique ID of the student") Integer studentId, 
+    public BigDecimal getTotalAmountPaidByStudentAndFee(@ToolParam(description = "The unique ID of the student") Integer studentId,
                                                        @ToolParam(description = "The unique ID of the fee") Integer feeId) {
         return paymentDetailRepository.getTotalAmountPaidByStudentAndFee(studentId, feeId);
     }
@@ -228,7 +228,7 @@ public class PaymentDetailService {
     public PaymentDetailDTO createPaymentDetailWithSummaryUpdate(PaymentDetailDTO paymentDetailDTO,
                                                                 Integer academicYearId,
                                                                 Integer groupId) {
-        // Validate payment amount integrity before creating entity
+        // Validate payment amount integrity before creating an entity
         validatePaymentAmountIntegrity(paymentDetailDTO);
 
         PaymentDetail paymentDetail = paymentDetailMapper.toEntity(paymentDetailDTO);
@@ -276,20 +276,22 @@ public class PaymentDetailService {
             return;
         }
 
+        // Ensure amount and generated_amount are non-negative
         BigDecimal discount = paymentDetailDTO.getHaveDiscount() != null ?
             paymentDetailDTO.getHaveDiscount() : BigDecimal.ZERO;
-        BigDecimal expectedTotal = paymentDetailDTO.getAmount().add(discount);
+        BigDecimal newTotal = paymentDetailDTO.getAmount().add(discount);
 
-        if (!expectedTotal.equals(paymentDetailDTO.getGeneratedAmount())) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "Payment amount integrity violation: amount (%.2f) + discount (%.2f) = %.2f must equal generated_amount (%.2f)",
-                    paymentDetailDTO.getAmount(),
-                    discount,
-                    expectedTotal,
-                    paymentDetailDTO.getGeneratedAmount()
-                )
-            );
+        //get the older list payment detail of this student and this fee
+        List<PaymentDetail> olderPaymentDetails = paymentDetailRepository
+            .findActiveByStudentIdAndFeeId(paymentDetailDTO.getStudentId(), paymentDetailDTO.getFeeId());
+        // Calculate the total amount already paid for this student and fee
+        BigDecimal totalOlderPaid = olderPaymentDetails.stream().reduce(BigDecimal.ZERO, (sum, detail) -> sum.add(detail.getAmount()), BigDecimal::add);
+
+        // Calculate the expected total amount
+        BigDecimal expectedTotal = totalOlderPaid.add(newTotal);
+
+        if (expectedTotal.compareTo(paymentDetailDTO.getGeneratedAmount()) > 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "total amount paid exceeds the generated amount");
         }
 
         log.debug("Payment amount integrity validated: amount={}, discount={}, generated_amount={}",

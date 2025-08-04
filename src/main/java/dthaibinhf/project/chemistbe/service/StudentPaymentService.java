@@ -85,7 +85,7 @@ public class StudentPaymentService {
                                           " in group " + groupId);
         }
         
-        // Calculate the payment amount (with pro rata if needed)
+        // Calculate the payment amount (with pro-rata if needed)
         OffsetDateTime dueDate = calculateDueDate();
         BigDecimal amountDue = fee.getAmount();
         BigDecimal outStandingPaid = amountDue.subtract(totalPaid).subtract(totalDiscount);
@@ -129,7 +129,7 @@ public class StudentPaymentService {
         return studentsInGroup.stream()
                 .map(student -> {
                     try {
-                        // Check if payment summary already exists
+                        // Check if the payment summary already exists
                         if (!summaryRepository.existsByStudentFeeAcademicYearAndGroup(
                                 student.getId(), group.getFee().getId(), 
                                 group.getAcademicYear().getId(), groupId)) {
@@ -191,7 +191,7 @@ public class StudentPaymentService {
                                                         Integer academicYearId, Integer groupId) {
         log.info("Updating or creating payment summary for student {} after payment", studentId);
         
-        // Try to find existing summary
+        // Try to find an existing summary
         var existingSummary = summaryRepository
                 .findActiveByStudentFeeAcademicYearAndGroup(studentId, feeId, academicYearId, groupId);
         
@@ -207,7 +207,7 @@ public class StudentPaymentService {
             log.info("Updated existing payment summary for student {}: paid={}, status={}", 
                     studentId, totalPaid, summary.getPaymentStatus());
         } else {
-            // Create new summary if groupId is provided
+            // Create a new summary if groupId is provided
             if (groupId != null) {
                 try {
                     generatePaymentForStudentInGroup(studentId, groupId);
@@ -346,5 +346,28 @@ public class StudentPaymentService {
         }
         
         log.info("Completed recalculation of {} payment summaries", allSummaries.size());
+    }
+
+    /**
+     * Get payment summaries by fee and student.
+     *
+     * @param feeId The fee ID
+     * @param studentId The student ID
+     * @return Payment summary DTO
+     */
+    @Tool(description = "Get payment summary for a specific student and fee. Useful for queries like 'what is the payment status for student 5 with fee ID 3?' or 'how much does student 10 owe for fee 2?'")
+    @Transactional(readOnly = true)
+    public StudentPaymentSummaryDTO getPaymentSummariesByFeeAndStudent(Integer feeId, Integer studentId) {
+        log.info("Getting payment summary for student {} with fee {}", studentId, feeId);
+
+        // Validate fee and student existence
+        feeRepository.findById(feeId)
+                .orElseThrow(() -> new EntityNotFoundException("Fee not found with ID: " + feeId));
+        studentRepository.findById(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found with ID: " + studentId));
+
+        StudentPaymentSummary summary = summaryRepository.findActiveByFeeAndStudent(feeId, studentId)
+                .orElseThrow(() -> new EntityNotFoundException("Payment summary not found for student " + studentId + " with fee " + feeId));
+        return summaryMapper.toDto(summary);
     }
 }

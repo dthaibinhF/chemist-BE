@@ -43,16 +43,24 @@ public class AuthenticationService {
     AccountMapper accountMapper;
     UserDetailsService userDetailsService;
 
-    // * this method can cause error because database don't store "USER"
     public AccountDTO register(RegisterRequest request) {
-        Role accountRole = roleRepository.findActiveByName(request.getRoleName())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Role not found"));
+        // Validate that role IDs are provided
+        if (request.getRoleIds() == null || request.getRoleIds().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one role ID must be provided");
+        }
+        
+        // Find all roles by IDs and validate they exist
+        Set<Role> roles = new HashSet<>();
+        for (Integer roleId : request.getRoleIds()) {
+            Role role = roleRepository.findActiveById(roleId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role with ID " + roleId + " not found"));
+            roles.add(role);
+        }
+        
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         Account account = accountMapper.toAccount(request);
         
         // Set roles using many-to-many relationship
-        Set<Role> roles = new HashSet<>();
-        roles.add(accountRole);
         account.setRoles(roles);
         
         return accountMapper.toDto(accountRepository.save(account));

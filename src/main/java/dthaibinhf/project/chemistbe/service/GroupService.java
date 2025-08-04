@@ -276,4 +276,11 @@ public class GroupService {
         );
         return groupMapper.toListDto(group);
     }
+
+    public GroupListDTO getGroupBasicInfo(Integer id) {
+        Group group = groupRepository.findActiveById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Group not found: " + id)
+        );
+        return groupMapper.toListDto(group);
+    }
 }

@@ -142,4 +142,13 @@ public interface StudentPaymentSummaryRepository extends JpaRepository<StudentPa
      */
     @Query("SELECT COALESCE(SUM(sps.totalAmountPaid), 0) FROM StudentPaymentSummary sps WHERE sps.endAt IS NULL")
     java.math.BigDecimal getTotalPaidAmount();
+
+    /**
+     * Find the active payment summary for a specific fee and student.
+     * @param feeId the fee ID
+     * @param studentId the student ID
+     * @return optional payment summary
+     */
+    @Query("SELECT sps FROM StudentPaymentSummary sps WHERE sps.fee.id = :feeId AND sps.student.id = :studentId AND sps.endAt IS NULL")
+    Optional<StudentPaymentSummary> findActiveByFeeAndStudent(Integer feeId, Integer studentId);
 }
