@@ -1,6 +1,7 @@
 package dthaibinhf.project.chemistbe.service;
 
 import dthaibinhf.project.chemistbe.dto.StudentDTO;
+import dthaibinhf.project.chemistbe.dto.StudentPaymentSummaryDTO;
 import dthaibinhf.project.chemistbe.mapper.StudentDetailMapper;
 import dthaibinhf.project.chemistbe.mapper.StudentMapper;
 import dthaibinhf.project.chemistbe.model.Student;
@@ -36,6 +37,7 @@ public class StudentService {
     StudentMapper studentMapper;
     StudentDetailMapper studentDetailMapper;
     GroupRepository groupRepository;
+    StudentPaymentService studentPaymentService;
 
     @Tool(
             name = "get_all_active_students",
@@ -74,6 +76,25 @@ public class StudentService {
             });
         }
         Student saved = studentRepository.save(student);
+        
+        // Generate payment summaries for each group enrollment
+        if (saved.getStudentDetails() != null) {
+            saved.getStudentDetails().stream()
+                    .filter(detail -> detail.getGroup() != null && detail.getEndAt() == null)
+                    .forEach(detail -> {
+                        try {
+                            StudentPaymentSummaryDTO paymentSummary = studentPaymentService
+                                    .generatePaymentForStudentInGroup(saved.getId(), detail.getGroup().getId());
+                            log.info("Generated payment summary for student {} in group {}: {}", 
+                                    saved.getId(), detail.getGroup().getId(), paymentSummary.getId());
+                        } catch (Exception e) {
+                            log.warn("Failed to generate payment summary for student {} in group {}: {}", 
+                                    saved.getId(), detail.getGroup().getId(), e.getMessage());
+                            // Don't fail the transaction - payment can be generated later
+                        }
+                    });
+        }
+        
         return studentMapper.toDto(saved);
     }
 
@@ -89,9 +110,14 @@ public class StudentService {
 
         // Handle student details - create new records instead of updating existing ones
         if (studentDTO.getStudentDetails() != null && !studentDTO.getStudentDetails().isEmpty()) {
-            // Get current active student details
+            // Get current active student details and their group IDs
             Set<StudentDetail> currentDetails = student.getStudentDetails().stream()
                     .filter(detail -> detail.getEndAt() == null)
+                    .collect(Collectors.toSet());
+            
+            Set<Integer> currentGroupIds = currentDetails.stream()
+                    .filter(detail -> detail.getGroup() != null)
+                    .map(detail -> detail.getGroup().getId())
                     .collect(Collectors.toSet());
 
             // Soft delete current details
@@ -111,6 +137,27 @@ public class StudentService {
 
             // Add new details to student
             student.getStudentDetails().addAll(newDetails);
+            
+            // Generate payment summaries only for new group enrollments
+            Set<Integer> newGroupIds = newDetails.stream()
+                    .filter(detail -> detail.getGroup() != null)
+                    .map(detail -> detail.getGroup().getId())
+                    .collect(Collectors.toSet());
+            
+            newGroupIds.stream()
+                    .filter(groupId -> !currentGroupIds.contains(groupId))
+                    .forEach(groupId -> {
+                        try {
+                            StudentPaymentSummaryDTO paymentSummary = studentPaymentService
+                                    .generatePaymentForStudentInGroup(student.getId(), groupId);
+                            log.info("Generated payment summary for student {} in new group {}: {}", 
+                                    student.getId(), groupId, paymentSummary.getId());
+                        } catch (Exception e) {
+                            log.warn("Failed to generate payment summary for student {} in group {}: {}", 
+                                    student.getId(), groupId, e.getMessage());
+                            // Don't fail the transaction - payment can be generated later
+                        }
+                    });
         }
 
         Student updated = studentRepository.save(student);
@@ -142,6 +189,32 @@ public class StudentService {
                     })
                     .collect(Collectors.toList());
             List<Student> savedStudents = studentRepository.saveAll(students);
+            
+            // Generate payment summaries for all student-group enrollments
+            int paymentCount = 0;
+            for (Student savedStudent : savedStudents) {
+                if (savedStudent.getStudentDetails() != null) {
+                    for (StudentDetail detail : savedStudent.getStudentDetails()) {
+                        if (detail.getGroup() != null && detail.getEndAt() == null) {
+                            try {
+                                StudentPaymentSummaryDTO paymentSummary = studentPaymentService
+                                        .generatePaymentForStudentInGroup(savedStudent.getId(), detail.getGroup().getId());
+                                paymentCount++;
+                                log.debug("Generated payment summary for student {} in group {}: {}", 
+                                        savedStudent.getId(), detail.getGroup().getId(), paymentSummary.getId());
+                            } catch (Exception e) {
+                                log.warn("Failed to generate payment summary for student {} in group {}: {}", 
+                                        savedStudent.getId(), detail.getGroup().getId(), e.getMessage());
+                                // Don't fail the transaction - payment can be generated later
+                            }
+                        }
+                    }
+                }
+            }
+            
+            log.info("Successfully created {} students and generated {} payment summaries", 
+                    savedStudents.size(), paymentCount);
+            
             return savedStudents.stream().map(studentMapper::toDto).collect(Collectors.toList());
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student list cannot be null or empty");
