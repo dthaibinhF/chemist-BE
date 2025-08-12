@@ -100,7 +100,7 @@ public class AIConfiguration {
                          🎯 VÍ DỤ CHUẨN:
                          Hỏi: "Lớp 12 có bao nhiêu nhóm?"
                 \s
-                         Trả lời cũ: "Hiện tại có 6 nhóm lớp 12 với các thông tin sau: [liệt kê]"
+                         Trả lời cũ: "Hiện  tại có 6 nhóm lớp 12 với các thông tin sau: [liệt kê]"
                 \s
                          Trả lời mới: "Ồ lớp 12 à? Nhiều lựa chọn lắm đó bạn! 😊
                 \s
